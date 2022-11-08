@@ -27,9 +27,7 @@ jobs:
       run: dotnet test --no-restore --verbosity normal  
 
     - name: Get stakeholders.
-      uses: wei/wget@v1
-      with:
-        args: -O ./src/NAP.AutoChecks/data/organizations.csv ${{ secrets.DROPBOX_STAKEHOLDERS }}
+      run: wget -O ./src/NAP.AutoChecks/data/organizations.csv ${{ secrets.DROPBOX_STAKEHOLDERS }}
 
     - name: Run
       run: dotnet run -c release ./data/
