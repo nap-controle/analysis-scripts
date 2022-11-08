@@ -27,12 +27,13 @@ jobs:
       run: dotnet test --no-restore --verbosity normal  
 
     - name: Run
-      run: dotnet run -c release ./src/NAP.AutoChecks/NAP.AutoChecks.csproj ./data/
+      run: dotnet run -c release ./data/
+      working-directory: ./src/NAP.AutoChecks/
 
     - uses: deka0106/upload-to-dropbox@v2
       with:
         dropbox_access_token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
-        src: data/**/*
+        src: ./src/NAP.AutoChecks/data/**/*
         dest: /data/
         multiple: true
         
