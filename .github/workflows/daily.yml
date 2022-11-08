@@ -30,8 +30,7 @@ jobs:
       run: dotnet test --no-restore --verbosity normal  
 
     - name: Run
-      run: dotnet run -c release ./data/
-      working-directory: ./src/NAP.AutoChecks/
+      run: cd ./src/NAP.AutoChecks/ && dotnet run -c release ./data/
 
     - uses: deka0106/upload-to-dropbox@v2
       with:
