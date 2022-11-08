@@ -14,7 +14,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Get stakeholders.
-      run: mkdir -p ./src/NAP.AutoChecks/data/stakeholders && wget -q -O ./src/NAP.AutoChecks/data/stakeholders/organisations.csv ${{ secrets.DROPBOX_STAKEHOLDERS }}
+      run: mkdir -p ./data/stakeholders && wget -q -O ./data/stakeholders/organisations.csv ${{ secrets.DROPBOX_STAKEHOLDERS }}
 
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
@@ -30,12 +30,12 @@ jobs:
       run: dotnet test --no-restore --verbosity normal  
 
     - name: Run
-      run: cd ./src/NAP.AutoChecks/ && dotnet run -c release ./data/
+      run: cd ./src/NAP.AutoChecks/ && dotnet run -c release ../../data/
 
     - uses: deka0106/upload-to-dropbox@v2
       with:
         dropbox_access_token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
-        src: ./src/NAP.AutoChecks/data/**/*.csv
-        dest: /data/
+        src: ./data/**/*.csv
+        dest: /results/
         multiple: true
         
