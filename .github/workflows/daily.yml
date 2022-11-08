@@ -12,6 +12,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: Get stakeholders.
+      run: wget -O ./src/NAP.AutoChecks/data/organizations.csv ${{ secrets.DROPBOX_STAKEHOLDERS }}
     
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
@@ -25,9 +28,6 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal  
-
-    - name: Get stakeholders.
-      run: wget -O ./src/NAP.AutoChecks/data/organizations.csv ${{ secrets.DROPBOX_STAKEHOLDERS }}
 
     - name: Run
       run: dotnet run -c release ./data/
