@@ -29,6 +29,8 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity normal  
 
+    - run: cd ./src/NAP.AutoChecks/ && ls -lR
+
     - name: Run
       run: cd ./src/NAP.AutoChecks/ && dotnet run -c release ./data/
 
