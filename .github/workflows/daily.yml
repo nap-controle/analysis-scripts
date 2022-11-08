@@ -18,15 +18,6 @@ jobs:
       with:
         dotnet-version: '6.0.x'
 
-    - name: Add GitHub Nuget Source
-      run: dotnet nuget add source https://nuget.pkg.github.com/anyways-open/index.json -n anyways -u xivk -p ${{secrets.PACKAGES_SECRET }} --store-password-in-clear-text
-    
-    - name: Add GitHub Nuget Source
-      run: dotnet nuget add source https://nuget.pkg.github.com/itinero/index.json -n itinero -u xivk -p ${{secrets.PACKAGES_SECRET }} --store-password-in-clear-text
-    
-    - name: Add GitHub Nuget Source
-      run: dotnet nuget add source https://nuget.pkg.github.com/osmsharp/index.json -n osmsharp -u xivk -p ${{secrets.PACKAGES_SECRET }} --store-password-in-clear-text
-
     - name: Install dependencies
       run: dotnet restore
       
