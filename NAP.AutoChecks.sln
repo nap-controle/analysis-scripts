@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{533C3358-DF80-4BA2-B05E-03DB6B78AD20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAP.AutoChecks", "src\NAP.AutoChecks\NAP.AutoChecks.csproj", "{9C3F8AE3-41C7-4B88-96A8-2F01B11A30C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransportDataBe.Client", "src\TransportDataBe.Client\TransportDataBe.Client.csproj", "{4EC47353-5180-4047-BA0C-CCFE7007B1F2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{EE32DD31-48F2-4FBE-8487-0525354FAB0E}"
+	ProjectSection(SolutionItems) = preProject
+		NAP.AutoChecks.sln = NAP.AutoChecks.sln
+		README.md = README.md
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9C3F8AE3-41C7-4B88-96A8-2F01B11A30C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C3F8AE3-41C7-4B88-96A8-2F01B11A30C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C3F8AE3-41C7-4B88-96A8-2F01B11A30C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C3F8AE3-41C7-4B88-96A8-2F01B11A30C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EC47353-5180-4047-BA0C-CCFE7007B1F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EC47353-5180-4047-BA0C-CCFE7007B1F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EC47353-5180-4047-BA0C-CCFE7007B1F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EC47353-5180-4047-BA0C-CCFE7007B1F2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9C3F8AE3-41C7-4B88-96A8-2F01B11A30C8} = {533C3358-DF80-4BA2-B05E-03DB6B78AD20}
+		{4EC47353-5180-4047-BA0C-CCFE7007B1F2} = {533C3358-DF80-4BA2-B05E-03DB6B78AD20}
+	EndGlobalSection
+EndGlobal

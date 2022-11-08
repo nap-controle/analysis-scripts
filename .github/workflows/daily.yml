@@ -1,0 +1,47 @@
+name: Daily Checks
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Add GitHub Nuget Source
+      run: dotnet nuget add source https://nuget.pkg.github.com/anyways-open/index.json -n anyways -u xivk -p ${{secrets.PACKAGES_SECRET }} --store-password-in-clear-text
+    
+    - name: Add GitHub Nuget Source
+      run: dotnet nuget add source https://nuget.pkg.github.com/itinero/index.json -n itinero -u xivk -p ${{secrets.PACKAGES_SECRET }} --store-password-in-clear-text
+    
+    - name: Add GitHub Nuget Source
+      run: dotnet nuget add source https://nuget.pkg.github.com/osmsharp/index.json -n osmsharp -u xivk -p ${{secrets.PACKAGES_SECRET }} --store-password-in-clear-text
+
+    - name: Install dependencies
+      run: dotnet restore
+      
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal  
+
+    - name: Run
+      run: dotnet run -c release ./src/NAP.AutoChecks/NAP.AutoChecks.csproj ./data/
+
+    - uses: deka0106/upload-to-dropbox@v2
+      with:
+        dropbox_access_token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
+        src: data/**/*
+        dest: /data/
+        multiple: true
+        
