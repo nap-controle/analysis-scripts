@@ -3,6 +3,9 @@ name: Daily Checks
 on:
   schedule:
     - cron: "0 0 * * *"
+  push:
+    branches:
+    - main
 
 jobs:
   build:
@@ -37,4 +40,5 @@ jobs:
         src: ./data/**/*.csv
         dest: /results/
         multiple: true
+        mode: overwrite
         
