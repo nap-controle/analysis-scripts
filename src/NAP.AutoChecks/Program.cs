@@ -48,6 +48,7 @@ public static class Program
                 services.AddSingleton<DataHandler>();
                 services.AddSingleton<OrganizationsNotInStakeholders>();
                 services.AddSingleton<StakeholderHasPackages>();
+                services.AddSingleton<RequiredFieldsFilledIn>();
             }).UseConsoleLifetime().Build();
 
         using var scope = host.Services.CreateScope();
@@ -57,5 +58,8 @@ public static class Program
 
         var check2 = scope.ServiceProvider.GetRequiredService<StakeholderHasPackages>();
         await check2.Check();
+
+        var check3 = scope.ServiceProvider.GetRequiredService<RequiredFieldsFilledIn>();
+        await check3.Check();
     }
 }

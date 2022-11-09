@@ -26,6 +26,26 @@ public class Client
     }
     
     /// <summary>
+    /// Gets the tags list.
+    /// </summary>
+    /// <returns>The tag list.</returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<Response<string[]>> GetTagList()
+    {
+        var client = _httpClientFactory.CreateClient(ClientSettings.HttpClientName);
+        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        var url = $"{_settings.Api}action/tag_list";
+        
+        using var response = await client.GetAsync(url, 
+            HttpCompletionOption.ResponseHeadersRead);
+        if (response.StatusCode == HttpStatusCode.NotFound) throw new Exception("Tags list not found");
+        
+        return await JsonSerializer.DeserializeAsync<Response<string[]>>(
+                   await response.Content.ReadAsStreamAsync(), _jsonSerializerOptions) ?? 
+               throw new Exception($"invalid response, cannot parse {nameof(Response<string[]>)}");
+    }
+    
+    /// <summary>
     /// Gets the packages list.
     /// </summary>
     /// <returns>The package list.</returns>
@@ -96,7 +116,7 @@ public class Client
     {
         var client = _httpClientFactory.CreateClient(ClientSettings.HttpClientName);
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        var url = $"{_settings.Api}action/package_show?id={packageName}";
+        var url = this.GetPackageUrl(packageName);
         
         using var response = await client.GetAsync(url, 
             HttpCompletionOption.ResponseHeadersRead);
@@ -105,5 +125,10 @@ public class Client
         return await JsonSerializer.DeserializeAsync<Response<Package>>(
                    await response.Content.ReadAsStreamAsync(), _jsonSerializerOptions) ?? 
                throw new Exception($"invalid response, cannot parse {nameof(Response<Package>)}");
+    }
+
+    public string GetPackageUrl(string packageName)
+    {
+        return $"{_settings.Api}action/package_show?id={packageName}";
     }
 }

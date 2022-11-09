@@ -26,11 +26,109 @@ public class DataHandler
         }
     }
 
+    internal Client GetClient() => _client;
+
+    public IEnumerable<string> GetPossibleLanguages()
+    {
+        return new[]
+        {
+            "http://publications.europa.eu/resource/authority/language/FRA",
+            "http://publications.europa.eu/resource/authority/language/ENG",
+            "http://publications.europa.eu/resource/authority/language/NLD",
+            "http://publications.europa.eu/resource/authority/language/DEU"
+        };
+    }
+
+    public IEnumerable<string> GetPossibleContRes()
+    {
+        return new[] { "Data set", "Service" };
+    }
+
+    public IEnumerable<(string value, bool hasLicense)> GetPossibleContractLicenses()
+    {
+        return new (string value, bool hasLicense)[] { ("conotfree", true),("cofree", true), ("lifree", true), ("linotfree", true), ("nolinoco", false), ("notrelevant", false) };
+    }
+
+    public IEnumerable<string> GetPossibleFormats()
+    {
+        return new[] { "XML", "JSON", "CSV", "ASN.1 encoding rules", "Protocol buffers", "Other" };
+    }
+    /// <summary>
+    /// • DATEX II
+    // • OCIT-C
+    // • DATEX II Light
+    // • NeTEx (CEN/TS 16614)
+    // • SIRI (CEN/TS 15531)
+    // • GTFS
+    // • VDV Standard (VDV 452, 455, 462, ...)
+    //     • IFOPT
+    // • ETSI / ISO Model (DENM, CAM, SPAT/MAP, IVI, …)
+    // • tpegML Model (TPEG2-TEC, TPEG2-PKI, ...)
+    // • DINO
+    // • INSPIRE data specification (according to Delegated Regulation (EC) No
+    // 1089/2010)
+    // • GML
+    // • other
+
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerable<string> GetPossibleAccMods()
+    {
+        return new[] { "Other", "GBFS", "GTFS", "DATEX II profile", "OpenAPI", "NeTEX", "MDS", "DATEX II Light", "VDV Standard" };
+    }
+
+    public IEnumerable<string> GetPossibleAccInts()
+    {
+        return new[] { "OTS2", "http://publications.europa.eu/resource/authority/file-type/MSG_HTTP", "Other", "SOAP", "FTP" };
+    }
+
+    public IEnumerable<string> GetPossibleFrequencies()
+    {
+        return new[]
+        {
+            "Up to 1min", "On occurence", "Up to 5min", "Up to 10 min", "Up to 15min",
+            "Up to 30 min", "Up to 1h", "Up to 2h", "Up to 3h", "Up to 12h", "Up to 24h",
+            "Up to Weekly", "Up to Monthly", "Up to every 3month", "Up to every 6month", "Up to yearly",
+            "Less frequent than yearly", "http://publications.europa.eu/resource/authority/frequency/DAILY",
+            "http://publications.europa.eu/resource/authority/frequency/ANNUAL",
+            "http://publications.europa.eu/resource/authority/frequency/QUARTERLY",
+            "http://publications.europa.eu/resource/authority/frequency/MONTHLY",
+            "http://publications.europa.eu/resource/authority/frequency/ANNUAL_2"
+        };
+    }
+
+    public IEnumerable<string> GetPossibleAccCons()
+    {
+        return new[] { "Push", "Push periodic", "Pull", "Push on occurence" };
+    }
+
+    public IEnumerable<string> GetPossibleRegions()
+    {
+        return new[]
+        {
+            "http://data.europa.eu/nuts/code/BE3", "http://data.europa.eu/nuts/code/BE2",
+            "http://data.europa.eu/nuts/code/BE1"
+        };
+    }
+
     public async Task<IEnumerable<Stakeholder>> GetStakeholders()
     {
         await using var stream =
             File.OpenRead(Path.Combine(_dataPath, "stakeholders", "organisations.csv"));
         return await Stakeholder.LoadFromCsv(stream);
+    }
+
+    public async Task<IEnumerable<string>> GetTags()
+    {
+        var tagsTodayFile = Path.Combine(_todayPath, "tags.json");
+        var tagIds = await TryRead<Response<string[]>>(tagsTodayFile);
+        if (tagIds == null)
+        {
+            tagIds = await _client.GetTagList();
+            await Write(tagsTodayFile, tagIds);
+        }
+
+        return tagIds.Result;
     }
 
     public async Task<IEnumerable<Organization>> GetOrganizations()
