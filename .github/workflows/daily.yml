@@ -37,4 +37,5 @@ jobs:
         src: ./data/**/*.csv
         dest: /results/
         multiple: true
+        mode: overwrite
         
