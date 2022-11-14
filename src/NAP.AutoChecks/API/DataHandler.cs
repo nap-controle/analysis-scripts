@@ -239,9 +239,9 @@ public class DataHandler
 
     public async Task WriteDocumentForOrganizationAsync(string file, Organization organization, Stream stream)
     {
-        var organizationFolder = Path.Combine(_todayPath, "organizations", organization.Name);
+        var organizationFolder = Path.Combine(_todayPath, "organizations");
         if (!Directory.Exists(organizationFolder)) Directory.CreateDirectory(organizationFolder);
-        var documentFile = Path.Combine(_todayPath, "organizations", organization.Name, file);
+        var documentFile = Path.Combine(_todayPath, "organizations", $"{organization.Name}_{file}");
         await using var outputStream = File.Open(documentFile, FileMode.Create);
         await stream.CopyToAsync(outputStream);
     }
