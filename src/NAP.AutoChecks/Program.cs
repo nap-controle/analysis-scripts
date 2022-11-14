@@ -21,7 +21,7 @@ public static class Program
     {
         if (args.Length == 0)
         {
-            args = new[] { "/Users/xivk/work/nap/analysis-scripts/data" };
+            args = new[] { "/Users/xivk/work/nap/analysis-scripts/data", "" };
         }
         var dataPath = args[0];
         
@@ -49,6 +49,7 @@ public static class Program
                 services.AddSingleton<OrganizationsNotInStakeholders>();
                 services.AddSingleton<StakeholderHasPackages>();
                 services.AddSingleton<RequiredFieldsFilledIn>();
+                services.AddSingleton<StakeholderHasDeclarations>();
             }).UseConsoleLifetime().Build();
 
         using var scope = host.Services.CreateScope();
@@ -61,5 +62,8 @@ public static class Program
 
         var check3 = scope.ServiceProvider.GetRequiredService<RequiredFieldsFilledIn>();
         await check3.Check();
+
+        var check4 = scope.ServiceProvider.GetRequiredService<StakeholderHasDeclarations>();
+        await check4.Check();
     }
 }

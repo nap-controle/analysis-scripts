@@ -115,7 +115,49 @@ public class DataHandler
     {
         await using var stream =
             File.OpenRead(Path.Combine(_dataPath, "stakeholders", "organisations.csv"));
-        return await Stakeholder.LoadFromCsv(stream);
+        var stakeholders = await Stakeholder.LoadFromCsv(stream);
+        
+        var stakeholdersMmtis = await Csv.ReadAsync<Stakeholder_MMTIS>(
+            Path.Combine(_dataPath, "stakeholders", "organisations_MMTIS.csv"));
+        foreach (var stakeholderMmtis in stakeholdersMmtis)
+        {
+            var stakeholder = stakeholders.FirstOrDefault(x => x.Id == stakeholderMmtis.Id);
+            if (stakeholder == null) continue;
+
+            stakeholder.IsMMTIS = stakeholderMmtis.IsMMTIS == "Yes";
+        }
+        
+        var rttis = await Csv.ReadAsync<Stakeholder_RTTI>(
+            Path.Combine(_dataPath, "stakeholders", "organisations_RTTI.csv"));
+        foreach (var rtti in rttis)
+        {
+            var stakeholder = stakeholders.FirstOrDefault(x => x.Id == rtti.Id);
+            if (stakeholder == null) continue;
+
+            stakeholder.IsRTTI = rtti.IsRTTI == "Yes";
+        }
+        
+        var srtis = await Csv.ReadAsync<Stakeholder_SRTI>(
+            Path.Combine(_dataPath, "stakeholders", "organisations_SRTI.csv"));
+        foreach (var srti in srtis)
+        {
+            var stakeholder = stakeholders.FirstOrDefault(x => x.Id == srti.Id);
+            if (stakeholder == null) continue;
+
+            stakeholder.IsSRTI = srti.IsSRTI == "Yes";
+        }
+        
+        var sstps = await Csv.ReadAsync<Stakeholder_SSTP>(
+            Path.Combine(_dataPath, "stakeholders", "organisations_SSTP.csv"));
+        foreach (var sstp in sstps)
+        {
+            var stakeholder = stakeholders.FirstOrDefault(x => x.Id == sstp.Id);
+            if (stakeholder == null) continue;
+
+            stakeholder.IsSSTP = sstp.IsSSTP == "Yes";
+        }
+
+        return stakeholders;
     }
 
     public async Task<IEnumerable<string>> GetTags()

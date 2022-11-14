@@ -24,6 +24,30 @@ public class Stakeholder
     /// </summary>
     [Index(5)]
     public string OrganizationId { get; set; }
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    [Ignore]
+    public bool IsMMTIS { get; set; }
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    [Ignore]
+    public bool IsRTTI { get; set; }
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    [Ignore]
+    public bool IsSRTI { get; set; }
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    [Ignore]
+    public bool IsSSTP { get; set; }
 
     /// <summary>
     /// The parsed organization id, if any.

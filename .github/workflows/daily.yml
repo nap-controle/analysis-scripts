@@ -18,6 +18,18 @@ jobs:
     - name: Get stakeholders.
       run: mkdir -p ./data/stakeholders && wget -q -O ./data/stakeholders/organisations.csv ${{ secrets.DROPBOX_STAKEHOLDERS }}
 
+    - name: Get stakeholders.
+      run: mkdir -p ./data/stakeholders && wget -q -O ./data/stakeholders/organisations_MMTIS.csv ${{ secrets.DROPBOX_STAKEHOLDERS_MMTIS }}
+
+    - name: Get stakeholders.
+      run: mkdir -p ./data/stakeholders && wget -q -O ./data/stakeholders/organisations_RTTI.csv ${{ secrets.DROPBOX_STAKEHOLDERS_RTTI }}
+
+    - name: Get stakeholders.
+      run: mkdir -p ./data/stakeholders && wget -q -O ./data/stakeholders/organisations_SRTI.csv ${{ secrets.DROPBOX_STAKEHOLDERS_SRTI }}
+
+    - name: Get stakeholders.
+      run: mkdir -p ./data/stakeholders && wget -q -O ./data/stakeholders/organisations_SSTP.csv ${{ secrets.DROPBOX_STAKEHOLDERS_SSTP }}
+
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:

@@ -100,7 +100,7 @@ public class Client
         using var response = await client.GetAsync(url, 
             HttpCompletionOption.ResponseHeadersRead);
         if (response.StatusCode == HttpStatusCode.NotFound) throw new Exception("404 is an invalid response in this api");
-        
+
         return await JsonSerializer.DeserializeAsync<Response<Organization>>(
                    await response.Content.ReadAsStreamAsync(), _jsonSerializerOptions) ?? 
                throw new Exception($"invalid response, cannot parse {nameof(Response<Organization>)}");
