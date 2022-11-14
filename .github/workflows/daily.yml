@@ -34,11 +34,14 @@ jobs:
     - name: Run
       run: cd ./src/NAP.AutoChecks/ && dotnet run -c release ../../data/
 
-    - uses: deka0106/upload-to-dropbox@v2
+    - name: Mirror Directory Structure
+      uses: adityak74/google-drive-upload-git-action@main
       with:
-        dropbox_access_token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
-        src: ./data/**/*.csv
-        dest: /results/
-        multiple: true
-        mode: overwrite
+        credentials: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
+        filename: ./data/**/*.csv
+        folderId: ${{ secrets.GOOGLE_DRIVE_FOLDER }}
+        overwrite: "true"
+        mirrorDirectoryStructure: "true"
+
+
         
