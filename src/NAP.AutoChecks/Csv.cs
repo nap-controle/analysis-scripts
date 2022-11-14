@@ -13,7 +13,7 @@ internal static class Csv
         var csvWriter = new CsvWriter(textWriter, new CsvConfiguration(CultureInfo.InvariantCulture)
         {
             HasHeaderRecord = true,
-            Delimiter = ";"
+            Delimiter = ","
         });
         await csvWriter.WriteRecordsAsync(items);
     }
