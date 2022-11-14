@@ -10,6 +10,7 @@ using NAP.AutoChecks;
 using NAP.AutoChecks.API;
 using NAP.AutoChecks.Checks;
 using NAP.AutoChecks.Domain;
+using NAP.AutoChecks.Queries;
 using Serilog;
 using Serilog.Formatting.Json;
 using TransportDataBe.Client;
@@ -50,9 +51,14 @@ public static class Program
                 services.AddSingleton<StakeholderHasPackages>();
                 services.AddSingleton<RequiredFieldsFilledIn>();
                 services.AddSingleton<StakeholderHasDeclarations>();
+
+                services.AddSingleton<StakeholdersAllDeclarations>();
             }).UseConsoleLifetime().Build();
 
         using var scope = host.Services.CreateScope();
+
+        var download1 = scope.ServiceProvider.GetRequiredService<StakeholdersAllDeclarations>();
+        await download1.GetDeclarations();
 
         var check1 = scope.ServiceProvider.GetRequiredService<OrganizationsNotInStakeholders>();
         await check1.Check();

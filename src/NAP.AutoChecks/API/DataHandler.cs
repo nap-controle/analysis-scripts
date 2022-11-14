@@ -237,6 +237,15 @@ public class DataHandler
         await Csv.WriteAsync(fileAtData, items);
     }
 
+    public async Task WriteDocumentForOrganizationAsync(string file, Organization organization, Stream stream)
+    {
+        var organizationFolder = Path.Combine(_todayPath, "organizations", organization.Name);
+        if (!Directory.Exists(organizationFolder)) Directory.CreateDirectory(organizationFolder);
+        var documentFile = Path.Combine(_todayPath, "organizations", organization.Name, file);
+        await using var outputStream = File.Open(documentFile, FileMode.Create);
+        await stream.CopyToAsync(outputStream);
+    }
+
     private static async Task<T?> TryRead<T>(string file)
     {
         if (!File.Exists(file)) return default;

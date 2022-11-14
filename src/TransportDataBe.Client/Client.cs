@@ -127,6 +127,28 @@ public class Client
                throw new Exception($"invalid response, cannot parse {nameof(Response<Package>)}");
     }
 
+    /// <summary>
+    /// Gets a document from the API.
+    /// </summary>
+    /// <param name="file">The file.</param>
+    /// <param name="organization">The organization.</param>
+    /// <returns></returns>
+    public async Task<Stream> DownloadDocument(string file, Organization organization)
+    {
+        var client = _httpClientFactory.CreateClient(ClientSettings.HttpClientName);
+        var url = $"{_settings.Website}uploads/organization/{organization.Name}/{file}";
+        
+        using var response = await client.GetAsync(url, 
+            HttpCompletionOption.ResponseHeadersRead);
+        if (response.StatusCode == HttpStatusCode.NotFound) throw new Exception("404 is an invalid response in this api");
+
+        var memoryStream = new MemoryStream();
+        var responseStream = await response.Content.ReadAsStreamAsync();
+        await responseStream.CopyToAsync(memoryStream);
+        memoryStream.Seek(0, SeekOrigin.Begin);
+        return memoryStream;
+    }
+
     public string GetPackageUrl(string packageName)
     {
         return $"{_settings.Api}action/package_show?id={packageName}";

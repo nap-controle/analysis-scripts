@@ -3,11 +3,11 @@ using NAP.AutoChecks.Domain;
 
 namespace NAP.AutoChecks.Queries;
 
-public class StakeholdersPerNapType
+public class StakeholdersAllDeclarations
 {
     private readonly DataHandler _dataHandler;
 
-    public StakeholdersPerNapType(DataHandler dataHandler)
+    public StakeholdersAllDeclarations(DataHandler dataHandler)
     {
         _dataHandler = dataHandler;
     }
@@ -17,7 +17,7 @@ public class StakeholdersPerNapType
         var stakeholders = await _dataHandler.GetStakeholders();
 
         var organizations = await _dataHandler.GetOrganizations();
-        var results = new List<StakeholderAndNapType>();
+        
         foreach (var stakeholder in stakeholders)
         {
             if (stakeholder.ParsedOrganizationId == null)
@@ -33,29 +33,29 @@ public class StakeholdersPerNapType
                 continue;
             }
 
-            var result = new StakeholderAndNapType(stakeholder);
-            if (organization.agreement_declaration_mmtis is { Length: > 0 } &&
-                organization.agreement_declaration_mmtis[0] == "Y")
-            {
-                result.HasMMTISDeclaration = true;
-            }
-
             if (!string.IsNullOrWhiteSpace(organization.rtti_doc_document_upload))
             {
-                result.HasRTTSDeclaration = true;
+                var file = await _dataHandler.GetClient()
+                    .DownloadDocument(organization.rtti_doc_document_upload, organization);
+                await _dataHandler.WriteDocumentForOrganizationAsync($"rtti_{organization.rtti_doc_document_upload}",
+                    organization, file);
             }
 
             if (!string.IsNullOrWhiteSpace(organization.srti_doc_document_upload))
             {
-                result.HasSRTIDeclaration = true;
+                var file = await _dataHandler.GetClient()
+                    .DownloadDocument(organization.srti_doc_document_upload, organization);
+                await _dataHandler.WriteDocumentForOrganizationAsync($"srti_{organization.srti_doc_document_upload}",
+                    organization, file);
             }
 
             if (!string.IsNullOrWhiteSpace(organization.sstp_doc_document_upload))
             {
-                result.HasSSTPDeclaration = true;
+                var file = await _dataHandler.GetClient()
+                    .DownloadDocument(organization.sstp_doc_document_upload, organization);
+                await _dataHandler.WriteDocumentForOrganizationAsync($"sstp_{organization.sstp_doc_document_upload}",
+                    organization, file);
             }
         }
-
-        await _dataHandler.WriteResultAsync("stakeholder_declarations.csv", results);
     }
 }
