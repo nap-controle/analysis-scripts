@@ -11,6 +11,7 @@ using NAP.AutoChecks.API;
 using NAP.AutoChecks.Checks;
 using NAP.AutoChecks.Domain;
 using NAP.AutoChecks.Queries;
+using NAP.AutoChecks.Sampling;
 using Serilog;
 using Serilog.Formatting.Json;
 using TransportDataBe.Client;
@@ -51,6 +52,7 @@ public static class Program
                 services.AddSingleton<StakeholderHasPackages>();
                 services.AddSingleton<RequiredFieldsFilledIn>();
                 services.AddSingleton<StakeholderHasDeclarations>();
+                services.AddSingleton<RandomizeDatasets>();
 
                 services.AddSingleton<StakeholdersAllDeclarations>();
             }).UseConsoleLifetime().Build();
@@ -71,5 +73,8 @@ public static class Program
 
         var check4 = scope.ServiceProvider.GetRequiredService<StakeholderHasDeclarations>();
         await check4.Check();
+
+        var sampling1 = scope.ServiceProvider.GetRequiredService<RandomizeDatasets>();
+        await sampling1.Run();
     }
 }
