@@ -60,7 +60,7 @@ public static class Program
         using var scope = host.Services.CreateScope();
 
         var download1 = scope.ServiceProvider.GetRequiredService<StakeholdersAllDeclarations>();
-        await download1.GetDeclarations();
+        await download1.Get();
 
         var check1 = scope.ServiceProvider.GetRequiredService<OrganizationsNotInStakeholders>();
         await check1.Check();

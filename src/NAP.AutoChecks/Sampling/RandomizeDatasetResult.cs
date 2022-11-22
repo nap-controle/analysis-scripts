@@ -13,6 +13,7 @@ public class RandomizeDatasetResult
         this.IsSRTI = stakeholder.IsSRTI;
         this.IsSSTP = stakeholder.IsSSTP;
         this.IsMMTIS = stakeholder.IsMMTIS;
+        this.MMTIStype = stakeholder.MMTISType;
         this.OrganizationId = organization.Id;
         this.OrganizationName = organization.Name;
     }
@@ -25,6 +26,8 @@ public class RandomizeDatasetResult
     public string PackageName { get; set; }
     
     public bool IsMMTIS { get; set; }
+    
+    public MMTISType? MMTIStype { get; set; }
     
     public bool IsRTTI { get; set; }
     

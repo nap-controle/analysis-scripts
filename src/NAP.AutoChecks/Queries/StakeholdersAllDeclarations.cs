@@ -12,7 +12,7 @@ public class StakeholdersAllDeclarations
         _dataHandler = dataHandler;
     }
 
-    public async Task GetDeclarations()
+    public async Task Get()
     {
         var stakeholders = await _dataHandler.GetStakeholders();
 

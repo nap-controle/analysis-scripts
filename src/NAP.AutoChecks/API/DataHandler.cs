@@ -156,6 +156,31 @@ public class DataHandler
 
             stakeholder.IsSSTP = sstp.IsSSTP == "Yes";
         }
+        
+        var mmtisCategories = await Csv.ReadAsync<CategorizedOrganization_MMTIS>(
+            Path.Combine(_dataPath, "stakeholders", "organizations_mmtis_categories.csv"));
+        foreach (var categorizedMmtis in mmtisCategories)
+        {
+            var stakeholder = stakeholders.FirstOrDefault(x => x.OrganizationId == categorizedMmtis.OrganizationId);
+            if (stakeholder == null) continue;
+
+            if (!string.IsNullOrWhiteSpace(categorizedMmtis.IsTransportAuthority))
+            {
+                stakeholder.MMTISType = MMTISType.TransportAuthority;
+            }
+            else if (!string.IsNullOrWhiteSpace(categorizedMmtis.IsTransportOperator))
+            {
+                stakeholder.MMTISType = MMTISType.TransportOperator;
+            }
+            else if(!string.IsNullOrWhiteSpace(categorizedMmtis.IsInfrastructureManager))
+            {
+                stakeholder.MMTISType = MMTISType.InfrastructureManager;
+            }
+            else if(!string.IsNullOrWhiteSpace(categorizedMmtis.IsTransportondemandserviceprovider))
+            {
+                stakeholder.MMTISType = MMTISType.TransportOnDemand;
+            }
+        }
 
         return stakeholders;
     }

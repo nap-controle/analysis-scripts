@@ -22,6 +22,9 @@ jobs:
       run: mkdir -p ./data/stakeholders && wget -q -O ./data/stakeholders/organisations_MMTIS.csv ${{ secrets.DROPBOX_STAKEHOLDERS_MMTIS }}
 
     - name: Get stakeholders.
+      run: mkdir -p ./data/stakeholders && wget -q -O ./data/stakeholders/organizations_mmtis_categories.csv ${{ secrets.DROPBOX_STAKEHOLDERS_MMTIS_CATEGORIES }}
+
+    - name: Get stakeholders.
       run: mkdir -p ./data/stakeholders && wget -q -O ./data/stakeholders/organisations_RTTI.csv ${{ secrets.DROPBOX_STAKEHOLDERS_RTTI }}
 
     - name: Get stakeholders.

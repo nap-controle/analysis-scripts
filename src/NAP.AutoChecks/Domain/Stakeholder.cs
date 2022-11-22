@@ -32,6 +32,12 @@ public class Stakeholder
     public bool IsMMTIS { get; set; }
     
     /// <summary>
+    /// The MMTIS type if any.
+    /// </summary>
+    [Ignore]
+    public MMTISType? MMTISType { get; set; }
+    
+    /// <summary>
     /// 
     /// </summary>
     [Ignore]
