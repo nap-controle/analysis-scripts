@@ -27,22 +27,6 @@ public class RandomizeDatasetResult
         this.OrganizationName = organization.Name;
     }
 
-    public bool? IsRTTI { get; set; }
-
-    public bool? IsSSTP { get; set; }
-
-    public bool? IsSRTI { get; set; }
-
-    public bool? IsMMTIS { get; set; }
-
-    public bool StakeholderSSTP { get; set; }
-
-    public bool StakeholderSRTI { get; set; }
-
-    public bool StakeholderRTTI { get; set; }
-
-    public bool StakeholderMMTIS { get; set; }
-
     public string OrganizationName { get; set; }
     
     public Guid OrganizationId { get; set; }
@@ -60,4 +44,20 @@ public class RandomizeDatasetResult
     public bool HasSRTIPackage { get; set; }
     
     public bool HasSSTPPackage { get; set; }
+
+    public bool? IsRTTI { get; set; }
+
+    public bool? IsSSTP { get; set; }
+
+    public bool? IsSRTI { get; set; }
+
+    public bool? IsMMTIS { get; set; }
+
+    public bool StakeholderSSTP { get; set; }
+
+    public bool StakeholderSRTI { get; set; }
+
+    public bool StakeholderRTTI { get; set; }
+
+    public bool StakeholderMMTIS { get; set; }
 }
