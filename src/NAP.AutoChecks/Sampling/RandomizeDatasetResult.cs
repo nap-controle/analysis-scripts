@@ -37,8 +37,6 @@ public class RandomizeDatasetResult
     
     public bool HasMMTISPackage { get; set; }
     
-    public MMTISType? MMTIStype { get; set; }
-    
     public bool HasRTTIPackage { get; set; }
     
     public bool HasSRTIPackage { get; set; }
@@ -60,4 +58,6 @@ public class RandomizeDatasetResult
     public bool StakeholderRTTI { get; set; }
 
     public bool StakeholderMMTIS { get; set; }
+    
+    public MMTISType? StakeholderMMTIStype { get; set; }
 }
