@@ -33,29 +33,22 @@ public class StakeholderHasDeclarations
                 continue;
             }
 
-            if (stakeholder.IsMMTIS)
+            if (stakeholder.IsMMTIS && !organization.HasMMTISDeclaration())
             {
-                if (organization.agreement_declaration_mmtis is { Length: > 0 } &&
-                    organization.agreement_declaration_mmtis[0] == "Y")
-                {
-                }
-                else
-                {
-                    results.Add(new StakeholderHasDeclarationsResult(stakeholder, "No agreement declaration MMTIS"));
-                }
+                results.Add(new StakeholderHasDeclarationsResult(stakeholder, "No agreement declaration MMTIS"));
             }
 
-            if (stakeholder.IsRTTI && string.IsNullOrWhiteSpace(organization.rtti_doc_document_upload))
+            if (stakeholder.IsRTTI && !organization.HasRTTIDeclaration())
             {
                 results.Add(new StakeholderHasDeclarationsResult(stakeholder, "No agreement declaration RTTI"));
             }
 
-            if (stakeholder.IsSRTI && string.IsNullOrWhiteSpace(organization.srti_doc_document_upload))
+            if (stakeholder.IsSRTI && !organization.HasSRTIDeclaration())
             {
                 results.Add(new StakeholderHasDeclarationsResult(stakeholder, "No agreement declaration SRTI"));
             }
 
-            if (stakeholder.IsSSTP && string.IsNullOrWhiteSpace(organization.sstp_doc_document_upload))
+            if (stakeholder.IsSSTP && !organization.HasSSTPDeclaration())
             {
                 results.Add(new StakeholderHasDeclarationsResult(stakeholder, "No agreement declaration SSTP"));
             }
