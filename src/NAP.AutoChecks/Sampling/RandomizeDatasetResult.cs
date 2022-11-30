@@ -18,10 +18,10 @@ public class RandomizeDatasetResult
         this.HasSRTIPackage = hasSRTIPackage;
         this.HasSSTPPackage = hasSSTPPackage;
         this.HasMMTISPackage = hasMMTISPackage;
-        this.IsMMTIS = package.NAP_type?.Any(x => x.ToLowerInvariant() == "mmtis");
-        this.IsSRTI = package.NAP_type?.Any(x => x.ToLowerInvariant() == "srti");
-        this.IsSSTP = package.NAP_type?.Any(x => x.ToLowerInvariant() == "sstp");
-        this.IsRTTI = package.NAP_type?.Any(x => x.ToLowerInvariant() == "rtti");
+        this.PackageIsMMTIS = package.NAP_type?.Any(x => x.ToLowerInvariant() == "mmtis");
+        this.PackageIsSRTI = package.NAP_type?.Any(x => x.ToLowerInvariant() == "srti");
+        this.PackageIsSSTP = package.NAP_type?.Any(x => x.ToLowerInvariant() == "sstp");
+        this.PackageIsRTTI = package.NAP_type?.Any(x => x.ToLowerInvariant() == "rtti");
         this.MMTIStype = stakeholder.MMTISType;
         this.OrganizationId = organization.Id;
         this.OrganizationName = organization.Name;
@@ -43,13 +43,13 @@ public class RandomizeDatasetResult
     
     public bool HasSSTPPackage { get; set; }
 
-    public bool? IsRTTI { get; set; }
+    public bool? PackageIsRTTI { get; set; }
 
-    public bool? IsSSTP { get; set; }
+    public bool? PackageIsSSTP { get; set; }
 
-    public bool? IsSRTI { get; set; }
+    public bool? PackageIsSRTI { get; set; }
 
-    public bool? IsMMTIS { get; set; }
+    public bool? PackageIsMMTIS { get; set; }
 
     public bool StakeholderSSTP { get; set; }
 
