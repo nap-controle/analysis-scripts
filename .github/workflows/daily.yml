@@ -67,6 +67,15 @@ jobs:
         overwrite: "true"
         mirrorDirectoryStructure: "true"
 
+    - name: Upload declarations
+      uses: adityak74/google-drive-upload-git-action@main
+      with:
+        credentials: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
+        filename: ./data/**/**/*
+        folderId: ${{ secrets.GOOGLE_DRIVE_FOLDER }}
+        overwrite: "true"
+        mirrorDirectoryStructure: "true"
+
 
 
         
