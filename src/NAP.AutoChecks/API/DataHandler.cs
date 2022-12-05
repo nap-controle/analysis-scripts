@@ -262,11 +262,13 @@ public class DataHandler
         await Csv.WriteAsync(fileAtData, items);
     }
 
-    public async Task WriteDocumentForOrganizationAsync(string file, Organization organization, Stream stream)
+    public async Task WriteDeclarationDocumentForOrganizationAsync(string file, Organization organization, Stream stream)
     {
         var organizationFolder = Path.Combine(_todayPath, "organizations");
         if (!Directory.Exists(organizationFolder)) Directory.CreateDirectory(organizationFolder);
-        var documentFile = Path.Combine(_todayPath, "organizations", $"{organization.Name}_{file}");
+        var declarations = Path.Combine(organizationFolder, "declarations");
+        if (!Directory.Exists(declarations)) Directory.CreateDirectory(declarations);
+        var documentFile = Path.Combine(declarations, $"{organization.Name}_{file}");
         await using var outputStream = File.Open(documentFile, FileMode.Create);
         await stream.CopyToAsync(outputStream);
     }

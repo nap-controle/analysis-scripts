@@ -37,7 +37,7 @@ public class StakeholdersAllDeclarations
             {
                 var file = await _dataHandler.GetClient()
                     .DownloadDocument(organization.rtti_doc_document_upload, organization);
-                await _dataHandler.WriteDocumentForOrganizationAsync($"rtti_{organization.rtti_doc_document_upload}",
+                await _dataHandler.WriteDeclarationDocumentForOrganizationAsync($"rtti_{organization.rtti_doc_document_upload}",
                     organization, file);
             }
 
@@ -45,7 +45,7 @@ public class StakeholdersAllDeclarations
             {
                 var file = await _dataHandler.GetClient()
                     .DownloadDocument(organization.srti_doc_document_upload, organization);
-                await _dataHandler.WriteDocumentForOrganizationAsync($"srti_{organization.srti_doc_document_upload}",
+                await _dataHandler.WriteDeclarationDocumentForOrganizationAsync($"srti_{organization.srti_doc_document_upload}",
                     organization, file);
             }
 
@@ -53,7 +53,7 @@ public class StakeholdersAllDeclarations
             {
                 var file = await _dataHandler.GetClient()
                     .DownloadDocument(organization.sstp_doc_document_upload, organization);
-                await _dataHandler.WriteDocumentForOrganizationAsync($"sstp_{organization.sstp_doc_document_upload}",
+                await _dataHandler.WriteDeclarationDocumentForOrganizationAsync($"sstp_{organization.sstp_doc_document_upload}",
                     organization, file);
             }
         }
