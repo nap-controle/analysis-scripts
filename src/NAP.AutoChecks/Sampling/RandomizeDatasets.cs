@@ -20,9 +20,12 @@ public class RandomizeDatasets
 
         var packages = (await _dataHandler.GetPackages()).ToList();
 
+        var randomizedStakeholders = stakeholders.ToList();
+        randomizedStakeholders.Shuffle();
+
         var results = new List<RandomizeDatasetResult>();
 
-        foreach (var stakeholder in stakeholders)
+        foreach (var stakeholder in randomizedStakeholders)
         {
             if (stakeholder.ParsedOrganizationId == null)
             {
@@ -37,13 +40,15 @@ public class RandomizeDatasets
                 continue;
             }
 
+            var packagesForOrg = packages.Where(x => x.Organization.Id == organization.Id).ToList();
+            packagesForOrg.Shuffle();
+            
             var hasSRTI = false;
             var hasMMTIS = false;
             var hasSSTP = false;
             var hasRTTI = false;
-            foreach (var package in packages)
+            foreach (var package in packagesForOrg)
             {
-                if (package.Organization.Id != organization.Id) continue;
                 if (package.NAP_type == null) continue;
 
                 hasRTTI = hasRTTI || package.NAP_type.Any(x => x.ToLowerInvariant() == "rtti");
@@ -52,15 +57,11 @@ public class RandomizeDatasets
                 hasSRTI = hasSRTI || package.NAP_type.Any(x => x.ToLowerInvariant() == "srti");
             }
 
-            foreach (var package in packages)
+            foreach (var package in packagesForOrg)
             {
-                if (package.Organization.Id != organization.Id) continue;
-                
                 results.Add(new RandomizeDatasetResult(stakeholder, organization, package, hasRTTI, hasSRTI, hasSSTP, hasMMTIS));
             }
         }
-
-        results.Shuffle();
         
         await _dataHandler.WriteResultAsync("randomized_datasets_by_nap_type.csv", results);
     }
