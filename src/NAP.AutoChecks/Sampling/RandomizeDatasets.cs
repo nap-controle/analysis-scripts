@@ -51,10 +51,10 @@ public class RandomizeDatasets
             {
                 if (package.NAP_type == null) continue;
 
-                hasRTTI = hasRTTI || package.NAP_type.Any(x => x.ToLowerInvariant() == "rtti");
-                hasSSTP = hasSSTP || package.NAP_type.Any(x => x.ToLowerInvariant() == "sstp");
-                hasMMTIS = hasMMTIS || package.NAP_type.Any(x => x.ToLowerInvariant() == "mmtis");
-                hasSRTI = hasSRTI || package.NAP_type.Any(x => x.ToLowerInvariant() == "srti");
+                hasRTTI = hasRTTI || package.IsRTTI();
+                hasSSTP = hasSSTP || package.IsSSTP();
+                hasMMTIS = hasMMTIS || package.IsMMTIS();
+                hasSRTI = hasSRTI || package.IsSRTI();
             }
 
             foreach (var package in packagesForOrg)

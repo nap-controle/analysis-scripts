@@ -14,7 +14,9 @@ public class StakeholderHasDeclarations
 
     public async Task Check()
     {
-        var stakeholders = await _dataHandler.GetStakeholders();
+        var stakeholders = await _dataHandler.GetStakeholders();        
+        
+        var packages = (await _dataHandler.GetPackages()).ToList();
 
         var organizations = await _dataHandler.GetOrganizations();
         var results = new List<StakeholderHasDeclarationsResult>();
@@ -33,24 +35,24 @@ public class StakeholderHasDeclarations
                 continue;
             }
 
-            if (stakeholder.IsMMTIS && !organization.HasMMTISDeclaration())
+            if ((stakeholder.IsMMTIS || organization.HasMMTISPackage(packages)) && !organization.HasMMTISDeclaration())
             {
-                results.Add(new StakeholderHasDeclarationsResult(stakeholder, "No agreement declaration MMTIS"));
+                results.Add(new StakeholderHasDeclarationsResult(stakeholder, "No agreement declaration MMTIS", organization, packages));
             }
 
-            if (stakeholder.IsRTTI && !organization.HasRTTIDeclaration())
+            if ((stakeholder.IsRTTI || organization.HasSRTIPackage(packages)) && !organization.HasRTTIDeclaration())
             {
-                results.Add(new StakeholderHasDeclarationsResult(stakeholder, "No agreement declaration RTTI"));
+                results.Add(new StakeholderHasDeclarationsResult(stakeholder, "No agreement declaration RTTI", organization, packages));
             }
 
-            if (stakeholder.IsSRTI && !organization.HasSRTIDeclaration())
+            if ((stakeholder.IsSRTI || organization.HasSRTIPackage(packages)) && !organization.HasSRTIDeclaration())
             {
-                results.Add(new StakeholderHasDeclarationsResult(stakeholder, "No agreement declaration SRTI"));
+                results.Add(new StakeholderHasDeclarationsResult(stakeholder, "No agreement declaration SRTI", organization, packages));
             }
 
-            if (stakeholder.IsSSTP && !organization.HasSSTPDeclaration())
+            if ((stakeholder.IsSSTP || organization.HasSSTPPackage(packages)) && !organization.HasSSTPDeclaration())
             {
-                results.Add(new StakeholderHasDeclarationsResult(stakeholder, "No agreement declaration SSTP"));
+                results.Add(new StakeholderHasDeclarationsResult(stakeholder, "No agreement declaration SSTP", organization, packages));
             }
         }
 
