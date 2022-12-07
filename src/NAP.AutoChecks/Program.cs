@@ -54,6 +54,7 @@ public static class Program
                 services.AddSingleton<StakeholderHasDeclarations>();
                 services.AddSingleton<RandomizeDatasets>();
                 services.AddSingleton<StakeholdersWithDeclarations>();
+                services.AddSingleton<StakeholdersWithoutOrganization>();
 
                 services.AddSingleton<StakeholdersAllDeclarations>();
             }).UseConsoleLifetime().Build();
@@ -74,6 +75,9 @@ public static class Program
 
         var check4 = scope.ServiceProvider.GetRequiredService<StakeholderHasDeclarations>();
         await check4.Check();
+
+        var check5 = scope.ServiceProvider.GetRequiredService<StakeholdersWithoutOrganization>();
+        await check5.Check();
 
         var sampling1 = scope.ServiceProvider.GetRequiredService<RandomizeDatasets>();
         await sampling1.Run();
