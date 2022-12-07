@@ -259,7 +259,7 @@ public class DataHandler
     public async Task WriteResultAsync<T>(string file, IEnumerable<T> items)
     {
         var fileAtData = Path.Combine(_todayPath, file);
-        await Csv.WriteAsync(fileAtData, items);
+        Excel.Write(fileAtData, items);
     }
 
     public async Task WriteDeclarationDocumentForOrganizationAsync(string file, Organization organization, Stream stream)

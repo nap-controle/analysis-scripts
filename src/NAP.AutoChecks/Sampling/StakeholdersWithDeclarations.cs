@@ -45,6 +45,6 @@ public class StakeholdersWithDeclarations
         
         results.Shuffle();
         
-        await _dataHandler.WriteResultAsync("stakeholders_with_declarations.csv", results);
+        await _dataHandler.WriteResultAsync("stakeholders_with_declarations.xlsx", results);
     }
 }

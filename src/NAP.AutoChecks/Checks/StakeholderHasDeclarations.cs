@@ -56,6 +56,6 @@ public class StakeholderHasDeclarations
             }
         }
 
-        await _dataHandler.WriteResultAsync("stakeholders_no_declarations.csv", results);
+        await _dataHandler.WriteResultAsync("stakeholders_no_declarations.xlsx", results);
     }
 }

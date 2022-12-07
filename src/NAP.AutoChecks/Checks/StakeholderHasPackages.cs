@@ -44,6 +44,6 @@ public class StakeholderHasPackages
             }
         }
 
-        await _dataHandler.WriteResultAsync("stakeholders_without_package.csv", results);
+        await _dataHandler.WriteResultAsync("stakeholders_without_package.xlsx", results);
     }
 }

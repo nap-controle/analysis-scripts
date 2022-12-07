@@ -19,7 +19,7 @@ public class OrganizationsNotInStakeholders
         var organizations = await _dataHandler.GetOrganizations();
         
         // ReSharper disable once LoopCanBeConvertedToQuery
-        var organizationFound = new List<Organization>();
+        var organizationFound = new List<OrganizationsNotInStakeholdersResult>();
         foreach (var organization in organizations)
         {
             // ReSharper disable once PossibleMultipleEnumeration
@@ -27,10 +27,10 @@ public class OrganizationsNotInStakeholders
 
             if (matchingStakeholder == null)
             {
-                organizationFound.Add(organization);
+                organizationFound.Add(new OrganizationsNotInStakeholdersResult(organization));
             }
         }
 
-        await _dataHandler.WriteResultAsync("organizations_not_in_stakeholders.csv", organizationFound);
+        await _dataHandler.WriteResultAsync("organizations_not_in_stakeholders.xlsx", organizationFound);
     }
 }

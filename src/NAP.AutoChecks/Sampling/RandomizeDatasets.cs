@@ -63,6 +63,6 @@ public class RandomizeDatasets
             }
         }
         
-        await _dataHandler.WriteResultAsync("randomized_datasets_by_nap_type.csv", results);
+        await _dataHandler.WriteResultAsync("randomized_datasets_by_nap_type.xlsx", results);
     }
 }

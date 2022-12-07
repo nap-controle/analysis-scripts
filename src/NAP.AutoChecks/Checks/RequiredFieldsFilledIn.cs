@@ -197,7 +197,7 @@ public class RequiredFieldsFilledIn
             }
         }
 
-        await _dataHandler.WriteResultAsync("stakeholders_with_missing_fields.csv", results);
+        await _dataHandler.WriteResultAsync("stakeholders_with_missing_fields.xlsx", results);
     }
 
     private bool CheckContractLicense(Package package, out string message, out bool hasLicense)

@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace NAP.AutoChecks;
 
 internal static class Extensions
@@ -24,4 +26,15 @@ internal static class Extensions
 
         return list;
     } 
+    
+    /// <summary>
+    /// Returns a string representing the object in a culture invariant way.
+    /// </summary>
+    public static string? ToInvariantString(this object obj)
+    {
+        return obj is IConvertible convertible ? convertible.ToString(CultureInfo.InvariantCulture)
+            : obj is IFormattable formattable ? formattable.ToString(null, CultureInfo.InvariantCulture)
+            : obj.ToString();
+    }
+
 }
