@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 using NAP.AutoChecks.Domain;
 using TransportDataBe.Client;
 using TransportDataBe.Client.Models;
@@ -12,11 +13,13 @@ public class DataHandler
     private readonly string _todayPath;
     private readonly string _latestPath;
     private readonly string _dataPath;
+    private readonly ILogger<DataHandler> _logger;
 
-    public DataHandler(Client client, DataHandlerSettings dataHandlerSettings)
+    public DataHandler(Client client, DataHandlerSettings dataHandlerSettings, ILogger<DataHandler> logger)
     {
         _client = client;
         _dataHandlerSettings = dataHandlerSettings;
+        _logger = logger;
 
         _dataPath = _dataHandlerSettings.DataPath ?? throw new Exception("Data path not set");
         _todayPath = Path.Combine(_dataHandlerSettings.DataPath,
@@ -110,9 +113,13 @@ public class DataHandler
             "http://data.europa.eu/nuts/code/BE1"
         };
     }
+    
+    private IEnumerable<Stakeholder>? _stakeholders;
 
     public async Task<IEnumerable<Stakeholder>> GetStakeholders()
     {
+        if (_stakeholders != null) return _stakeholders;
+        
         await using var stream =
             File.OpenRead(Path.Combine(_dataPath, "stakeholders", "organisations.csv"));
         var stakeholders = await Stakeholder.LoadFromCsv(stream);
@@ -181,7 +188,29 @@ public class DataHandler
                 stakeholder.MMTISType = MMTISType.TransportOnDemand;
             }
         }
+        
+        var extraRegistrations = await Csv.ReadAsync<Stakeholder_Registrations>(
+            Path.Combine(_dataPath, "stakeholders", "organizations_registrations.csv"));
+        foreach (var extraRegistration in extraRegistrations)
+        {
+            var stakeholder = stakeholders.FirstOrDefault(x => x.Id == extraRegistration.Id);
+            if (stakeholder == null) continue;
 
+            if (!string.IsNullOrWhiteSpace(stakeholder.OrganizationId) && 
+                Guid.TryParse(stakeholder.OrganizationId, out _))
+            {
+                _logger.LogWarning("Stakeholder {Id} - {Name} from extra registration list already has an organization: {Existing}",
+                    stakeholder.Id, stakeholder.Name, stakeholder.OrganizationId);
+                continue;
+            }
+            
+            _logger.LogInformation("Stakeholder {Id} - {Name} has no registration but does exist as an organization: {Existing}",
+                stakeholder.Id, stakeholder.Name, extraRegistration.OrganizationId);
+            stakeholder.OrganizationId = extraRegistration.OrganizationId;
+        }
+
+        _stakeholders = stakeholders;
+        
         return stakeholders;
     }
 

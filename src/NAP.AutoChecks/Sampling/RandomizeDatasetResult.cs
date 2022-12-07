@@ -23,10 +23,10 @@ public class RandomizeDatasetResult
         this.OrgHasSRTIDeclaration = organization.HasSRTIDeclaration();
         this.OrgHasSSTPDeclaration = organization.HasSSTPDeclaration();
         this.OrgHasMMTISDeclaration = organization.HasMMTISDeclaration();
-        this.PackageIsMMTIS = package.NAP_type?.Any(x => x.ToLowerInvariant() == "mmtis");
-        this.PackageIsSRTI = package.NAP_type?.Any(x => x.ToLowerInvariant() == "srti");
-        this.PackageIsSSTP = package.NAP_type?.Any(x => x.ToLowerInvariant() == "sstp");
-        this.PackageIsRTTI = package.NAP_type?.Any(x => x.ToLowerInvariant() == "rtti");
+        this.PackageIsMMTIS = package.NAP_type?.Any(x => x.ToLowerInvariant() == "mmtis") ?? false;
+        this.PackageIsSRTI = package.NAP_type?.Any(x => x.ToLowerInvariant() == "srti") ?? false;
+        this.PackageIsSSTP = package.NAP_type?.Any(x => x.ToLowerInvariant() == "sstp") ?? false;
+        this.PackageIsRTTI = package.NAP_type?.Any(x => x.ToLowerInvariant() == "rtti") ?? false;
         this.StakeholderMMTIStype = stakeholder.MMTISType;
         this.OrganizationId = organization.Id;
         this.OrganizationName = organization.Name;
@@ -40,9 +40,17 @@ public class RandomizeDatasetResult
 
     public string PackageName { get; set; }
     
+    public bool SelectedMMTIS { get; set; }
+    
+    public bool SelectedSRTI { get; set; }
+    
+    public bool SelectedRTTI { get; set; }
+    
+    public bool SelectedSSTP { get; set; }
+
     // MMTIS Section.
 
-    public bool? PackageIsMMTIS { get; set; }
+    public bool PackageIsMMTIS { get; set; }
     
     public bool OrgHasMMTISPackage { get; set; }
     
@@ -54,7 +62,7 @@ public class RandomizeDatasetResult
     
     // RTTI Section.
 
-    public bool? PackageIsRTTI { get; set; }
+    public bool PackageIsRTTI { get; set; }
     
     public bool OrgHasRTTIPackage { get; set; }
     
@@ -64,7 +72,7 @@ public class RandomizeDatasetResult
     
     // SSTP Section.
 
-    public bool? PackageIsSSTP { get; set; }
+    public bool PackageIsSSTP { get; set; }
     
     public bool OrgHasSSTPPackage { get; set; }
     
@@ -74,7 +82,7 @@ public class RandomizeDatasetResult
     
     // SRTI Section.
 
-    public bool? PackageIsSRTI { get; set; }
+    public bool PackageIsSRTI { get; set; }
     
     public bool OrgHasSRTIPackage { get; set; }
     

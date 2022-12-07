@@ -28,6 +28,10 @@ public class RequiredFieldsFilledInResult
         _client = client;
         this.PackageId = package.Id;
         this.PackageName = package.Name ?? string.Empty;
+        this.PackageIsMMTIS = package.NAP_type?.Any(x => x.ToLowerInvariant() == "mmtis");
+        this.PackageIsSRTI = package.NAP_type?.Any(x => x.ToLowerInvariant() == "srti");
+        this.PackageIsSSTP = package.NAP_type?.Any(x => x.ToLowerInvariant() == "sstp");
+        this.PackageIsRTTI = package.NAP_type?.Any(x => x.ToLowerInvariant() == "rtti");
     }
 
     /// <summary>
@@ -53,6 +57,10 @@ public class RequiredFieldsFilledInResult
         this.PackageName = package.Name ?? string.Empty;
         this.ResourceId = resource?.Id;
         this.ResourceName = resource?.Name;
+        this.PackageIsMMTIS = package.NAP_type?.Any(x => x.ToLowerInvariant() == "mmtis");
+        this.PackageIsSRTI = package.NAP_type?.Any(x => x.ToLowerInvariant() == "srti");
+        this.PackageIsSSTP = package.NAP_type?.Any(x => x.ToLowerInvariant() == "sstp");
+        this.PackageIsRTTI = package.NAP_type?.Any(x => x.ToLowerInvariant() == "rtti");
     }
     
     /// <summary>
@@ -105,4 +113,12 @@ public class RequiredFieldsFilledInResult
     /// The message.
     /// </summary>
     public string ErrorMessage { get; set; }
+
+    public bool? PackageIsMMTIS { get; set; }
+
+    public bool? PackageIsSSTP { get; set; }
+
+    public bool? PackageIsSRTI { get; set; }
+
+    public bool? PackageIsRTTI { get; set; }
 }
