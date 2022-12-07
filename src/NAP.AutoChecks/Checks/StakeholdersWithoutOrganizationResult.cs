@@ -12,8 +12,12 @@ public class StakeholdersWithoutOrganizationResult
     {
         this.Id = stakeholder.Id;
         this.Name = stakeholder.Name;
+        this.StakeholderMMTIS = stakeholder.IsMMTIS;
+        this.StakeholderRTTI = stakeholder.IsRTTI;
+        this.StakeholderSRTI = stakeholder.IsSRTI;
+        this.StakeholderSSTP = stakeholder.IsSSTP;
     }
-    
+
     /// <summary>
     /// The id.
     /// </summary>
@@ -23,4 +27,12 @@ public class StakeholdersWithoutOrganizationResult
     /// The name.
     /// </summary>
     public string Name { get; set; }
+
+    public bool StakeholderSSTP { get; set; }
+
+    public bool StakeholderSRTI { get; set; }
+
+    public bool StakeholderRTTI { get; set; }
+
+    public bool StakeholderMMTIS { get; set; }
 }
