@@ -15,6 +15,10 @@ public class StakeholderHasPackagesResult
         this.Name = stakeholder.Name;
         this.OrganizationId = stakeholder.OrganizationId;
         this.Error = error;
+        this.StakeholderMMTIS = stakeholder.IsMMTIS;
+        this.StakeholderRTTI = stakeholder.IsRTTI;
+        this.StakeholderSRTI = stakeholder.IsSRTI;
+        this.StakeholderSSTP = stakeholder.IsSSTP;
     }
     
     /// <summary>
@@ -36,4 +40,12 @@ public class StakeholderHasPackagesResult
     /// The message.
     /// </summary>
     public string Error { get; set; }
+
+    public bool StakeholderSSTP { get; set; }
+
+    public bool StakeholderSRTI { get; set; }
+
+    public bool StakeholderRTTI { get; set; }
+
+    public bool StakeholderMMTIS { get; set; }
 }
