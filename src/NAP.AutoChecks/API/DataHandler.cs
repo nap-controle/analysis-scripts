@@ -10,6 +10,7 @@ public class DataHandler
     private readonly Client _client;
     private readonly DataHandlerSettings _dataHandlerSettings;
     private readonly string _todayPath;
+    private readonly string _latestPath;
     private readonly string _dataPath;
 
     public DataHandler(Client client, DataHandlerSettings dataHandlerSettings)
@@ -20,10 +21,9 @@ public class DataHandler
         _dataPath = _dataHandlerSettings.DataPath ?? throw new Exception("Data path not set");
         _todayPath = Path.Combine(_dataHandlerSettings.DataPath,
             FormattableString.Invariant($"{DateTime.Today:yyyy-MM-dd}"));
-        if (!Directory.Exists(_todayPath))
-        {
-            Directory.CreateDirectory(_todayPath);
-        }
+        if (!Directory.Exists(_todayPath)) Directory.CreateDirectory(_todayPath);
+        _latestPath = Path.Combine(_dataHandlerSettings.DataPath, "latest");
+        if (!Directory.Exists(_latestPath)) Directory.CreateDirectory(_latestPath);
     }
 
     internal Client GetClient() => _client;
@@ -187,12 +187,12 @@ public class DataHandler
 
     public async Task<IEnumerable<string>> GetTags()
     {
-        var tagsTodayFile = Path.Combine(_todayPath, "tags.json");
-        var tagIds = await TryRead<Response<string[]>>(tagsTodayFile);
+        var tagsTodayFile = "tags.json";
+        var tagIds = await TryReadToday<Response<string[]>>(tagsTodayFile);
         if (tagIds == null)
         {
             tagIds = await _client.GetTagList();
-            await Write(tagsTodayFile, tagIds);
+            await WriteTodayAsync(tagsTodayFile, tagIds);
         }
 
         return tagIds.Result;
@@ -200,25 +200,23 @@ public class DataHandler
 
     public async Task<IEnumerable<Organization>> GetOrganizations()
     {
-        var organizationsTodayFile = Path.Combine(_todayPath, "organizations.json");
-        var organizationIds = await TryRead<Response<string[]>>(organizationsTodayFile);
+        var organizationsTodayFile = "organizations.json";
+        var organizationIds = await TryReadToday<Response<string[]>>(organizationsTodayFile);
         if (organizationIds == null)
         {
             organizationIds = await _client.GetOrganizationList();
-            await Write(organizationsTodayFile, organizationIds);
+            await WriteTodayAsync(organizationsTodayFile, organizationIds);
         }
 
         var organizations = new List<Organization>();
-        var organizationsTodayPath = Path.Combine(_todayPath, "organizations");
-        if (!Directory.Exists(organizationsTodayPath)) Directory.CreateDirectory(organizationsTodayPath);
         foreach (var organizationId in organizationIds.Result)
         {
-            var organizationTodayFile = Path.Combine(_todayPath, "organizations", $"{organizationId}.json");
-            var organization = await TryRead<Response<Organization>>(organizationTodayFile);
+            var organizationTodayFile = Path.Combine("organizations", $"{organizationId}.json");
+            var organization = await TryReadToday<Response<Organization>>(organizationTodayFile);
             if (organization == null)
             {
                 organization = await _client.GetOrganization(organizationId);
-                await Write(organizationTodayFile, organization);
+                await WriteTodayAsync(organizationTodayFile, organization);
             }
 
             organizations.Add(organization.Result);
@@ -229,25 +227,23 @@ public class DataHandler
 
     public async Task<IEnumerable<Package>> GetPackages()
     {
-        var packagesTodayFile = Path.Combine(_todayPath, "packages.json");
-        var packageIds = await TryRead<Response<string[]>>(packagesTodayFile);
+        var packagesTodayFile = "packages.json";
+        var packageIds = await TryReadToday<Response<string[]>>(packagesTodayFile);
         if (packageIds == null)
         {
             packageIds = await _client.GetPackageList();
-            await Write(packagesTodayFile, packageIds);
+            await WriteTodayAsync(packagesTodayFile, packageIds);
         }
 
         var packages = new List<Package>();
-        var packagesTodayPath = Path.Combine(_todayPath, "packages");
-        if (!Directory.Exists(packagesTodayPath)) Directory.CreateDirectory(packagesTodayPath);
         foreach (var packageId in packageIds.Result)
         {
-            var packageTodayFile = Path.Combine(_todayPath, "packages", $"{packageId}.json");
-            var package = await TryRead<Response<Package>>(packageTodayFile);
+            var packageTodayFile = Path.Combine("packages", $"{packageId}.json");
+            var package = await TryReadToday<Response<Package>>(packageTodayFile);
             if (package == null)
             {
                 package = await _client.GetPackage(packageId);
-                await Write(packageTodayFile, package);
+                await WriteTodayAsync(packageTodayFile, package);
             }
 
             packages.Add(package.Result);
@@ -258,8 +254,11 @@ public class DataHandler
 
     public async Task WriteResultAsync<T>(string file, IEnumerable<T> items)
     {
-        var fileAtData = Path.Combine(_todayPath, file);
-        Excel.Write(fileAtData, items);
+        var enumerable = items.ToList();
+        var fileAtDataToday = Path.Combine(_todayPath, file);
+        Excel.Write(fileAtDataToday, enumerable);
+        var fileAtDataLatest = Path.Combine(_latestPath, file);
+        Excel.Write(fileAtDataLatest, enumerable);
     }
 
     public async Task WriteDeclarationDocumentForOrganizationAsync(string file, Organization organization, Stream stream)
@@ -269,20 +268,58 @@ public class DataHandler
         var declarations = Path.Combine(organizationFolder, "declarations");
         if (!Directory.Exists(declarations)) Directory.CreateDirectory(declarations);
         var documentFile = Path.Combine(declarations, $"{organization.Name}_{file}");
-        await using var outputStream = File.Open(documentFile, FileMode.Create);
-        await stream.CopyToAsync(outputStream);
+        await using (var outputStream = File.Open(documentFile, FileMode.Create))
+        {
+            await stream.CopyToAsync(outputStream);
+        }
+
+        organizationFolder = Path.Combine(_latestPath, "organizations");
+        if (!Directory.Exists(organizationFolder)) Directory.CreateDirectory(organizationFolder);
+        declarations = Path.Combine(organizationFolder, "declarations");
+        if (!Directory.Exists(declarations)) Directory.CreateDirectory(declarations);
+        documentFile = Path.Combine(declarations, $"{organization.Name}_{file}");
+        await using (var outputStream = File.Open(documentFile, FileMode.Create))
+        {
+            await stream.CopyToAsync(outputStream);
+        }
     }
 
-    private static async Task<T?> TryRead<T>(string file)
+    private async Task<T?> TryReadToday<T>(string file)
     {
-        if (!File.Exists(file)) return default;
-        await using var stream = File.OpenRead(file);
+        var fileToday = Path.Combine(_todayPath, file);
+        if (!File.Exists(fileToday)) return default;
+        await using var stream = File.OpenRead(fileToday);
         return await JsonSerializer.DeserializeAsync<T>(stream);
     }
 
-    private static async Task Write<T>(string file, T data)
+    private async Task WriteTodayAsync<T>(string file, T data)
     {
-        await using var stream = File.Open(file, FileMode.Create);
-        await JsonSerializer.SerializeAsync(stream, data);
+        var fileToday = Path.Combine(_todayPath, file);
+        this.CreateDirectoryFor(fileToday);
+        await using (var stream = File.Open(fileToday, FileMode.Create))
+        {
+            await JsonSerializer.SerializeAsync(stream, data);
+        }
+        var latestToday = Path.Combine(_latestPath, file);
+        this.CreateDirectoryFor(latestToday);
+        await using (var stream = File.Open(latestToday, FileMode.Create))
+        {
+            await JsonSerializer.SerializeAsync(stream, data);
+        }
+    }
+
+    private void CreateDirectoryFor(string file)
+    {
+        var fileInfo = new FileInfo(file);
+        switch (fileInfo.Directory)
+        {
+            case null:
+                throw new Exception("Directory not found for file");
+            case { Exists: true }:
+                return;
+            default:
+                fileInfo.Directory.Create();
+                break;
+        }
     }
 }
