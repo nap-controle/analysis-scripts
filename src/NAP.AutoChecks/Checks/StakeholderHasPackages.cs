@@ -23,7 +23,7 @@ public class StakeholderHasPackages
         {
             if (stakeholder.ParsedOrganizationId == null)
             {
-                //results.Add(new StakeholderHasPackagesResult(stakeholder, "no_organization_id"));
+                results.Add(new StakeholderHasPackagesResult(stakeholder, "no_organization_id"));
                 continue;
             }
             

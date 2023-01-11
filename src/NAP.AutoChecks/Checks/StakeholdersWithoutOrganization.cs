@@ -19,17 +19,18 @@ public class StakeholdersWithoutOrganization
         var results = new List<StakeholdersWithoutOrganizationResult>();
         foreach (var stakeholder in stakeholders)
         {
+            var registered = false;
             if (stakeholder.ParsedOrganizationId != null)
             {
                 // ReSharper disable once PossibleMultipleEnumeration
                 var organization = organizations.FirstOrDefault(x => x.Id == stakeholder.ParsedOrganizationId);
                 if (organization != null)
                 {
-                    continue;
+                    registered = true;
                 }
             }
             
-            results.Add(new StakeholdersWithoutOrganizationResult(stakeholder));
+            results.Add(new StakeholdersWithoutOrganizationResult(stakeholder, registered));
         }
 
         await _dataHandler.WriteResultAsync("stakeholders_not_registered.xlsx", results);

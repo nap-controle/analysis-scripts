@@ -61,6 +61,10 @@ public class RequiredFieldsFilledInResult
         this.PackageIsSRTI = package.NAP_type?.Any(x => x.ToLowerInvariant() == "srti");
         this.PackageIsSSTP = package.NAP_type?.Any(x => x.ToLowerInvariant() == "sstp");
         this.PackageIsRTTI = package.NAP_type?.Any(x => x.ToLowerInvariant() == "rtti");
+        this.StakeholderMMTIS = stakeholder.IsMMTIS;
+        this.StakeholderRTTI = stakeholder.IsRTTI;
+        this.StakeholderSRTI = stakeholder.IsSRTI;
+        this.StakeholderSSTP = stakeholder.IsSSTP;
     }
     
     /// <summary>
@@ -121,4 +125,12 @@ public class RequiredFieldsFilledInResult
     public bool? PackageIsSRTI { get; set; }
 
     public bool? PackageIsRTTI { get; set; }
+
+    public bool StakeholderSSTP { get; set; }
+
+    public bool StakeholderSRTI { get; set; }
+
+    public bool StakeholderRTTI { get; set; }
+
+    public bool StakeholderMMTIS { get; set; }
 }

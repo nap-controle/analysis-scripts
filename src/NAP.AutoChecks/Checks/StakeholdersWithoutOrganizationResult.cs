@@ -4,18 +4,22 @@ namespace NAP.AutoChecks.Checks;
 
 public class StakeholdersWithoutOrganizationResult
 {
+
     /// <summary>
     /// Creates a new result.
     /// </summary>
     /// <param name="stakeholder"></param>
-    public StakeholdersWithoutOrganizationResult(Stakeholder stakeholder)
+    /// <param name="registered"></param>
+    public StakeholdersWithoutOrganizationResult(Stakeholder stakeholder, bool registered)
     {
+        Registered = registered;
         this.Id = stakeholder.Id;
         this.Name = stakeholder.Name;
         this.StakeholderMMTIS = stakeholder.IsMMTIS;
         this.StakeholderRTTI = stakeholder.IsRTTI;
         this.StakeholderSRTI = stakeholder.IsSRTI;
         this.StakeholderSSTP = stakeholder.IsSSTP;
+        
     }
 
     /// <summary>
@@ -35,4 +39,6 @@ public class StakeholdersWithoutOrganizationResult
     public bool StakeholderRTTI { get; set; }
 
     public bool StakeholderMMTIS { get; set; }
+    
+    public bool Registered { get; }
 }

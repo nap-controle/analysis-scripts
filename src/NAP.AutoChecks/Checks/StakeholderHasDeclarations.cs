@@ -35,25 +35,29 @@ public class StakeholderHasDeclarations
                 continue;
             }
 
+            var error = string.Empty;
             if ((stakeholder.IsMMTIS || organization.HasMMTISPackage(packages)) && !organization.HasMMTISDeclaration())
             {
-                results.Add(new StakeholderHasDeclarationsResult(stakeholder, "No agreement declaration MMTIS", organization, packages));
+                error += "No agreement declaration MMTIS ";
             }
 
-            if ((stakeholder.IsRTTI || organization.HasSRTIPackage(packages)) && !organization.HasRTTIDeclaration())
+            if ((stakeholder.IsRTTI || organization.HasRTTIPackage(packages)) && !organization.HasRTTIDeclaration())
             {
-                results.Add(new StakeholderHasDeclarationsResult(stakeholder, "No agreement declaration RTTI", organization, packages));
+                error += "No agreement declaration RTTI ";
             }
 
             if ((stakeholder.IsSRTI || organization.HasSRTIPackage(packages)) && !organization.HasSRTIDeclaration())
             {
-                results.Add(new StakeholderHasDeclarationsResult(stakeholder, "No agreement declaration SRTI", organization, packages));
+                error += "No agreement declaration SRTI ";
             }
 
             if ((stakeholder.IsSSTP || organization.HasSSTPPackage(packages)) && !organization.HasSSTPDeclaration())
             {
-                results.Add(new StakeholderHasDeclarationsResult(stakeholder, "No agreement declaration SSTP", organization, packages));
+                error += "No agreement declaration SSTP ";
             }
+            
+            results.Add(new StakeholderHasDeclarationsResult(stakeholder, organization, packages, error,
+                organization.HasMMTISDeclaration(), organization.HasRTTIDeclaration(), organization.HasSSTPDeclaration(), organization.HasSRTIDeclaration()));
         }
 
         await _dataHandler.WriteResultAsync("stakeholders_no_declarations.xlsx", results);
