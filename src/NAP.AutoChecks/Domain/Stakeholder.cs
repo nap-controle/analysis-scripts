@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Globalization;
 using CsvHelper;
 using CsvHelper.Configuration;
@@ -5,6 +6,7 @@ using CsvHelper.Configuration.Attributes;
 
 namespace NAP.AutoChecks.Domain;
 
+[DebuggerDisplay("{this.Id} [{this.OrganizationId}] {this.IsMMTIS} {this.IsSSTP} {this.IsRTTI} {this.IsSRTI}")]
 public class Stakeholder
 {
     /// <summary>

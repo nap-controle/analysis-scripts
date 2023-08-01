@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using CsvHelper;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Http;
@@ -21,12 +22,6 @@ public static class Program
 {
     static async Task Main(string[] args)
     {
-        if (args.Length == 0)
-        {
-            args = new[] { "/Users/xivk/work/nap/analysis-scripts/data", "" };
-        }
-        var dataPath = args[0];
-        
         var loggerFactory = new LoggerFactory();
         loggerFactory.AddSerilog();
 
@@ -42,10 +37,14 @@ public static class Program
                     b.AddSerilog();
                 });
 
+                var stakeholdersPath = hostingContext.Configuration.GetValue<string>("StakeholdersPath");
+                var dataPath = hostingContext.Configuration.GetValue<string>("DataPath");
+
                 services.AddTransportDataClient();
                 services.AddSingleton(new DataHandlerSettings()
                 {
-                    DataPath = dataPath
+                    DataPath = dataPath,
+                    StakeholdersPath = stakeholdersPath
                 });
                 services.AddSingleton<DataHandler>();
                 services.AddSingleton<OrganizationsNotInStakeholders>();
@@ -57,6 +56,7 @@ public static class Program
                 services.AddSingleton<StakeholdersWithoutOrganization>();
                 services.AddSingleton<RandomizeOrganizationsWithDeclarations>();
 
+                services.AddSingleton<AllStakeholders>();
                 services.AddSingleton<StakeholdersAllDeclarations>();
             }).UseConsoleLifetime().Build();
 
@@ -64,6 +64,9 @@ public static class Program
 
         var download1 = scope.ServiceProvider.GetRequiredService<StakeholdersAllDeclarations>();
         await download1.Get();
+
+        var download2 = scope.ServiceProvider.GetRequiredService<AllStakeholders>();
+        await download2.Get();
 
         var check1 = scope.ServiceProvider.GetRequiredService<OrganizationsNotInStakeholders>();
         await check1.Check();

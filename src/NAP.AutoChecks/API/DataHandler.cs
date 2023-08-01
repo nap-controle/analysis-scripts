@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using NAP.AutoChecks.API.Stakeholders._2023;
 using NAP.AutoChecks.Domain;
 using TransportDataBe.Client;
 using TransportDataBe.Client.Models;
@@ -9,23 +10,23 @@ namespace NAP.AutoChecks.API;
 public class DataHandler
 {
     private readonly Client _client;
-    private readonly DataHandlerSettings _dataHandlerSettings;
     private readonly string _todayPath;
     private readonly string _latestPath;
     private readonly string _dataPath;
+    private readonly string _stakeholdersPath;
     private readonly ILogger<DataHandler> _logger;
 
     public DataHandler(Client client, DataHandlerSettings dataHandlerSettings, ILogger<DataHandler> logger)
     {
         _client = client;
-        _dataHandlerSettings = dataHandlerSettings;
         _logger = logger;
 
-        _dataPath = _dataHandlerSettings.DataPath ?? throw new Exception("Data path not set");
-        _todayPath = Path.Combine(_dataHandlerSettings.DataPath,
+        _dataPath = dataHandlerSettings.DataPath ?? throw new Exception("Data path not set");
+        _stakeholdersPath = dataHandlerSettings.StakeholdersPath ?? throw new Exception("Stakeholders path not set");
+        _todayPath = Path.Combine(dataHandlerSettings.DataPath,
             FormattableString.Invariant($"{DateTime.Today:yyyy-MM-dd}"));
         if (!Directory.Exists(_todayPath)) Directory.CreateDirectory(_todayPath);
-        _latestPath = Path.Combine(_dataHandlerSettings.DataPath, "latest");
+        _latestPath = Path.Combine(dataHandlerSettings.DataPath, "latest");
         if (!Directory.Exists(_latestPath)) Directory.CreateDirectory(_latestPath);
     }
 
@@ -56,23 +57,23 @@ public class DataHandler
     {
         return new[] { "XML", "JSON", "CSV", "ASN.1 encoding rules", "Protocol buffers", "Other" };
     }
+    
     /// <summary>
     /// • DATEX II
-    // • OCIT-C
-    // • DATEX II Light
-    // • NeTEx (CEN/TS 16614)
-    // • SIRI (CEN/TS 15531)
-    // • GTFS
-    // • VDV Standard (VDV 452, 455, 462, ...)
-    //     • IFOPT
-    // • ETSI / ISO Model (DENM, CAM, SPAT/MAP, IVI, …)
-    // • tpegML Model (TPEG2-TEC, TPEG2-PKI, ...)
-    // • DINO
-    // • INSPIRE data specification (according to Delegated Regulation (EC) No
-    // 1089/2010)
-    // • GML
-    // • other
-
+    /// • OCIT-C
+    /// • DATEX II Light
+    /// • NeTEx (CEN/TS 16614)
+    /// • SIRI (CEN/TS 15531)
+    /// • GTFS
+    /// • VDV Standard (VDV 452, 455, 462, ...)
+    ///     • IFOPT
+    /// • ETSI / ISO Model (DENM, CAM, SPAT/MAP, IVI, …)
+    /// • tpegML Model (TPEG2-TEC, TPEG2-PKI, ...)
+    /// • DINO
+    /// • INSPIRE data specification (according to Delegated Regulation (EC) No
+    /// 1089/2010)
+    /// • GML
+    /// • other
     /// </summary>
     /// <returns></returns>
     public IEnumerable<string> GetPossibleAccMods()
@@ -119,99 +120,10 @@ public class DataHandler
     public async Task<IEnumerable<Stakeholder>> GetStakeholders()
     {
         if (_stakeholders != null) return _stakeholders;
-        
-        await using var stream =
-            File.OpenRead(Path.Combine(_dataPath, "stakeholders", "organisations.csv"));
-        var stakeholders = await Stakeholder.LoadFromCsv(stream);
-        
-        var stakeholdersMmtis = await Csv.ReadAsync<Stakeholder_MMTIS>(
-            Path.Combine(_dataPath, "stakeholders", "organisations_MMTIS.csv"));
-        foreach (var stakeholderMmtis in stakeholdersMmtis)
-        {
-            var stakeholder = stakeholders.FirstOrDefault(x => x.Id == stakeholderMmtis.Id);
-            if (stakeholder == null) continue;
 
-            stakeholder.IsMMTIS = stakeholderMmtis.IsMMTIS == "Yes";
-        }
+        _stakeholders = await StakeholderLoader.GetStakeholders(_stakeholdersPath);
         
-        var rttis = await Csv.ReadAsync<Stakeholder_RTTI>(
-            Path.Combine(_dataPath, "stakeholders", "organisations_RTTI.csv"));
-        foreach (var rtti in rttis)
-        {
-            var stakeholder = stakeholders.FirstOrDefault(x => x.Id == rtti.Id);
-            if (stakeholder == null) continue;
-
-            stakeholder.IsRTTI = rtti.IsRTTI == "Yes";
-        }
-        
-        var srtis = await Csv.ReadAsync<Stakeholder_SRTI>(
-            Path.Combine(_dataPath, "stakeholders", "organisations_SRTI.csv"));
-        foreach (var srti in srtis)
-        {
-            var stakeholder = stakeholders.FirstOrDefault(x => x.Id == srti.Id);
-            if (stakeholder == null) continue;
-
-            stakeholder.IsSRTI = srti.IsSRTI == "Yes";
-        }
-        
-        var sstps = await Csv.ReadAsync<Stakeholder_SSTP>(
-            Path.Combine(_dataPath, "stakeholders", "organisations_SSTP.csv"));
-        foreach (var sstp in sstps)
-        {
-            var stakeholder = stakeholders.FirstOrDefault(x => x.Id == sstp.Id);
-            if (stakeholder == null) continue;
-
-            stakeholder.IsSSTP = sstp.IsSSTP == "Yes";
-        }
-        
-        var mmtisCategories = await Csv.ReadAsync<CategorizedOrganization_MMTIS>(
-            Path.Combine(_dataPath, "stakeholders", "organizations_mmtis_categories.csv"));
-        foreach (var categorizedMmtis in mmtisCategories)
-        {
-            var stakeholder = stakeholders.FirstOrDefault(x => x.OrganizationId == categorizedMmtis.OrganizationId);
-            if (stakeholder == null) continue;
-
-            if (!string.IsNullOrWhiteSpace(categorizedMmtis.IsTransportAuthority))
-            {
-                stakeholder.MMTISType = MMTISType.TransportAuthority;
-            }
-            else if (!string.IsNullOrWhiteSpace(categorizedMmtis.IsTransportOperator))
-            {
-                stakeholder.MMTISType = MMTISType.TransportOperator;
-            }
-            else if(!string.IsNullOrWhiteSpace(categorizedMmtis.IsInfrastructureManager))
-            {
-                stakeholder.MMTISType = MMTISType.InfrastructureManager;
-            }
-            else if(!string.IsNullOrWhiteSpace(categorizedMmtis.IsTransportondemandserviceprovider))
-            {
-                stakeholder.MMTISType = MMTISType.TransportOnDemand;
-            }
-        }
-        
-        var extraRegistrations = await Csv.ReadAsync<Stakeholder_Registrations>(
-            Path.Combine(_dataPath, "stakeholders", "organizations_registrations.csv"));
-        foreach (var extraRegistration in extraRegistrations)
-        {
-            var stakeholder = stakeholders.FirstOrDefault(x => x.Id == extraRegistration.Id);
-            if (stakeholder == null) continue;
-
-            if (!string.IsNullOrWhiteSpace(stakeholder.OrganizationId) && 
-                Guid.TryParse(stakeholder.OrganizationId, out _))
-            {
-                _logger.LogWarning("Stakeholder {Id} - {Name} from extra registration list already has an organization: {Existing}",
-                    stakeholder.Id, stakeholder.Name, stakeholder.OrganizationId);
-                continue;
-            }
-            
-            _logger.LogInformation("Stakeholder {Id} - {Name} has no registration but does exist as an organization: {Existing}",
-                stakeholder.Id, stakeholder.Name, extraRegistration.OrganizationId);
-            stakeholder.OrganizationId = extraRegistration.OrganizationId;
-        }
-
-        _stakeholders = stakeholders;
-        
-        return stakeholders;
+        return _stakeholders;
     }
 
     public async Task<IEnumerable<string>> GetTags()
