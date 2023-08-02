@@ -6,7 +6,7 @@ namespace NAP.AutoChecks.Evaluation1_2;
 
 public class StratifiedSamplingResult
 {
-    public StratifiedSamplingResult(Stakeholder stakeholder, Organization organization, Package package, bool orgHasRttiPackage, bool orgHasSrtiPackage, bool orgHasSstpPackage, bool orgHasMmtisPackage)
+    public StratifiedSamplingResult(Stakeholder stakeholder, Organization organization, Package package)
     {
         this.PackageId = package.Id;
         this.PackageName = package.Name ?? string.Empty;
@@ -14,10 +14,10 @@ public class StratifiedSamplingResult
         this.StakeholderRTTI = stakeholder.IsRTTI;
         this.StakeholderSRTI = stakeholder.IsSRTI;
         this.StakeholderSSTP = stakeholder.IsSSTP;
-        this.OrgHasRTTIPackage = orgHasRttiPackage;
-        this.OrgHasSRTIPackage = orgHasSrtiPackage;
-        this.OrgHasSSTPPackage = orgHasSstpPackage;
-        this.OrgHasMMTISPackage = orgHasMmtisPackage;
+        // this.OrgHasRTTIPackage = orgHasRttiPackage;
+        // this.OrgHasSRTIPackage = orgHasSrtiPackage;
+        // this.OrgHasSSTPPackage = orgHasSstpPackage;
+        // this.OrgHasMMTISPackage = orgHasMmtisPackage;
         // this.OrgHasRTTIDeclaration = organization.HasRTTIDeclaration();
         // this.OrgHasSRTIDeclaration = organization.HasSRTIDeclaration();
         // this.OrgHasSSTPDeclaration = organization.HasSSTPDeclaration();
@@ -51,7 +51,7 @@ public class StratifiedSamplingResult
 
     public bool PackageIsMMTIS { get; set; }
     
-    public bool OrgHasMMTISPackage { get; set; }
+    //public bool OrgHasMMTISPackage { get; set; }
     
     //public bool OrgHasMMTISDeclaration { get; set; }
 
@@ -63,7 +63,7 @@ public class StratifiedSamplingResult
 
     public bool PackageIsRTTI { get; set; }
     
-    public bool OrgHasRTTIPackage { get; set; }
+    //public bool OrgHasRTTIPackage { get; set; }
     
     //public bool OrgHasRTTIDeclaration { get; set; }
 
@@ -73,7 +73,7 @@ public class StratifiedSamplingResult
 
     public bool PackageIsSSTP { get; set; }
     
-    public bool OrgHasSSTPPackage { get; set; }
+    //public bool OrgHasSSTPPackage { get; set; }
     
     public bool OrgHasSSTPDeclaration { get; set; }
 
@@ -88,18 +88,6 @@ public class StratifiedSamplingResult
     //public bool OrgHasSRTIDeclaration { get; set; }
 
     public bool StakeholderSRTI { get; set; }
-
-    public bool OrgHasPackageFor(NAPType type)
-    {
-        return type switch
-        {
-            NAPType.RTTI => this.OrgHasRTTIPackage,
-            NAPType.SRTI => this.OrgHasSRTIPackage,
-            NAPType.SSTP => this.OrgHasSSTPPackage,
-            NAPType.MMTIS => this.OrgHasMMTISPackage,
-            _ => throw new ArgumentOutOfRangeException(nameof(type))
-        };
-    }
 
     public bool PackageIsFor(NAPType type)
     {

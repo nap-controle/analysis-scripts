@@ -1,8 +1,13 @@
 namespace NAP.AutoChecks.Evaluation1_2._2022;
 
-public class PreviouslySelectedDatasets
+public class PreviouslySelectedDatasetLoader
 {
     private readonly PreviouslySelectedDatasetsSettings _settings;
+
+    public PreviouslySelectedDatasetLoader(PreviouslySelectedDatasetsSettings settings)
+    {
+        _settings = settings;
+    }
 
     public async Task<IEnumerable<PreviouslySelectedDataset>> Get()
     {

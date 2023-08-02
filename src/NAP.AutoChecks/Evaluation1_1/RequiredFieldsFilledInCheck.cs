@@ -1,13 +1,13 @@
 using NAP.AutoChecks.API;
 using TransportDataBe.Client.Models;
 
-namespace NAP.AutoChecks.Checks;
+namespace NAP.AutoChecks.Evaluation1_1;
 
-public class RequiredFieldsFilledIn
+public class RequiredFieldsFilledInCheck
 {
     private readonly DataHandler _dataHandler;
 
-    public RequiredFieldsFilledIn(DataHandler dataHandler)
+    public RequiredFieldsFilledInCheck(DataHandler dataHandler)
     {
         _dataHandler = dataHandler;
     }
@@ -197,7 +197,7 @@ public class RequiredFieldsFilledIn
             }
         }
 
-        await _dataHandler.WriteResultAsync("stakeholders_with_missing_fields.xlsx", results);
+        await _dataHandler.WriteResultAsync("evaluation_1.1_stakeholders_with_missing_fields.xlsx", results);
     }
 
     private bool CheckContractLicense(Package package, out string message, out bool hasLicense)

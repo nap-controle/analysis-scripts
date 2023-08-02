@@ -1,13 +1,13 @@
 using NAP.AutoChecks.API;
 using TransportDataBe.Client.Models;
 
-namespace NAP.AutoChecks.Checks;
+namespace NAP.AutoChecks.Evaluation1_1;
 
-public class StakeholderHasPackages
+public class StakeholderHasPackagesCheck
 {
     private readonly DataHandler _dataHandler;
 
-    public StakeholderHasPackages(DataHandler dataHandler)
+    public StakeholderHasPackagesCheck(DataHandler dataHandler)
     {
         _dataHandler = dataHandler;
     }
@@ -44,6 +44,6 @@ public class StakeholderHasPackages
             }
         }
 
-        await _dataHandler.WriteResultAsync("stakeholders_without_package.xlsx", results);
+        await _dataHandler.WriteResultAsync("evaluation_1.1_stakeholders_without_package.xlsx", results);
     }
 }

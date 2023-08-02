@@ -1,8 +1,8 @@
 using NAP.AutoChecks.Domain;
 
-namespace NAP.AutoChecks.Checks;
+namespace NAP.AutoChecks.Evaluation1_1;
 
-public class StakeholdersWithoutOrganizationResult
+public class StakeholdersRegisteredResult
 {
 
     /// <summary>
@@ -10,7 +10,7 @@ public class StakeholdersWithoutOrganizationResult
     /// </summary>
     /// <param name="stakeholder"></param>
     /// <param name="registered"></param>
-    public StakeholdersWithoutOrganizationResult(Stakeholder stakeholder, bool registered)
+    public StakeholdersRegisteredResult(Stakeholder stakeholder, bool registered)
     {
         Registered = registered;
         this.Id = stakeholder.Id;

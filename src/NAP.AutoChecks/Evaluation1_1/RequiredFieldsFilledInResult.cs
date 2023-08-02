@@ -2,7 +2,7 @@ using NAP.AutoChecks.Domain;
 using TransportDataBe.Client;
 using TransportDataBe.Client.Models;
 
-namespace NAP.AutoChecks.Checks;
+namespace NAP.AutoChecks.Evaluation1_1;
 
 public class RequiredFieldsFilledInResult
 {

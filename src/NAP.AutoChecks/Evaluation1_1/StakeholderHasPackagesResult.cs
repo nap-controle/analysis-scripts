@@ -1,6 +1,6 @@
 using NAP.AutoChecks.Domain;
 
-namespace NAP.AutoChecks.Checks;
+namespace NAP.AutoChecks.Evaluation1_1;
 
 public class StakeholderHasPackagesResult
 {

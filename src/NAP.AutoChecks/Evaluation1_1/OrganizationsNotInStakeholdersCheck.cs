@@ -2,13 +2,13 @@ using NAP.AutoChecks.API;
 using NAP.AutoChecks.Domain;
 using TransportDataBe.Client.Models;
 
-namespace NAP.AutoChecks.Checks;
+namespace NAP.AutoChecks.Evaluation1_1;
 
-public class OrganizationsNotInStakeholders
+public class OrganizationsNotInStakeholdersCheck
 {
     private readonly DataHandler _dataHandler;
 
-    public OrganizationsNotInStakeholders(DataHandler dataHandler)
+    public OrganizationsNotInStakeholdersCheck(DataHandler dataHandler)
     {
         _dataHandler = dataHandler;
     }
@@ -31,6 +31,6 @@ public class OrganizationsNotInStakeholders
             }
         }
 
-        await _dataHandler.WriteResultAsync("organizations_not_in_stakeholders.xlsx", organizationFound);
+        await _dataHandler.WriteResultAsync("evaluation_1.1_organizations_not_in_stakeholders.xlsx", organizationFound);
     }
 }

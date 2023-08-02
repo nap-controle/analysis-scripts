@@ -11,6 +11,7 @@ using NAP.AutoChecks;
 using NAP.AutoChecks.API;
 using NAP.AutoChecks.Checks;
 using NAP.AutoChecks.Domain;
+using NAP.AutoChecks.Evaluation1_1;
 using NAP.AutoChecks.Evaluation1_2;
 using NAP.AutoChecks.Evaluation1_2._2022;
 using NAP.AutoChecks.Queries;
@@ -47,18 +48,18 @@ public static class Program
                     DataPath = dataPath
                 });
                 services.AddSingleton<DataHandler>();
-                services.AddSingleton<OrganizationsNotInStakeholders>();
-                services.AddSingleton<StakeholderHasPackages>();
-                services.AddSingleton<RequiredFieldsFilledIn>();
+                services.AddSingleton<OrganizationsNotInStakeholdersCheck>();
+                services.AddSingleton<StakeholderHasPackagesCheck>();
+                services.AddSingleton<RequiredFieldsFilledInCheck>();
                 services.AddSingleton<StakeholderHasDeclarations>();
                 services.AddSingleton<RandomizeDatasets>();
                 services.AddSingleton<StakeholdersWithDeclarations>();
-                services.AddSingleton<StakeholdersWithoutOrganization>();
+                services.AddSingleton<StakeholdersRegisteredCheck>();
                 services.AddSingleton<RandomizeOrganizationsWithDeclarations>();
 
                 services.AddSingleton(new StratifiedSamplingSetting());
                 services.AddSingleton<StratifiedSampling>();
-                services.AddSingleton<PreviouslySelectedDatasets>();
+                services.AddSingleton<PreviouslySelectedDatasetLoader>();
                 services.AddSingleton(new PreviouslySelectedDatasetsSettings()
                 {
                     DataPath = dataPath
@@ -66,42 +67,17 @@ public static class Program
 
                 services.AddSingleton<AllStakeholders>();
                 services.AddSingleton<StakeholdersAllDeclarations>();
+
+                services.AddSingleton<Evaluation1_1>();
+                services.AddSingleton<Evaluation1_2>();
             }).UseConsoleLifetime().Build();
 
         using var scope = host.Services.CreateScope();
 
-        // var download1 = scope.ServiceProvider.GetRequiredService<StakeholdersAllDeclarations>();
-        // await download1.Get();
-        //
-        // var download2 = scope.ServiceProvider.GetRequiredService<AllStakeholders>();
-        // await download2.Get();
-        //
-        // var check1 = scope.ServiceProvider.GetRequiredService<OrganizationsNotInStakeholders>();
-        // await check1.Check();
-        //
-        // var check2 = scope.ServiceProvider.GetRequiredService<StakeholderHasPackages>();
-        // await check2.Check();
-        //
-        // var check3 = scope.ServiceProvider.GetRequiredService<RequiredFieldsFilledIn>();
-        // await check3.Check();
-        //
-        // var check4 = scope.ServiceProvider.GetRequiredService<StakeholderHasDeclarations>();
-        // await check4.Check();
-        //
-        // var check5 = scope.ServiceProvider.GetRequiredService<StakeholdersWithoutOrganization>();
-        // await check5.Check();
-
-
-        var sampling1_2 = scope.ServiceProvider.GetRequiredService<StratifiedSampling>();
-        await sampling1_2.Run();
-        //
-        // var sampling1 = scope.ServiceProvider.GetRequiredService<RandomizeDatasets>();
-        // await sampling1.Run();
-        //
-        // var sampling2 = scope.ServiceProvider.GetRequiredService<StakeholdersWithDeclarations>();
-        // await sampling2.Run();
-        //
-        // var sampling3 = scope.ServiceProvider.GetRequiredService<RandomizeOrganizationsWithDeclarations>();
-        // await sampling3.Run();
+        var evaluation1_1 = scope.ServiceProvider.GetRequiredService<Evaluation1_1>();
+        await evaluation1_1.Run();
+        
+        var evaluation1_2 = scope.ServiceProvider.GetRequiredService<Evaluation1_2>();
+        await evaluation1_2.Run();
     }
 }
