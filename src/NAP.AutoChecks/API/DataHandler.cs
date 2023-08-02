@@ -13,7 +13,6 @@ public class DataHandler
     private readonly string _todayPath;
     private readonly string _latestPath;
     private readonly string _dataPath;
-    private readonly string _stakeholdersPath;
     private readonly ILogger<DataHandler> _logger;
 
     public DataHandler(Client client, DataHandlerSettings dataHandlerSettings, ILogger<DataHandler> logger)
@@ -22,7 +21,6 @@ public class DataHandler
         _logger = logger;
 
         _dataPath = dataHandlerSettings.DataPath ?? throw new Exception("Data path not set");
-        _stakeholdersPath = dataHandlerSettings.StakeholdersPath ?? throw new Exception("Stakeholders path not set");
         _todayPath = Path.Combine(dataHandlerSettings.DataPath,
             FormattableString.Invariant($"{DateTime.Today:yyyy-MM-dd}"));
         if (!Directory.Exists(_todayPath)) Directory.CreateDirectory(_todayPath);
@@ -121,7 +119,7 @@ public class DataHandler
     {
         if (_stakeholders != null) return _stakeholders;
 
-        _stakeholders = await StakeholderLoader.GetStakeholders(_stakeholdersPath);
+        _stakeholders = await StakeholderLoader.GetStakeholders(Path.Combine(_dataPath, "stakeholders", "2023"));
         
         return _stakeholders;
     }

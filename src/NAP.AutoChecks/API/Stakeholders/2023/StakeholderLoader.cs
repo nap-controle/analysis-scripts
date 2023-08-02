@@ -13,6 +13,15 @@ internal static class StakeholderLoader
         var stakeholders = new List<Stakeholder>();
         foreach (var ckanId in ckanIds)
         {
+            MMTISType? mmtisType = ckanId.Category switch
+            {
+                "RA" => MMTISType.TransportAuthority,
+                "MOD" => MMTISType.TransportOnDemand,
+                "IM" => MMTISType.InfrastructureManager,
+                "PTO" => MMTISType.TransportOperator,
+                _ => null
+            };
+
             stakeholders.Add(new Stakeholder
             {
                 Id = ckanId.Organization,
@@ -21,7 +30,7 @@ internal static class StakeholderLoader
                 IsRTTI = false,
                 IsSRTI = false,
                 IsSSTP = false,
-                MMTISType = null,
+                MMTISType = mmtisType,
                 Name = ckanId.Organization
             });
         }

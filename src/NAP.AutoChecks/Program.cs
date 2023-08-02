@@ -11,6 +11,8 @@ using NAP.AutoChecks;
 using NAP.AutoChecks.API;
 using NAP.AutoChecks.Checks;
 using NAP.AutoChecks.Domain;
+using NAP.AutoChecks.Evaluation1_2;
+using NAP.AutoChecks.Evaluation1_2._2022;
 using NAP.AutoChecks.Queries;
 using NAP.AutoChecks.Sampling;
 using Serilog;
@@ -37,14 +39,12 @@ public static class Program
                     b.AddSerilog();
                 });
 
-                var stakeholdersPath = hostingContext.Configuration.GetValue<string>("StakeholdersPath");
                 var dataPath = hostingContext.Configuration.GetValue<string>("DataPath");
 
                 services.AddTransportDataClient();
                 services.AddSingleton(new DataHandlerSettings()
                 {
-                    DataPath = dataPath,
-                    StakeholdersPath = stakeholdersPath
+                    DataPath = dataPath
                 });
                 services.AddSingleton<DataHandler>();
                 services.AddSingleton<OrganizationsNotInStakeholders>();
@@ -56,40 +56,52 @@ public static class Program
                 services.AddSingleton<StakeholdersWithoutOrganization>();
                 services.AddSingleton<RandomizeOrganizationsWithDeclarations>();
 
+                services.AddSingleton(new StratifiedSamplingSetting());
+                services.AddSingleton<StratifiedSampling>();
+                services.AddSingleton<PreviouslySelectedDatasets>();
+                services.AddSingleton(new PreviouslySelectedDatasetsSettings()
+                {
+                    DataPath = dataPath
+                });
+
                 services.AddSingleton<AllStakeholders>();
                 services.AddSingleton<StakeholdersAllDeclarations>();
             }).UseConsoleLifetime().Build();
 
         using var scope = host.Services.CreateScope();
 
-        var download1 = scope.ServiceProvider.GetRequiredService<StakeholdersAllDeclarations>();
-        await download1.Get();
+        // var download1 = scope.ServiceProvider.GetRequiredService<StakeholdersAllDeclarations>();
+        // await download1.Get();
+        //
+        // var download2 = scope.ServiceProvider.GetRequiredService<AllStakeholders>();
+        // await download2.Get();
+        //
+        // var check1 = scope.ServiceProvider.GetRequiredService<OrganizationsNotInStakeholders>();
+        // await check1.Check();
+        //
+        // var check2 = scope.ServiceProvider.GetRequiredService<StakeholderHasPackages>();
+        // await check2.Check();
+        //
+        // var check3 = scope.ServiceProvider.GetRequiredService<RequiredFieldsFilledIn>();
+        // await check3.Check();
+        //
+        // var check4 = scope.ServiceProvider.GetRequiredService<StakeholderHasDeclarations>();
+        // await check4.Check();
+        //
+        // var check5 = scope.ServiceProvider.GetRequiredService<StakeholdersWithoutOrganization>();
+        // await check5.Check();
 
-        var download2 = scope.ServiceProvider.GetRequiredService<AllStakeholders>();
-        await download2.Get();
 
-        var check1 = scope.ServiceProvider.GetRequiredService<OrganizationsNotInStakeholders>();
-        await check1.Check();
-
-        var check2 = scope.ServiceProvider.GetRequiredService<StakeholderHasPackages>();
-        await check2.Check();
-
-        var check3 = scope.ServiceProvider.GetRequiredService<RequiredFieldsFilledIn>();
-        await check3.Check();
-
-        var check4 = scope.ServiceProvider.GetRequiredService<StakeholderHasDeclarations>();
-        await check4.Check();
-
-        var check5 = scope.ServiceProvider.GetRequiredService<StakeholdersWithoutOrganization>();
-        await check5.Check();
-
-        var sampling1 = scope.ServiceProvider.GetRequiredService<RandomizeDatasets>();
-        await sampling1.Run();
-
-        var sampling2 = scope.ServiceProvider.GetRequiredService<StakeholdersWithDeclarations>();
-        await sampling2.Run();
-
-        var sampling3 = scope.ServiceProvider.GetRequiredService<RandomizeOrganizationsWithDeclarations>();
-        await sampling3.Run();
+        var sampling1_2 = scope.ServiceProvider.GetRequiredService<StratifiedSampling>();
+        await sampling1_2.Run();
+        //
+        // var sampling1 = scope.ServiceProvider.GetRequiredService<RandomizeDatasets>();
+        // await sampling1.Run();
+        //
+        // var sampling2 = scope.ServiceProvider.GetRequiredService<StakeholdersWithDeclarations>();
+        // await sampling2.Run();
+        //
+        // var sampling3 = scope.ServiceProvider.GetRequiredService<RandomizeOrganizationsWithDeclarations>();
+        // await sampling3.Run();
     }
 }

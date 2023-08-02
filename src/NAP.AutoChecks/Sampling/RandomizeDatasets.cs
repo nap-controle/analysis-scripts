@@ -204,7 +204,6 @@ public class RandomizeDatasets
 
         return null;
     }
-
     private RandomizeDatasetResult? SelectNextSSTP(IEnumerable<RandomizeDatasetResult> results)
     {
         foreach (var orgAndPackage in results)
