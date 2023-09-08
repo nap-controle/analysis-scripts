@@ -21,6 +21,8 @@ internal static class StakeholderLoader
                 "PTO" => MMTISType.TransportOperator,
                 _ => null
             };
+            
+            if (string.IsNullOrWhiteSpace(ckanId.Organization)) continue;
 
             stakeholders.Add(new Stakeholder
             {
@@ -31,7 +33,7 @@ internal static class StakeholderLoader
                 IsSRTI = false,
                 IsSSTP = false,
                 MMTISType = mmtisType,
-                Name = ckanId.Organization
+                Name = ckanId.Name
             });
         }
         
@@ -40,6 +42,8 @@ internal static class StakeholderLoader
         var mmtisOrgs = await NapTypeOrganization.Load(streamMmtis);
         foreach (var mmtisOrg in mmtisOrgs)
         {
+            if (string.IsNullOrWhiteSpace(mmtisOrg.Organization)) continue;
+            
             var mmtisStakeholder = stakeholders.FirstOrDefault(x => x.Id == mmtisOrg.Organization);
             if (mmtisStakeholder == null)
             {
@@ -59,6 +63,8 @@ internal static class StakeholderLoader
         var rttiOrgs = await NapTypeOrganization.Load(streamRtti);
         foreach (var rttiOrg in rttiOrgs)
         {
+            if (string.IsNullOrWhiteSpace(rttiOrg.Organization)) continue;
+            
             var mmtisStakeholder = stakeholders.FirstOrDefault(x => x.Id == rttiOrg.Organization);
             if (mmtisStakeholder == null)
             {
@@ -78,6 +84,8 @@ internal static class StakeholderLoader
         var srtiOrgs = await NapTypeOrganization.Load(streamSrti);
         foreach (var srtiOrg in srtiOrgs)
         {
+            if (string.IsNullOrWhiteSpace(srtiOrg.Organization)) continue;
+            
             var mmtisStakeholder = stakeholders.FirstOrDefault(x => x.Id == srtiOrg.Organization);
             if (mmtisStakeholder == null)
             {
@@ -97,6 +105,8 @@ internal static class StakeholderLoader
         var sstpOrgs = await NapTypeOrganization.Load(streamSstp);
         foreach (var sstpOrg in sstpOrgs)
         {
+            if (string.IsNullOrWhiteSpace(sstpOrg.Organization)) continue;
+            
             var mmtisStakeholder = stakeholders.FirstOrDefault(x => x.Id == sstpOrg.Organization);
             if (mmtisStakeholder == null)
             {

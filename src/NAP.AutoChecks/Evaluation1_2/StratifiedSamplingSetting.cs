@@ -14,6 +14,11 @@ public class StratifiedSamplingSetting
 
     public int Total => this.SelectRTTI + this.SelectSRTI + this.SelectSSTP + this.SelectMMTIS;
 
+    /// <summary>
+    /// The date the previous sampling was done.
+    /// </summary>
+    public DateTime PreviousSamplingDay { get; set; } = new (2022, 12, 31);
+
     public int SelectCountFor(NAPType type)
     {
         return type switch

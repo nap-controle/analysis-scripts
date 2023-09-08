@@ -12,17 +12,23 @@ public class CkanId
     /// </summary>
     [Index(0)]
     public string Organization { get; set; }
+    
+    /// <summary>
+    /// The name.
+    /// </summary>
+    [Index(1)]
+    public string Name { get; set; }
 
     /// <summary>
     /// The organization id.
     /// </summary>
-    [Index(1)]
+    [Index(2)]
     public string OrganizationId { get; set; }
     
     /// <summary>
     /// The category.
     /// </summary>
-    [Index(2)]
+    [Index(3)]
     public string Category { get; set; }
 
     internal static async Task<IEnumerable<CkanId>> Load(Stream stream)
@@ -30,7 +36,8 @@ public class CkanId
         var config = new CsvConfiguration(CultureInfo.InvariantCulture)
         {
             HasHeaderRecord = true,
-            Delimiter = ";"
+            Delimiter = ";",
+            MissingFieldFound = null
         };
         using var streamReader = new StreamReader(stream);
         using var csv = new CsvReader(streamReader, config);

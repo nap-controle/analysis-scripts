@@ -1,6 +1,7 @@
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using NAP.AutoChecks.API;
-using NAP.AutoChecks.API.Stakeholders._2023;
 using NAP.AutoChecks.Domain;
 using NAP.AutoChecks.Evaluation1_2._2022;
 
@@ -28,7 +29,7 @@ public class StratifiedSampling
         var organizations = await _dataHandler.GetOrganizations();
 
         var packages = (await _dataHandler.GetPackages()).ToList();
-
+        
         var randomizedStakeholders = stakeholders.ToList();
         randomizedStakeholders.Shuffle();
         
@@ -59,8 +60,8 @@ public class StratifiedSampling
             }
         }
 
+        // compile all possible packages to select but set then all to deselected.
         var results = new List<StratifiedSamplingResult>();
-
         foreach (var stakeholder in randomizedStakeholders)
         {
             if (stakeholder.ParsedOrganizationId == null)
@@ -84,266 +85,193 @@ public class StratifiedSampling
                 results.Add(new StratifiedSamplingResult(stakeholder, organization, package));
             }
         }
+        
+        // SAMPLING1: 
+        // - all packages for new organizations.
+        // - all packages for organizations not in the 2022 list.
+        
+        // SAMPLING2:
+        // - all packages with edits since previous sampling.
+        // - all packages not previously checked.
+        
+        // PROCEDURE: 
+        // - first select 5 for SSTP, RTTI and SRTI.
+        // - after select remaining for SSTP using stratified sampling.
+        // - use the SAMPLING1 filter.
 
+        (bool select, string reason) Sampling1IncludeSample(StratifiedSamplingResult sample, NAPType type)
+        {
+            Debug.Assert(previouslySelected != null, nameof(previouslySelected) + " != null");
+            
+            // organization was not previously selected.
+            // this also means new organizations.
+            if (!previouslySelected.OrganizationWasSelected(type, sample.OrganizationId)) return (true, "organization never selected in previous sampling");
+
+            return (false, "organization selected in previous sampling");
+        }
+
+        (bool select, string reason) Sampling2IncludeSample(StratifiedSamplingResult sample, NAPType type)
+        {
+            Debug.Assert(previouslySelected != null, nameof(previouslySelected) + " != null");
+            
+            // sample was modified after previous sampling day.
+            if (sample.WasModifiedAfter(_setting.PreviousSamplingDay)) return (true, "modified after previous sampling");
+            
+            // sample was not checked before.
+            if (!previouslySelected.PackageWasSelected(type, sample.PackageId)) return (true, "package was never selected before");
+
+            return (false, "not modified and selected before");
+        }
+        
+        // run SAMPLING1 first for all non-MMTIS.
+        this.SelectNonMMTIS("SAMPLING1", Sampling1IncludeSample, results);
+        // run SAMPLING2 first for all non-MMTIS.
+        this.SelectNonMMTIS("SAMPLING2", Sampling2IncludeSample, results);
+        
+        // run SAMPLING1 for MMTIS.
         var types = new[] { NAPType.SSTP, NAPType.RTTI, NAPType.SRTI };
+        // calculate extra dataset budget.
         var datasetBudget = 0;
         foreach (var type in types)
         {
             var target = _setting.SelectCountFor(type);
-            _logger.LogInformation(
-                "Started selecting {Count} dataset/organization pairs for {Type}",
-                target, type);
-            var  count = this.SelectNext(results, target, type, previouslySelected);
+            var count = results.Count(x => x.PackageSelectedFor(type));
             datasetBudget += target - count;
         }
-        
-        // select first MMTIS packages per category.
         if (datasetBudget > 0)
         {
             _logger.LogWarning(
                 "There are {Extras} extra organizations to be selected, adding them to MMTIS",
                 datasetBudget);
         }
-        //
-        // var mmtisTarget = _setting.SelectCountFor(NAPType.MMTIS) + datasetBudget + 100;
-        // _logger.LogInformation(
-        //     "Started selecting {Count} dataset/organization pairs for {Type}",
-        //     mmtisTarget, NAPType.MMTIS);
-        // this.SelectNext(results, mmtisTarget, NAPType.MMTIS);
         
-        var selectedMmtis = new Dictionary<MMTISType, int>();
-        var modesByMmtis = new Dictionary<MMTISType, string>
-        {
-            { MMTISType.InfrastructureManager, SelectionModes.Organizations },
-            { MMTISType.TransportAuthority, SelectionModes.Organizations },
-            { MMTISType.TransportOperator, SelectionModes.Organizations },
-            { MMTISType.TransportOnDemand, SelectionModes.Organizations }
-        };
-        var full = new HashSet<MMTISType>();
-        _logger.LogInformation(
-            "Started selecting {Count} dataset/organization pairs for {Type}",
-            _setting.SelectMMTIS + datasetBudget, NAPType.MMTIS);
-        while (selectedMmtis.Sum(x => x.Value) < _setting.SelectMMTIS + datasetBudget)
-        {
-            var hasSelected = false;
-            foreach (var mmtisType in Enum.GetValues<MMTISType>())
-            {
-                if (full.Contains(mmtisType)) continue;
-                if (!selectedMmtis.TryGetValue(mmtisType, out var count))
-                {
-                    count = 0;
-                    selectedMmtis[mmtisType] = count;
-                }
-
-                var mode = modesByMmtis[mmtisType];
-                //_logger.LogInformation("Selecting next for {MmtisType} when ignoring {Mode}", mmtisType, mode);
-                var next = this.SelectNextMmtis(results, mmtisType, mode, previouslySelected);
-                while (next == null)
-                {
-                    if (mode == SelectionModes.Organizations)
-                    {
-                        _logger.LogInformation("No more organization/package pairs available for {MmtisType} when ignoring previously selected organizations", mmtisType);
-                        mode = SelectionModes.Package;
-                        modesByMmtis[mmtisType] = mode;
-                        _logger.LogInformation("Not ignoring previously selected organizations anymore for {MmtisType}", mmtisType);
-                        //_logger.LogInformation("Selecting next for {MmtisType} when ignoring {Mode}", mmtisType, mode);
-                        next = this.SelectNextMmtis(results, mmtisType, mode, previouslySelected);
-                    }
-                    else if (mode == SelectionModes.Package)
-                    {
-                        _logger.LogInformation("No more organization/package pairs available for {MmtisType} when ignoring previously selected packages", mmtisType);
-                        mode = SelectionModes.Nothing;
-                        modesByMmtis[mmtisType] = mode;
-                        _logger.LogInformation("Not ignoring previously selected packages anymore for {MmtisType}", mmtisType);
-                        //_logger.LogInformation("Selecting next for {MmtisType}when ignoring {Mode}", mmtisType, mode);
-                        next = this.SelectNextMmtis(results, mmtisType, mode, previouslySelected);
-                    }
-                    else
-                    {
-                        full.Add(mmtisType);
-                        break;
-                    }
-                }
-                if (next == null) continue;
-        
-                hasSelected = true;
-                count++;
-                selectedMmtis[mmtisType] = count;
-                
-                _logger.LogInformation("Selected package {Number} {PackageName} for {OrganizationName}, number {Count} for MMTIS of type {MmtisType} when ignoring {Mode}",
-                    selectedMmtis.Sum(x => x.Value), next.PackageName, next.OrganizationName, count, mmtisType, mode);
-            }
-        
-            if (hasSelected)
-            {
-                continue;
-            }
-            
-            _logger.LogWarning("All possible MMTIS organizations selected");
-            break;
-        } 
+        // run SAMPLING1 first for MMTIS.
+        this.SelectMMTIS("SAMPLING1", Sampling1IncludeSample, results, datasetBudget);
+        // run SAMPLING2 first for MMTIS.
+        this.SelectMMTIS("SAMPLING2", Sampling2IncludeSample, results, datasetBudget);
 
         await _dataHandler.WriteResultAsync("evaluation_1.2_stratified-sampling.xlsx", results);
     }
 
-    private StratifiedSamplingResult? SelectNextMmtis(IEnumerable<StratifiedSamplingResult> results, MMTISType type, string mode, PreviouslySelectedDatasets previouslySelected)
+    private void SelectNonMMTIS(string samplingName, Func<StratifiedSamplingResult, NAPType, (bool select, string reason)> includeFilter, List<StratifiedSamplingResult> results)
     {
-        foreach (var orgAndPackage in results)
+        var types = new[] { NAPType.SSTP, NAPType.RTTI, NAPType.SRTI };
+        foreach (var napType in types)
         {
-            if (!orgAndPackage.PackageIsFor(NAPType.MMTIS)) continue;
-            if (orgAndPackage.StakeholderMMTIStype != type) continue;
-            
-            // if already selected, skip.
-            if (results.Any(x => x.OrganizationId == orgAndPackage.OrganizationId && x.SelectedMMTIS)) continue;
-            
-            // check if org or package has been considered before.
-            var orgBefore = previouslySelected.OrganizationWasSelected(NAPType.MMTIS, orgAndPackage.OrganizationId);
-            var packBefore = previouslySelected.PackageWasSelected(NAPType.MMTIS, orgAndPackage.PackageId);
-            if (orgBefore)
+            var selected = results.Count(x => x.PackageSelectedFor(napType));
+            var target = _setting.SelectCountFor(napType);
+            if (target - selected <= 0)
             {
-                if (mode == SelectionModes.Organizations)
-                {
-                    // _logger.LogInformation(
-                    //     "Skipping {PackageName} for {OrganizationName} for {Type}, organization has been selected before",
-                    //     orgAndPackage.PackageName, orgAndPackage.OrganizationName, NAPType.MMTIS);
-                    continue;
-                }
-
-                // _logger.LogInformation(
-                //     "{OrganizationName} has been selected before for {Type} but considering again",
-                //     orgAndPackage.OrganizationName, NAPType.MMTIS);
+                _logger.LogInformation(
+                    "{SamplingName}: Already {Count} dataset/organization pairs selected for {Type}, not selecting any more",
+                    samplingName, target, napType);
+                continue;
             }
-
-            if (packBefore)
-            {
-                if (mode == SelectionModes.Package)
-                {
-                    // _logger.LogInformation(
-                    //     "Skipping {PackageName} for {OrganizationName} for {Type}, package has been selected before",
-                    //     orgAndPackage.PackageName, orgAndPackage.OrganizationName, NAPType.MMTIS);
-                    continue;
-                }
-
-                // _logger.LogInformation(
-                //     "{PackageName} for {OrganizationName} has been selected before for {Type} but considering again",
-                //     orgAndPackage.PackageName, orgAndPackage.OrganizationName, NAPType.MMTIS);
-            }
-
-            orgAndPackage.SelectedMMTIS = true;
-
-            return orgAndPackage;
-        }
-
-        return null;
-    }
-
-    /// <summary>
-    /// Selects the first target packages in the results set that has the given NAPType and has a not previously selected organization.
-    /// </summary>
-    /// <param name="results">The result set.</param>
-    /// <param name="target">The number of packages to try to select.</param>
-    /// <param name="napType">The NAP type.</param>
-    /// <param name="previouslySelected">The previously selected datasets.</param>
-    /// <returns>The packages selected.</returns>
-    /// <exception cref="Exception"></exception>
-    private int SelectNext(IEnumerable<StratifiedSamplingResult> results, int target, NAPType napType, PreviouslySelectedDatasets previouslySelected)
-    {
-        //if (napType == NAPType.MMTIS) throw new Exception("Use the dedicated MMTIS method");
-        
-        var selected = 0;
-        var modes = new[] { "org", "pack", "none" };
-        foreach (var mode in modes)
-        {
+            
+            _logger.LogInformation(
+                "{SamplingName}: Started selecting {Count} dataset/organization pairs for {Type}",
+                samplingName, target - selected, napType);
+            
             foreach (var orgAndPackage in results)
             {
-                if (selected >= target) return target;
+                if (selected >= target) break;
 
                 // make sure the package is for the requested type.
                 if (!orgAndPackage.PackageIsFor(napType)) continue;
 
-                _logger.LogInformation(
-                    "Considering {PackageName} for {OrganizationName} for {Type}",
-                    orgAndPackage.PackageName, orgAndPackage.OrganizationName, napType);
+                _logger.LogDebug(
+                    "{SamplingName}: Considering {PackageName} for {OrganizationName} for {Type}",
+                    samplingName, orgAndPackage.PackageName, orgAndPackage.OrganizationName, napType);
                 
-                // check if org or package has been considered before.
-                var orgBefore = previouslySelected.OrganizationWasSelected(napType, orgAndPackage.OrganizationId);
-                var packBefore = previouslySelected.PackageWasSelected(napType, orgAndPackage.PackageId);
-                if (orgBefore)
+                // check filter.
+                var (select, reason) = includeFilter(orgAndPackage, napType);
+                if (!select)
                 {
-                    if (mode == "org")
-                    {
-                        _logger.LogInformation(
-                            "Skipping {PackageName} for {OrganizationName} for {Type}, organization has been selected before",
-                            orgAndPackage.PackageName, orgAndPackage.OrganizationName, napType);
-                        continue;
-                    }
-
-                    _logger.LogInformation(
-                        "{OrganizationName} has been selected before for {Type} but considering again",
-                        orgAndPackage.OrganizationName, napType);
+                    _logger.LogDebug(
+                        "{SamplingName}: Skipping {PackageName} for {OrganizationName}, {Reason}",
+                        samplingName, orgAndPackage.PackageName, orgAndPackage.OrganizationName, reason);
+                    continue;
                 }
-
-                if (packBefore)
-                {
-                    if (mode == "pack")
-                    {
-                        _logger.LogInformation(
-                            "Skipping {PackageName} for {OrganizationName} for {Type}, package has been selected before",
-                            orgAndPackage.PackageName, orgAndPackage.OrganizationName, napType);
-                        continue;
-                    }
-
-                    _logger.LogInformation(
-                        "{PackageName} for {OrganizationName} has been selected before for {Type} but considering again",
-                        orgAndPackage.PackageName, orgAndPackage.OrganizationName, napType);
-                }
-
-                // if org already selected, skip.
+                
+                // if already selected, skip.
                 var alreadySelectedPackage = results.FirstOrDefault(x => x.PackageSelectedFor(napType) &&
                                                                          x.OrganizationId ==
                                                                          orgAndPackage.OrganizationId);
                 if (alreadySelectedPackage != null)
                 {
-                    _logger.LogInformation(
-                        "Not selecting {PackageName}, {OrganizationName} already {PackageNameSelected} selected for {Type}",
-                        orgAndPackage.PackageName, orgAndPackage.OrganizationName, alreadySelectedPackage.PackageName,
+                    _logger.LogDebug(
+                        "{SamplingName}: Not selecting {PackageName}, {OrganizationName} already {PackageNameSelected} selected for {Type}",
+                        samplingName, orgAndPackage.PackageName, orgAndPackage.OrganizationName, alreadySelectedPackage.PackageName,
                         napType);
                     continue;
                 }
 
-                orgAndPackage.SetSelectedFor(napType);
+                orgAndPackage.SetSelectedFor(napType, reason);
                 selected++;
                 _logger.LogInformation(
-                    "Selected package {Number} {PackageName} for {OrganizationName}, for {Type}",
-                    selected, orgAndPackage.PackageName, orgAndPackage.OrganizationName, napType);
+                    "{SamplingName}: Selected package {Number} {PackageName} for {OrganizationName}, for {Type}, {Reason}",
+                    samplingName, selected, orgAndPackage.PackageName, orgAndPackage.OrganizationName, napType, reason);
             }
+        }
+    }
 
-            if (selected < target && mode == "org")
+    private void SelectMMTIS(string samplingName, Func<StratifiedSamplingResult, NAPType, (bool select, string reason)> includeFilter,
+        List<StratifiedSamplingResult> results, int datasetBudget)
+    {
+        var napType = NAPType.MMTIS;
+        var target = _setting.SelectMMTIS + datasetBudget;
+        var selected = results.Count(x => x.PackageSelectedFor(NAPType.MMTIS));
+        _logger.LogInformation(
+            "{SamplingName}: Started selecting {Count} dataset/organization pairs for {Type}",
+            samplingName, target - selected, NAPType.MMTIS);
+        while (selected < target)
+        {
+            var hasSelected = false;
+            foreach (var mmtisType in Enum.GetValues<MMTISType>())
             {
-                _logger.LogInformation(
-                    "Only {Count} of {Target} selected, stopped ignoring previously selected organizations",
-                    selected, target);
-            }
-            if (selected < target && mode == "pack")
-            {
-                _logger.LogInformation(
-                    "Only {Count} of {Target} selected, stopped ignoring previously selected packages",
-                    selected, target);
-            }
-        }
+                foreach (var orgAndPackage in results)
+                {
+                    if (!orgAndPackage.PackageIsFor(NAPType.MMTIS)) continue;
+                    if (orgAndPackage.StakeholderMMTIStype != mmtisType) continue;
+                    
+                    _logger.LogDebug(
+                        "{SamplingName}: Considering {PackageName} for {OrganizationName} for {Type} and {MMTISType}",
+                        samplingName, orgAndPackage.PackageName, orgAndPackage.OrganizationName, napType, mmtisType);
+                
+                    // check filter.
+                    var (select, reason) = includeFilter(orgAndPackage, napType);
+                    if (!select)
+                    {
+                        _logger.LogDebug(
+                            "{SamplingName}: Skipping {PackageName} for {OrganizationName}, {Reason}",
+                            samplingName, orgAndPackage.PackageName, orgAndPackage.OrganizationName, reason);
+                        continue;
+                    }
 
-        if (selected <= target)
-        {
-            _logger.LogWarning(
-                "All possible {Type} organizations selected",
-                napType);
+                    // if already selected, skip.
+                    var alreadySelectedPackage = results.FirstOrDefault(x =>
+                        x.OrganizationId == orgAndPackage.OrganizationId
+                        && x.SelectedMMTIS && x.StakeholderMMTIStype == mmtisType);
+                    if (alreadySelectedPackage != null)
+                    {
+                        _logger.LogDebug(
+                            "{SamplingName}: Not selecting {PackageName}, {OrganizationName} already {PackageNameSelected} selected for {Type} and {MMTISType}",
+                            samplingName, orgAndPackage.PackageName, orgAndPackage.OrganizationName, alreadySelectedPackage.PackageName,
+                            napType, mmtisType);
+                        continue;
+                    }
+
+                    // package can be selected.
+                    orgAndPackage.SetSelectedFor(napType, reason);
+                    selected = results.Count(x => x.PackageSelectedFor(NAPType.MMTIS));
+                    var mmtisTypeCount = results.Count(x => x.PackageSelectedFor(NAPType.MMTIS) && x.StakeholderMMTIStype == mmtisType);
+                    _logger.LogInformation(
+                        "{SamplingName}: Selected package {Number} {PackageName} for {OrganizationName}, number {Count} for MMTIS of type {MmtisType}, {Reason}",
+                        samplingName, selected, orgAndPackage.PackageName, orgAndPackage.OrganizationName, mmtisTypeCount, mmtisType, reason);
+                }
+            }
+            
+            if (!hasSelected) break;
         }
-        else
-        {
-            _logger.LogWarning(
-                "Could select only {Count} of {Max} dataset/organization for {Type}",
-                selected, _setting.SelectSSTP, napType);
-        }
-        return selected;
     }
 }

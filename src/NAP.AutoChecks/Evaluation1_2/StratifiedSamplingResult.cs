@@ -14,14 +14,7 @@ public class StratifiedSamplingResult
         this.StakeholderRTTI = stakeholder.IsRTTI;
         this.StakeholderSRTI = stakeholder.IsSRTI;
         this.StakeholderSSTP = stakeholder.IsSSTP;
-        // this.OrgHasRTTIPackage = orgHasRttiPackage;
-        // this.OrgHasSRTIPackage = orgHasSrtiPackage;
-        // this.OrgHasSSTPPackage = orgHasSstpPackage;
-        // this.OrgHasMMTISPackage = orgHasMmtisPackage;
-        // this.OrgHasRTTIDeclaration = organization.HasRTTIDeclaration();
-        // this.OrgHasSRTIDeclaration = organization.HasSRTIDeclaration();
-        // this.OrgHasSSTPDeclaration = organization.HasSSTPDeclaration();
-        // this.OrgHasMMTISDeclaration = organization.HasMMTISDeclaration();
+        this.PackageLastModified = package.Metadata_Modified ?? package.Metadata_Created;
         this.PackageIsMMTIS = package.NAP_type?.Any(x => x.ToLowerInvariant() == "mmtis") ?? false;
         this.PackageIsSRTI = package.NAP_type?.Any(x => x.ToLowerInvariant() == "srti") ?? false;
         this.PackageIsSSTP = package.NAP_type?.Any(x => x.ToLowerInvariant() == "sstp") ?? false;
@@ -39,6 +32,8 @@ public class StratifiedSamplingResult
 
     public string PackageName { get; set; }
     
+    public DateTime? PackageLastModified { get; set; }
+    
     public bool SelectedMMTIS { get; set; }
     
     public bool SelectedSRTI { get; set; }
@@ -46,6 +41,8 @@ public class StratifiedSamplingResult
     public bool SelectedRTTI { get; set; }
     
     public bool SelectedSSTP { get; set; }
+    
+    public string SelectedReason { get; set; }
 
     // MMTIS Section.
 
@@ -89,6 +86,13 @@ public class StratifiedSamplingResult
 
     public bool StakeholderSRTI { get; set; }
 
+    public bool WasModifiedAfter(DateTime day)
+    {
+        if (this.PackageLastModified == null) throw new Exception("No last modified date");
+        
+        return this.PackageLastModified > day;
+    }
+
     public bool PackageIsFor(NAPType type)
     {
         return type switch
@@ -113,7 +117,7 @@ public class StratifiedSamplingResult
         };
     }
 
-    public void SetSelectedFor(NAPType napType)
+    public void SetSelectedFor(NAPType napType, string reason)
     {
         switch (napType)
         {
@@ -132,5 +136,7 @@ public class StratifiedSamplingResult
             default:
                 throw new ArgumentOutOfRangeException(nameof(napType), napType, null);
         }
+
+        this.SelectedReason = reason;
     }
 }
