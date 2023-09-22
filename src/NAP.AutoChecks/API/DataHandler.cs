@@ -14,11 +14,13 @@ public class DataHandler
     private readonly string _latestPath;
     private readonly string _dataPath;
     private readonly ILogger<DataHandler> _logger;
+    private readonly StakeholderLoader _stakeholderLoader;
 
-    public DataHandler(Client client, DataHandlerSettings dataHandlerSettings, ILogger<DataHandler> logger)
+    public DataHandler(Client client, DataHandlerSettings dataHandlerSettings, ILogger<DataHandler> logger, StakeholderLoader stakeholderLoader)
     {
         _client = client;
         _logger = logger;
+        _stakeholderLoader = stakeholderLoader;
 
         _dataPath = dataHandlerSettings.DataPath ?? throw new Exception("Data path not set");
         _todayPath = Path.Combine(dataHandlerSettings.DataPath,
@@ -119,7 +121,7 @@ public class DataHandler
     {
         if (_stakeholders != null) return _stakeholders;
 
-        _stakeholders = await StakeholderLoader.GetStakeholders(Path.Combine(_dataPath, "stakeholders", "2023"));
+        _stakeholders = await _stakeholderLoader.GetStakeholders(Path.Combine(_dataPath, "stakeholders", "2023"));
         
         return _stakeholders;
     }

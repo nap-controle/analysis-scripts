@@ -86,11 +86,15 @@ public class StratifiedSampling
             }
         }
         
-        // SAMPLING1: 
+        // SAMPLING1:
         // - all packages for new organizations.
         // - all packages for organizations not in the 2022 list.
         
         // SAMPLING2:
+        // - all packages with edits since previous sampling.
+        // - all packages not previously checked.
+        
+        // SAMPLING3:
         // - all packages with edits since previous sampling.
         // - all packages not previously checked.
         
@@ -194,16 +198,31 @@ public class StratifiedSampling
                 }
                 
                 // if already selected, skip.
-                var alreadySelectedPackage = results.FirstOrDefault(x => x.PackageSelectedFor(napType) &&
-                                                                         x.OrganizationId ==
-                                                                         orgAndPackage.OrganizationId);
-                if (alreadySelectedPackage != null)
+                if (orgAndPackage.PackageSelectedFor(napType))
                 {
                     _logger.LogDebug(
-                        "{SamplingName}: Not selecting {PackageName}, {OrganizationName} already {PackageNameSelected} selected for {Type}",
-                        samplingName, orgAndPackage.PackageName, orgAndPackage.OrganizationName, alreadySelectedPackage.PackageName,
+                        "{SamplingName}: Not selecting {PackageName}, {OrganizationName} already selected for {Type}",
+                        samplingName, orgAndPackage.PackageName, orgAndPackage.OrganizationName,
                         napType);
                     continue;
+                }
+                
+                // if already 2 selected, skip.
+                var already2SelectedForOrg = results.Has2PackagesSelected(napType, orgAndPackage.OrganizationId);
+                if (already2SelectedForOrg)
+                {
+                    _logger.LogDebug(
+                        "{SamplingName}: Not selecting {PackageName}, {OrganizationName} already 2 selected for {Type}",
+                        samplingName, orgAndPackage.PackageName, orgAndPackage.OrganizationName,
+                        napType);
+                    continue;
+                }
+                
+                // if already 1 selected, log this.
+                var already1SelectedForOrg = results.HasPackageSelected(napType, orgAndPackage.OrganizationId);
+                if (already1SelectedForOrg)
+                {
+                    reason += " and only 1 package already selected for org";
                 }
 
                 orgAndPackage.SetSelectedFor(napType, reason);
@@ -247,18 +266,33 @@ public class StratifiedSampling
                             samplingName, orgAndPackage.PackageName, orgAndPackage.OrganizationName, reason);
                         continue;
                     }
-
+                
                     // if already selected, skip.
-                    var alreadySelectedPackage = results.FirstOrDefault(x =>
-                        x.OrganizationId == orgAndPackage.OrganizationId
-                        && x.SelectedMMTIS && x.StakeholderMMTIStype == mmtisType);
-                    if (alreadySelectedPackage != null)
+                    if (orgAndPackage.PackageSelectedFor(napType))
                     {
                         _logger.LogDebug(
-                            "{SamplingName}: Not selecting {PackageName}, {OrganizationName} already {PackageNameSelected} selected for {Type} and {MMTISType}",
-                            samplingName, orgAndPackage.PackageName, orgAndPackage.OrganizationName, alreadySelectedPackage.PackageName,
-                            napType, mmtisType);
+                            "{SamplingName}: Not selecting {PackageName}, {OrganizationName} already selected for {Type}",
+                            samplingName, orgAndPackage.PackageName, orgAndPackage.OrganizationName,
+                            napType);
                         continue;
+                    }
+                
+                    // if already 2 selected, skip.
+                    var already2SelectedForOrg = results.Has2PackagesSelected(napType, orgAndPackage.OrganizationId);
+                    if (already2SelectedForOrg)
+                    {
+                        _logger.LogDebug(
+                            "{SamplingName}: Not selecting {PackageName}, {OrganizationName} already 2 selected for {Type}",
+                            samplingName, orgAndPackage.PackageName, orgAndPackage.OrganizationName,
+                            napType);
+                        continue;
+                    }
+                
+                    // if already 1 selected, log this.
+                    var already1SelectedForOrg = results.HasPackageSelected(napType, orgAndPackage.OrganizationId);
+                    if (already1SelectedForOrg)
+                    {
+                        reason += " and only 1 package already selected for org";
                     }
 
                     // package can be selected.

@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using NAP.AutoChecks;
 using NAP.AutoChecks.API;
+using NAP.AutoChecks.API.Stakeholders._2023;
 using NAP.AutoChecks.Checks;
 using NAP.AutoChecks.Domain;
 using NAP.AutoChecks.Evaluation1_1;
@@ -65,6 +66,7 @@ public static class Program
                     DataPath = dataPath
                 });
 
+                services.AddSingleton<StakeholderLoader>();
                 services.AddSingleton<AllStakeholders>();
                 services.AddSingleton<StakeholdersAllDeclarations>();
 

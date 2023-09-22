@@ -1,10 +1,18 @@
+using Microsoft.Extensions.Logging;
 using NAP.AutoChecks.Domain;
 
 namespace NAP.AutoChecks.API.Stakeholders._2023;
 
-internal static class StakeholderLoader
+public class StakeholderLoader
 {
-    public static async Task<IEnumerable<Stakeholder>> GetStakeholders(string stakeholdersPath)
+    private readonly ILogger<Stakeholder> _logger;
+
+    public StakeholderLoader(ILogger<Stakeholder> logger)
+    {
+        _logger = logger;
+    }
+
+    public async Task<IEnumerable<Stakeholder>> GetStakeholders(string stakeholdersPath)
     {
         await using var stream =
             File.OpenRead(Path.Combine(stakeholdersPath, "CKAN-ID.csv"));
@@ -13,15 +21,6 @@ internal static class StakeholderLoader
         var stakeholders = new List<Stakeholder>();
         foreach (var ckanId in ckanIds)
         {
-            MMTISType? mmtisType = ckanId.Category switch
-            {
-                "RA" => MMTISType.TransportAuthority,
-                "MOD" => MMTISType.TransportOnDemand,
-                "IM" => MMTISType.InfrastructureManager,
-                "PTO" => MMTISType.TransportOperator,
-                _ => null
-            };
-            
             if (string.IsNullOrWhiteSpace(ckanId.Organization)) continue;
 
             stakeholders.Add(new Stakeholder
@@ -32,7 +31,7 @@ internal static class StakeholderLoader
                 IsRTTI = false,
                 IsSRTI = false,
                 IsSSTP = false,
-                MMTISType = mmtisType,
+                MMTISType = null,
                 Name = ckanId.Name
             });
         }
@@ -43,6 +42,27 @@ internal static class StakeholderLoader
         foreach (var mmtisOrg in mmtisOrgs)
         {
             if (string.IsNullOrWhiteSpace(mmtisOrg.Organization)) continue;
+
+            MMTISType? mmtisType = null;
+            if (mmtisOrg.Type != null)
+            {
+                if (mmtisOrg.Type.StartsWith("RA"))
+                {
+                    mmtisType = MMTISType.TransportAuthority;
+                }
+                else if (mmtisOrg.Type.StartsWith("MOD"))
+                {
+                    mmtisType = MMTISType.TransportOnDemand;
+                }
+                else if (mmtisOrg.Type.StartsWith("IM"))
+                {
+                    mmtisType = MMTISType.InfrastructureManager;
+                }
+                else if (mmtisOrg.Type.StartsWith("PTO"))
+                {
+                    mmtisType = MMTISType.TransportOperator;
+                }
+            }
             
             var mmtisStakeholder = stakeholders.FirstOrDefault(x => x.Id == mmtisOrg.Organization);
             if (mmtisStakeholder == null)
@@ -50,11 +70,17 @@ internal static class StakeholderLoader
                 mmtisStakeholder = new Stakeholder()
                 {
                     Id = mmtisOrg.Organization,
-                    Name = mmtisOrg.Organization
+                    Name = mmtisOrg.OrganizationName,
                 };
                 stakeholders.Add(mmtisStakeholder);
             }
             
+            mmtisStakeholder.MMTISType = mmtisType;
+            if (mmtisType == null)
+            {
+                _logger.LogWarning("Could not determine MMTISType for {Organization} - {OrganizationId}: {DataFound}",
+                    mmtisStakeholder.Name, mmtisStakeholder.OrganizationId ?? "No CKAN-ID", mmtisOrg.Type);
+            }
             mmtisStakeholder.IsMMTIS = true;
         }
         

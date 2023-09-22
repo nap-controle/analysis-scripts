@@ -25,7 +25,7 @@ public class Stakeholder
     /// The organization id, if any.
     /// </summary>
     [Index(5)]
-    public string OrganizationId { get; set; }
+    public string? OrganizationId { get; set; }
     
     /// <summary>
     /// 

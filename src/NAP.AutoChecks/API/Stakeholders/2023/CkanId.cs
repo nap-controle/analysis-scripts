@@ -24,12 +24,6 @@ public class CkanId
     /// </summary>
     [Index(2)]
     public string OrganizationId { get; set; }
-    
-    /// <summary>
-    /// The category.
-    /// </summary>
-    [Index(3)]
-    public string Category { get; set; }
 
     internal static async Task<IEnumerable<CkanId>> Load(Stream stream)
     {
