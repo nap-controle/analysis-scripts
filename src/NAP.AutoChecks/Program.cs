@@ -85,5 +85,8 @@ public static class Program
         
         var evaluation2_2 = scope.ServiceProvider.GetRequiredService<Evaluation2_2>();
         await evaluation2_2.Run();
+
+        var allDeclarations = scope.ServiceProvider.GetRequiredService<StakeholdersAllDeclarations>();
+        await allDeclarations.Get();
     }
 }
