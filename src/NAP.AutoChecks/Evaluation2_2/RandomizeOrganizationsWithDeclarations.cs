@@ -1,8 +1,9 @@
 using Microsoft.Extensions.Logging;
 using NAP.AutoChecks.API;
-using NAP.AutoChecks.Checks;
+using NAP.AutoChecks.Evaluation2_1;
+using NAP.AutoChecks.Evaluation2_2._2022;
 
-namespace NAP.AutoChecks.Sampling;
+namespace NAP.AutoChecks.Evaluation2_2;
 
 public class RandomizeOrganizationsWithDeclarations
 {
@@ -12,11 +13,13 @@ public class RandomizeOrganizationsWithDeclarations
     private readonly int _maxRTTI = 5;
     private readonly int _maxSSTP = 5;
     private readonly ILogger<RandomizeOrganizationsWithDeclarations> _logger;
+    private readonly PreviouslySelectedDatasets2_2Loader _previouslySelectedLoader;
 
-    public RandomizeOrganizationsWithDeclarations(DataHandler dataHandler, ILogger<RandomizeOrganizationsWithDeclarations> logger)
+    public RandomizeOrganizationsWithDeclarations(DataHandler dataHandler, ILogger<RandomizeOrganizationsWithDeclarations> logger, PreviouslySelectedDatasets2_2Loader previouslySelectedLoader)
     {
         _dataHandler = dataHandler;
         _logger = logger;
+        _previouslySelectedLoader = previouslySelectedLoader;
     }
 
     public async Task Run()
@@ -24,6 +27,8 @@ public class RandomizeOrganizationsWithDeclarations
         var stakeholders = await _dataHandler.GetStakeholders();
 
         var organizations = await _dataHandler.GetOrganizations();
+        
+        var packages = (await _dataHandler.GetPackages()).ToList();
 
         var results = new List<RandomizeOrganizationsWithDeclarationsResults>();
         foreach (var stakeholder in stakeholders)
@@ -43,12 +48,32 @@ public class RandomizeOrganizationsWithDeclarations
 
             if (organization.HasMMTISDeclaration() || organization.HasRTTIDeclaration() || organization.HasSRTIDeclaration() || organization.HasSSTPDeclaration())
             {
-                results.Add(new RandomizeOrganizationsWithDeclarationsResults(stakeholder, organization));
+                results.Add(new RandomizeOrganizationsWithDeclarationsResults(stakeholder, organization, packages));
             }
         }
         
         results.Shuffle();
 
+        // sort previously selected at the bottom.
+        var previousSelection = (await _previouslySelectedLoader.Get()).ToList();
+        var previouslySelected = previousSelection
+            .Where(x => x.SelectedSRTI || x.SelectedMMTIS || x.SelectedRTTI || x.SelectedSSTP)
+            .Select(x => x.OrganizationId).ToHashSet();
+        var newResult =new List<RandomizeOrganizationsWithDeclarationsResults>();
+        while (results.Count > 0)
+        {
+            var last = results[^1];
+            results.RemoveAt(results.Count - 1);
+            if (previouslySelected.Contains(last.OrganizationId))
+            {
+                last.SelectedBefore = true;
+                newResult.Add(last);
+                continue;
+            }
+            newResult.Insert(0, last);
+        }
+        results = newResult;
+        
         var extraBudget = 0;
         while (results.Count(x => x.SelectedSRTI) < _maxSRTI)
         {
@@ -125,6 +150,6 @@ public class RandomizeOrganizationsWithDeclarations
                 next.Name, results.Count(x => x.SelectedMMTIS));
         }
 
-        await _dataHandler.WriteResultAsync("randomized_organizations_with_declarations.xlsx", results);
+        await _dataHandler.WriteResultAsync("evaluation_2.2_randomized_organizations_with_declarations.xlsx", results);
     }
 }

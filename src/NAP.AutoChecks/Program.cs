@@ -1,26 +1,18 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using CsvHelper;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using NAP.AutoChecks;
 using NAP.AutoChecks.API;
 using NAP.AutoChecks.API.Stakeholders._2023;
-using NAP.AutoChecks.Checks;
-using NAP.AutoChecks.Domain;
 using NAP.AutoChecks.Evaluation1_1;
 using NAP.AutoChecks.Evaluation1_2;
 using NAP.AutoChecks.Evaluation1_2._2022;
+using NAP.AutoChecks.Evaluation2_1;
+using NAP.AutoChecks.Evaluation2_2;
+using NAP.AutoChecks.Evaluation2_2._2022;
 using NAP.AutoChecks.Queries;
-using NAP.AutoChecks.Sampling;
 using Serilog;
-using Serilog.Formatting.Json;
 using TransportDataBe.Client;
-using TransportDataBe.Client.Models;
 
 public static class Program
 {
@@ -52,8 +44,7 @@ public static class Program
                 services.AddSingleton<OrganizationsNotInStakeholdersCheck>();
                 services.AddSingleton<StakeholderHasPackagesCheck>();
                 services.AddSingleton<RequiredFieldsFilledInCheck>();
-                services.AddSingleton<StakeholderHasDeclarations>();
-                services.AddSingleton<RandomizeDatasets>();
+                services.AddSingleton<StakeholdersWithoutDeclarations>();
                 services.AddSingleton<StakeholdersWithDeclarations>();
                 services.AddSingleton<StakeholdersRegisteredCheck>();
                 services.AddSingleton<RandomizeOrganizationsWithDeclarations>();
@@ -65,6 +56,11 @@ public static class Program
                 {
                     DataPath = dataPath
                 });
+                services.AddSingleton<PreviouslySelectedDatasets2_2Loader>();
+                services.AddSingleton(new PreviouslySelectedDatasets2_2LoaderSettings()
+                {
+                    DataPath = dataPath
+                });
 
                 services.AddSingleton<StakeholderLoader>();
                 services.AddSingleton<AllStakeholders>();
@@ -72,6 +68,8 @@ public static class Program
 
                 services.AddSingleton<Evaluation1_1>();
                 services.AddSingleton<Evaluation1_2>();
+                services.AddSingleton<Evaluation2_1>();
+                services.AddSingleton<Evaluation2_2>();
             }).UseConsoleLifetime().Build();
 
         using var scope = host.Services.CreateScope();
@@ -81,5 +79,11 @@ public static class Program
         
         var evaluation1_2 = scope.ServiceProvider.GetRequiredService<Evaluation1_2>();
         await evaluation1_2.Run();
+
+        var evaluation2_1 = scope.ServiceProvider.GetRequiredService<Evaluation2_1>();
+        await evaluation2_1.Run();
+        
+        var evaluation2_2 = scope.ServiceProvider.GetRequiredService<Evaluation2_2>();
+        await evaluation2_2.Run();
     }
 }

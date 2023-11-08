@@ -1,6 +1,6 @@
 using TransportDataBe.Client.Models;
 
-namespace NAP.AutoChecks.Checks;
+namespace NAP.AutoChecks.Evaluation2_1;
 
 public static class OrganizationExtensions
 {

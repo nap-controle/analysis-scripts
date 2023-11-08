@@ -1,9 +1,8 @@
 using NAP.AutoChecks.API;
-using NAP.AutoChecks.Checks;
 
 // ReSharper disable InconsistentNaming
 
-namespace NAP.AutoChecks.Sampling;
+namespace NAP.AutoChecks.Evaluation2_1;
 
 public class StakeholdersWithDeclarations
 {
@@ -45,6 +44,6 @@ public class StakeholdersWithDeclarations
         
         results.Shuffle();
         
-        await _dataHandler.WriteResultAsync("stakeholders_with_declarations.xlsx", results);
+        await _dataHandler.WriteResultAsync("evaluation_2.1_stakeholders_with_declarations.xlsx", results);
     }
 }

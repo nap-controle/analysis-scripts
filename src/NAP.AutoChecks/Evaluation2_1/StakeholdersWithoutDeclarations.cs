@@ -1,13 +1,13 @@
 using NAP.AutoChecks.API;
 using NAP.AutoChecks.Domain;
 
-namespace NAP.AutoChecks.Checks;
+namespace NAP.AutoChecks.Evaluation2_1;
 
-public class StakeholderHasDeclarations
+public class StakeholdersWithoutDeclarations
 {
     private readonly DataHandler _dataHandler;
 
-    public StakeholderHasDeclarations(DataHandler dataHandler)
+    public StakeholdersWithoutDeclarations(DataHandler dataHandler)
     {
         _dataHandler = dataHandler;
     }
@@ -19,7 +19,7 @@ public class StakeholderHasDeclarations
         var packages = (await _dataHandler.GetPackages()).ToList();
 
         var organizations = await _dataHandler.GetOrganizations();
-        var results = new List<StakeholderHasDeclarationsResult>();
+        var results = new List<StakeholdersWithoutDeclarationsResult>();
         foreach (var stakeholder in stakeholders)
         {
             if (stakeholder.ParsedOrganizationId == null)
@@ -56,10 +56,10 @@ public class StakeholderHasDeclarations
                 error += "No agreement declaration SSTP ";
             }
             
-            results.Add(new StakeholderHasDeclarationsResult(stakeholder, organization, packages, error,
+            results.Add(new StakeholdersWithoutDeclarationsResult(stakeholder, organization, packages, error,
                 organization.HasMMTISDeclaration(), organization.HasRTTIDeclaration(), organization.HasSSTPDeclaration(), organization.HasSRTIDeclaration()));
         }
 
-        await _dataHandler.WriteResultAsync("stakeholders_no_declarations.xlsx", results);
+        await _dataHandler.WriteResultAsync("evaluation_2.1_stakeholders_no_declarations.xlsx", results);
     }
 }

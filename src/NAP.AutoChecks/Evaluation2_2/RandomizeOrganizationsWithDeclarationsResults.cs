@@ -1,8 +1,8 @@
-using NAP.AutoChecks.Checks;
 using NAP.AutoChecks.Domain;
+using NAP.AutoChecks.Evaluation2_1;
 using TransportDataBe.Client.Models;
 
-namespace NAP.AutoChecks.Sampling;
+namespace NAP.AutoChecks.Evaluation2_2;
 
 public class RandomizeOrganizationsWithDeclarationsResults
 {
@@ -11,7 +11,7 @@ public class RandomizeOrganizationsWithDeclarationsResults
     /// </summary>
     /// <param name="stakeholder"></param>
     /// <param name="organization"></param>
-    public RandomizeOrganizationsWithDeclarationsResults(Stakeholder stakeholder, Organization organization)
+    public RandomizeOrganizationsWithDeclarationsResults(Stakeholder stakeholder, Organization organization, IEnumerable<Package> packages)
     {
         this.Id = stakeholder.Id;
         this.Name = stakeholder.Name;
@@ -20,6 +20,14 @@ public class RandomizeOrganizationsWithDeclarationsResults
         this.HasRTTIDeclaration = organization.HasRTTIDeclaration();
         this.HasSRTIDeclaration = organization.HasSRTIDeclaration();
         this.HasSSTPDeclaration = organization.HasSSTPDeclaration();
+        this.StakeholderMMTIS = stakeholder.IsMMTIS;
+        this.StakeholderRTTI = stakeholder.IsRTTI;
+        this.StakeholderSRTI = stakeholder.IsSRTI;
+        this.StakeholderSSTP = stakeholder.IsSSTP;
+        this.HasMMTISPackage = organization.HasMMTISPackage(packages);
+        this.HasSRTIPackage = organization.HasSRTIPackage(packages);
+        this.HasSSTPPackage = organization.HasSSTPPackage(packages);
+        this.HasRTTIPackage = organization.HasRTTIPackage(packages);
     }
 
     /// <summary>
@@ -52,4 +60,21 @@ public class RandomizeOrganizationsWithDeclarationsResults
     public bool HasRTTIDeclaration { get; set; }
 
     public bool HasMMTISDeclaration { get; set; }
+    
+    public bool SelectedBefore { get; set; }
+
+    public bool StakeholderSSTP { get; set; }
+
+    public bool HasSSTPPackage { get; set; }
+    public bool StakeholderSRTI { get; set; }
+
+    public bool HasSRTIPackage { get; set; }
+
+    public bool StakeholderRTTI { get; set; }
+
+    public bool HasRTTIPackage { get; set; }
+
+    public bool StakeholderMMTIS { get; set; }
+
+    public bool HasMMTISPackage { get; set; }
 }

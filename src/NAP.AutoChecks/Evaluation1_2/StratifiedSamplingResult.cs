@@ -1,4 +1,3 @@
-using NAP.AutoChecks.Checks;
 using NAP.AutoChecks.Domain;
 using TransportDataBe.Client.Models;
 

@@ -1,9 +1,9 @@
 using NAP.AutoChecks.Domain;
 using TransportDataBe.Client.Models;
 
-namespace NAP.AutoChecks.Checks;
+namespace NAP.AutoChecks.Evaluation2_1;
 
-public class StakeholderHasDeclarationsResult
+public class StakeholdersWithoutDeclarationsResult
 {
     /// <summary>
     /// 
@@ -16,7 +16,7 @@ public class StakeholderHasDeclarationsResult
     /// <param name="hasRTTIDeclaration"></param>
     /// <param name="hasSSTPDeclaration"></param>
     /// <param name="hasSsrtiDeclaration"></param>
-    public StakeholderHasDeclarationsResult(Stakeholder stakeholder, Organization organization, IEnumerable<Package> packages,
+    public StakeholdersWithoutDeclarationsResult(Stakeholder stakeholder, Organization organization, IEnumerable<Package> packages,
         string error, bool hasMMTISDeclaration, bool hasRTTIDeclaration, bool hasSSTPDeclaration, bool hasSsrtiDeclaration)
     {
         this.Id = stakeholder.Id;

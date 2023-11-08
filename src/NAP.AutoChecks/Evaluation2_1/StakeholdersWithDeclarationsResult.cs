@@ -1,8 +1,7 @@
-using NAP.AutoChecks.Checks;
 using NAP.AutoChecks.Domain;
 using TransportDataBe.Client.Models;
 
-namespace NAP.AutoChecks.Sampling;
+namespace NAP.AutoChecks.Evaluation2_1;
 
 public class StakeholdersWithDeclarationsResult
 {
