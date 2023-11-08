@@ -102,7 +102,7 @@ public class RequiredFieldsFilledInCheck
                 if (package.Theme != "http://publications.europa.eu/resource/authority/data-theme/TRAN")
                 {
                     results.Add(new RequiredFieldsFilledInResult(_dataHandler.GetClient(), stakeholder, package, "theme_not_filled_in",
-                        $"Invalid them: {package.Theme}"));
+                        $"Invalid theme: {package.Theme}"));
                     continue;
                 }
 

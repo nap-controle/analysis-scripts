@@ -78,7 +78,7 @@ public class DataHandler
     /// <returns></returns>
     public IEnumerable<string> GetPossibleAccMods()
     {
-        return new[] { "Other", "GBFS", "GTFS", "DATEX II profile", "OpenAPI", "NeTEX", "MDS", "DATEX II Light", "VDV Standard" };
+        return new[] { "Other", "GBFS", "GTFS", "DATEX II profile", "OpenAPI", "NeTEX", "MDS", "DATEX II Light", "VDV Standard", "http://publications.europa.eu/resource/authority/file-type/KML" };
     }
 
     public IEnumerable<string> GetPossibleAccInts()
