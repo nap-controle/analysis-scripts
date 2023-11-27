@@ -219,6 +219,7 @@ public class DataHandler
         declarations = Path.Combine(organizationFolder, "declarations");
         if (!Directory.Exists(declarations)) Directory.CreateDirectory(declarations);
         documentFile = Path.Combine(declarations, $"{organization.Name}_{file}");
+        stream.Seek(0, SeekOrigin.Begin);
         await using (var outputStream = File.Open(documentFile, FileMode.Create))
         {
             await stream.CopyToAsync(outputStream);
