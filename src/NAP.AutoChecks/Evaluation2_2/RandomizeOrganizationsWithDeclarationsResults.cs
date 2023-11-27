@@ -11,7 +11,10 @@ public class RandomizeOrganizationsWithDeclarationsResults
     /// </summary>
     /// <param name="stakeholder"></param>
     /// <param name="organization"></param>
-    public RandomizeOrganizationsWithDeclarationsResults(Stakeholder stakeholder, Organization organization, IEnumerable<Package> packages)
+    /// <param name="packages"></param>
+    /// <param name="previousSamplingDate"></param>
+    public RandomizeOrganizationsWithDeclarationsResults(Stakeholder stakeholder, Organization organization, 
+        IEnumerable<Package> packages, DateTime previousSamplingDate)
     {
         this.Id = stakeholder.Id;
         this.Name = stakeholder.Name;
@@ -28,6 +31,10 @@ public class RandomizeOrganizationsWithDeclarationsResults
         this.HasSRTIPackage = organization.HasSRTIPackage(packages);
         this.HasSSTPPackage = organization.HasSSTPPackage(packages);
         this.HasRTTIPackage = organization.HasRTTIPackage(packages);
+        this.MMTISWasModified = organization.WasModifiedSince(packages, previousSamplingDate, x => x.IsMMTIS());
+        this.SRTIWasModified = organization.WasModifiedSince(packages, previousSamplingDate, x => x.IsSRTI());
+        this.SSTPWasModified = organization.WasModifiedSince(packages, previousSamplingDate, x => x.IsSSTP());
+        this.RTTIWasModified = organization.WasModifiedSince(packages, previousSamplingDate, x => x.IsRTTI());
     }
 
     /// <summary>
@@ -66,15 +73,24 @@ public class RandomizeOrganizationsWithDeclarationsResults
     public bool StakeholderSSTP { get; set; }
 
     public bool HasSSTPPackage { get; set; }
+    
+    public bool SSTPWasModified { get; set; }
     public bool StakeholderSRTI { get; set; }
 
     public bool HasSRTIPackage { get; set; }
+    
+    public bool SRTIWasModified { get; set; }
 
     public bool StakeholderRTTI { get; set; }
 
     public bool HasRTTIPackage { get; set; }
+    
+    public bool RTTIWasModified { get; set; }
 
     public bool StakeholderMMTIS { get; set; }
 
     public bool HasMMTISPackage { get; set; }
+    
+    public bool MMTISWasModified { get; set; }
+    
 }

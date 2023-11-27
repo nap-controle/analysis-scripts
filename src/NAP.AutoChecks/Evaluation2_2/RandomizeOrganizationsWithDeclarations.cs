@@ -14,12 +14,14 @@ public class RandomizeOrganizationsWithDeclarations
     private readonly int _maxSSTP = 5;
     private readonly ILogger<RandomizeOrganizationsWithDeclarations> _logger;
     private readonly PreviouslySelectedDatasets2_2Loader _previouslySelectedLoader;
+    private readonly RandomizeOrganizationsWithDeclarationsSettings _settings;
 
-    public RandomizeOrganizationsWithDeclarations(DataHandler dataHandler, ILogger<RandomizeOrganizationsWithDeclarations> logger, PreviouslySelectedDatasets2_2Loader previouslySelectedLoader)
+    public RandomizeOrganizationsWithDeclarations(DataHandler dataHandler, ILogger<RandomizeOrganizationsWithDeclarations> logger, PreviouslySelectedDatasets2_2Loader previouslySelectedLoader, RandomizeOrganizationsWithDeclarationsSettings settings)
     {
         _dataHandler = dataHandler;
         _logger = logger;
         _previouslySelectedLoader = previouslySelectedLoader;
+        _settings = settings;
     }
 
     public async Task Run()
@@ -48,7 +50,7 @@ public class RandomizeOrganizationsWithDeclarations
 
             if (organization.HasMMTISDeclaration() || organization.HasRTTIDeclaration() || organization.HasSRTIDeclaration() || organization.HasSSTPDeclaration())
             {
-                results.Add(new RandomizeOrganizationsWithDeclarationsResults(stakeholder, organization, packages));
+                results.Add(new RandomizeOrganizationsWithDeclarationsResults(stakeholder, organization, packages, _settings.PreviousSamplingDay));
             }
         }
         
@@ -75,7 +77,7 @@ public class RandomizeOrganizationsWithDeclarations
         results = newResult;
         
         var extraBudget = 0;
-        while (results.Count(x => x.SelectedSRTI) < _maxSRTI)
+        while (results.Count(x => x is { SelectedSRTI: true, SRTIWasModified: true }) < _maxSRTI)
         {
             // select next.
             var next = results.FirstOrDefault(x => x.HasSRTIDeclaration && !x.SelectedSRTI);
@@ -94,7 +96,7 @@ public class RandomizeOrganizationsWithDeclarations
                 next.Name, results.Count(x => x.SelectedSRTI));
         }
 
-        while (results.Count(x => x.SelectedRTTI) < _maxRTTI)
+        while (results.Count(x => x is { SelectedRTTI: true, RTTIWasModified: true }) < _maxRTTI)
         {
             // select next.
             var next = results.FirstOrDefault(x => x.HasRTTIDeclaration && !x.SelectedRTTI);
@@ -113,7 +115,7 @@ public class RandomizeOrganizationsWithDeclarations
                 next.Name, results.Count(x => x.SelectedRTTI));
         }
 
-        while (results.Count(x => x.SelectedSSTP) < _maxSSTP)
+        while (results.Count(x => x is { SelectedSSTP: true, SSTPWasModified: true }) < _maxSSTP)
         {
             // select next.
             var next = results.FirstOrDefault(x => x.HasSSTPDeclaration && !x.SelectedSSTP);
@@ -132,7 +134,7 @@ public class RandomizeOrganizationsWithDeclarations
                 next.Name, results.Count(x => x.SelectedSSTP));
         }
 
-        while (results.Count(x => x.SelectedMMTIS) < _maxMMTIS + extraBudget)
+        while (results.Count(x => x is { SelectedMMTIS: true, MMTISWasModified: true }) < _maxMMTIS + extraBudget)
         {
             // select next.
             var next = results.FirstOrDefault(x => x.HasMMTISDeclaration && !x.SelectedMMTIS);

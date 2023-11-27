@@ -48,6 +48,7 @@ public static class Program
                 services.AddSingleton<StakeholdersWithDeclarations>();
                 services.AddSingleton<StakeholdersRegisteredCheck>();
                 services.AddSingleton<RandomizeOrganizationsWithDeclarations>();
+                services.AddSingleton(new RandomizeOrganizationsWithDeclarationsSettings());
 
                 services.AddSingleton(new StratifiedSamplingSetting());
                 services.AddSingleton<StratifiedSampling>();
