@@ -94,10 +94,6 @@ public class StratifiedSampling
         // - all packages with edits since previous sampling.
         // - all packages not previously checked.
         
-        // SAMPLING3:
-        // - all packages with edits since previous sampling.
-        // - all packages not previously checked.
-        
         // PROCEDURE: 
         // - first select 5 for SSTP, RTTI and SRTI.
         // - after select remaining for SSTP using stratified sampling.

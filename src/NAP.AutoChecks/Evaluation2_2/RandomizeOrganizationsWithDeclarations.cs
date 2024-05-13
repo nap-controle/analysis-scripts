@@ -52,6 +52,10 @@ public class RandomizeOrganizationsWithDeclarations
             {
                 results.Add(new RandomizeOrganizationsWithDeclarationsResults(stakeholder, organization, packages, _settings.PreviousSamplingDay));
             }
+            else
+            {
+                _logger.LogWarning("Organization has no declarations submitted: {OrganizationName}", organization.Name);
+            }
         }
         
         results.Shuffle();
