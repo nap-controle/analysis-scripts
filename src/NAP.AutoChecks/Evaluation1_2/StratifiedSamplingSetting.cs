@@ -17,7 +17,7 @@ public class StratifiedSamplingSetting
     /// <summary>
     /// The date the previous sampling was done.
     /// </summary>
-    public DateTime PreviousSamplingDay { get; set; } = new (2022, 12, 31);
+    public DateTime PreviousSamplingDay { get; set; } = new (2023, 10, 03);
 
     public int SelectCountFor(NAPType type)
     {
