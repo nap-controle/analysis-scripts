@@ -121,7 +121,7 @@ public class DataHandler
     {
         if (_stakeholders != null) return _stakeholders;
 
-        _stakeholders = await _stakeholderLoader.GetStakeholders(Path.Combine(_dataPath, "stakeholders", "2023"));
+        _stakeholders = await _stakeholderLoader.GetStakeholders(Path.Combine(_dataPath, "stakeholders", "2024"));
         
         return _stakeholders;
     }

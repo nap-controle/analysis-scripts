@@ -93,17 +93,33 @@ public class Client
     /// <exception cref="Exception"></exception>
     public async Task<Response<Organization>> GetOrganization(string organizationName)
     {
-        var client = _httpClientFactory.CreateClient(ClientSettings.HttpClientName);
-        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        var url = $"{_settings.Api}action/organization_show?id={organizationName}";
-        
-        using var response = await client.GetAsync(url, 
-            HttpCompletionOption.ResponseHeadersRead);
-        if (response.StatusCode == HttpStatusCode.NotFound) throw new Exception("404 is an invalid response in this api");
+        const int maxTries = 100;
+        var tries = maxTries;
+        while (tries > 0)
+        {
+            await Task.Delay(Random.Shared.Next(10000) + 1000);
+            
+            using var client = _httpClientFactory.CreateClient(ClientSettings.HttpClientName);
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var url = $"{_settings.Api}action/organization_show?id={organizationName}";
 
-        return await JsonSerializer.DeserializeAsync<Response<Organization>>(
-                   await response.Content.ReadAsStreamAsync(), _jsonSerializerOptions) ?? 
-               throw new Exception($"invalid response, cannot parse {nameof(Response<Organization>)}");
+            using var response = await client.GetAsync(url,
+                HttpCompletionOption.ResponseHeadersRead);
+            if (response.StatusCode == HttpStatusCode.NotFound)
+                throw new Exception("404 is an invalid response in this api");
+            if (response.StatusCode == HttpStatusCode.Forbidden)
+            {
+                await Task.Delay(Random.Shared.Next(10000) + 1000);
+                tries--;
+                continue;
+            }
+
+            return await JsonSerializer.DeserializeAsync<Response<Organization>>(
+                       await response.Content.ReadAsStreamAsync(), _jsonSerializerOptions) ??
+                   throw new Exception($"invalid response, cannot parse {nameof(Response<Organization>)}");
+        }
+
+        throw new Exception($"Could not get organization after {maxTries}");
     }
 
     /// <summary>

@@ -43,26 +43,27 @@ public class StakeholderLoader
         {
             if (string.IsNullOrWhiteSpace(mmtisOrg.Organization)) continue;
 
+            // TODO: figure out if this is a problem, field is missing now.
             MMTISType? mmtisType = null;
-            if (mmtisOrg.Type != null)
-            {
-                if (mmtisOrg.Type.StartsWith("RA"))
-                {
-                    mmtisType = MMTISType.TransportAuthority;
-                }
-                else if (mmtisOrg.Type.StartsWith("MOD"))
-                {
-                    mmtisType = MMTISType.TransportOnDemand;
-                }
-                else if (mmtisOrg.Type.StartsWith("IM"))
-                {
-                    mmtisType = MMTISType.InfrastructureManager;
-                }
-                else if (mmtisOrg.Type.StartsWith("PTO"))
-                {
-                    mmtisType = MMTISType.TransportOperator;
-                }
-            }
+            // if (mmtisOrg.Type != null)
+            // {
+            //     if (mmtisOrg.Type.StartsWith("RA"))
+            //     {
+            //         mmtisType = MMTISType.TransportAuthority;
+            //     }
+            //     else if (mmtisOrg.Type.StartsWith("MOD"))
+            //     {
+            //         mmtisType = MMTISType.TransportOnDemand;
+            //     }
+            //     else if (mmtisOrg.Type.StartsWith("IM"))
+            //     {
+            //         mmtisType = MMTISType.InfrastructureManager;
+            //     }
+            //     else if (mmtisOrg.Type.StartsWith("PTO"))
+            //     {
+            //         mmtisType = MMTISType.TransportOperator;
+            //     }
+            // }
             
             var mmtisStakeholder = stakeholders.FirstOrDefault(x => x.Id == mmtisOrg.Organization);
             if (mmtisStakeholder == null)
@@ -79,7 +80,7 @@ public class StakeholderLoader
             if (mmtisType == null)
             {
                 _logger.LogWarning("Could not determine MMTISType for {Organization} - {OrganizationId}: {DataFound}",
-                    mmtisStakeholder.Name, mmtisStakeholder.OrganizationId ?? "No CKAN-ID", mmtisOrg.Type);
+                    mmtisStakeholder.Name, mmtisStakeholder.OrganizationId ?? "No CKAN-ID", "Field not in CSV");
             }
             mmtisStakeholder.IsMMTIS = true;
         }

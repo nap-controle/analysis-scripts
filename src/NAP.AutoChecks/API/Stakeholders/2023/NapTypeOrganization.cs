@@ -19,11 +19,11 @@ public class NapTypeOrganization
     [Index(1)]
     public string OrganizationName { get; set; }
     
-    /// <summary>
-    /// The type, if any.
-    /// </summary>
-    [Index(2)]
-    public string? Type { get; set; }
+    // /// <summary>
+    // /// The type, if any.
+    // /// </summary>
+    // [Index(2)]
+    // public string? Type { get; set; }
 
     internal static async Task<IEnumerable<NapTypeOrganization>> Load(Stream stream)
     {
