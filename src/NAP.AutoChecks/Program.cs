@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using NAP.AutoChecks;
 using NAP.AutoChecks.API;
 using NAP.AutoChecks.API.Stakeholders._2023;
+using NAP.AutoChecks.Evaluation0_DataValidation;
 using NAP.AutoChecks.Evaluation1_1;
 using NAP.AutoChecks.Evaluation1_2;
 using NAP.AutoChecks.Evaluation1_2._2022;
@@ -57,6 +58,7 @@ public static class Program
                 });
                 services.AddSingleton<DataHandler>();
                 services.AddSingleton(new MMTISDeadlineSettings());
+                services.AddSingleton<StakeholderWithoutNAPTypeCheck>();
                 services.AddSingleton<OrganizationsNotInStakeholdersCheck>();
                 services.AddSingleton<StakeholderHasPackagesCheck>();
                 services.AddSingleton<RequiredFieldsFilledInCheck>();
@@ -94,6 +96,7 @@ public static class Program
                 services.AddSingleton<AllStakeholders>();
                 services.AddSingleton<StakeholdersAllDeclarations>();
 
+                services.AddSingleton<Evaluation0>();
                 services.AddSingleton<Evaluation1_1>();
                 services.AddSingleton<Evaluation1_2>();
                 services.AddSingleton<Evaluation2_1>();
@@ -101,6 +104,9 @@ public static class Program
             }).UseConsoleLifetime().Build();
 
         using var scope = host.Services.CreateScope();
+        
+        var evaluation0 = scope.ServiceProvider.GetRequiredService<Evaluation0>();
+        await evaluation0.Run();
 
         var evaluation1_1 = scope.ServiceProvider.GetRequiredService<Evaluation1_1>();
         await evaluation1_1.Run();

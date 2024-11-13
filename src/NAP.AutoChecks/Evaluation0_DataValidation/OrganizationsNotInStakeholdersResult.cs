@@ -1,6 +1,6 @@
 using TransportDataBe.Client.Models;
 
-namespace NAP.AutoChecks.Evaluation1_1;
+namespace NAP.AutoChecks.Evaluation0_DataValidation;
 
 public class OrganizationsNotInStakeholdersResult
 {

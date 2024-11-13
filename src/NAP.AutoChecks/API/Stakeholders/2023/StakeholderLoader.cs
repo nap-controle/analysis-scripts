@@ -14,7 +14,7 @@ public class StakeholderLoader
     
     private IList<Stakeholder>? _stakeholders;
 
-    public async Task<IEnumerable<Stakeholder>> GetStakeholders(string stakeholdersPath, DataHandler dataHandler)
+    public async Task<IEnumerable<Stakeholder>> GetStakeholders(string stakeholdersPath)
     {
         if (_stakeholders != null) return _stakeholders;
         
@@ -153,9 +153,6 @@ public class StakeholderLoader
             mmtisStakeholder.Name = sstpOrg.OrganizationName;
             mmtisStakeholder.IsSSTP = true;
         }
-        
-        await dataHandler.WriteResultAsync("stakeholders_no_nap_type.xlsx", stakeholders.Where(x => 
-            x is { IsSSTP: false, IsRTTI: false, IsSRTI: false, IsMMTIS: false }).ToList());
         
         _stakeholders = stakeholders;
         return stakeholders;
