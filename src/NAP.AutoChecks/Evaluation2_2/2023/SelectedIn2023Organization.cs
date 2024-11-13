@@ -4,9 +4,9 @@ using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 using NAP.AutoChecks.Domain;
 
-namespace NAP.AutoChecks.Evaluation2_2._2022;
+namespace NAP.AutoChecks.Evaluation2_2._2023;
 
-public class PreviouslySelectedDataset2_2
+public class SelectedIn2023Organization
 {
     [Index(6)]
     public string OrganizationId { get; set; }
@@ -23,7 +23,7 @@ public class PreviouslySelectedDataset2_2
     [Index(5)]
     public bool SelectedSSTP { get; set; }
 
-    internal static async Task<IEnumerable<PreviouslySelectedDataset2_2>> Load(Stream stream)
+    internal static async Task<IEnumerable<SelectedIn2023Organization>> Load(Stream stream)
     {
         var config = new CsvConfiguration(CultureInfo.InvariantCulture)
         {
@@ -32,6 +32,6 @@ public class PreviouslySelectedDataset2_2
         };
         using var streamReader = new StreamReader(stream);
         using var csv = new CsvReader(streamReader, config);
-        return await csv.GetRecordsAsync<PreviouslySelectedDataset2_2>().ToListAsync();
+        return await csv.GetRecordsAsync<SelectedIn2023Organization>().ToListAsync();
     }
 }

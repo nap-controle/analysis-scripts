@@ -6,5 +6,7 @@ public class ClientSettings
     
     public string Api { get; set; } = "https://www.transportdata.be/api/3/";
     
+    public string ApiKey { get; set; }
+    
     public string Website { get; set; } = "https://www.transportdata.be/";
 }

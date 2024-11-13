@@ -11,9 +11,13 @@ public class StakeholderLoader
     {
         _logger = logger;
     }
+    
+    private IList<Stakeholder>? _stakeholders;
 
-    public async Task<IEnumerable<Stakeholder>> GetStakeholders(string stakeholdersPath)
+    public async Task<IEnumerable<Stakeholder>> GetStakeholders(string stakeholdersPath, DataHandler dataHandler)
     {
+        if (_stakeholders != null) return _stakeholders;
+        
         await using var stream =
             File.OpenRead(Path.Combine(stakeholdersPath, "CKAN-ID.csv"));
         var ckanIds = await CkanId.Load(stream);
@@ -102,7 +106,7 @@ public class StakeholderLoader
                 };
                 stakeholders.Add(mmtisStakeholder);
             }
-            
+            mmtisStakeholder.Name = rttiOrg.OrganizationName;
             mmtisStakeholder.IsRTTI = true;
         }
         
@@ -124,6 +128,7 @@ public class StakeholderLoader
                 stakeholders.Add(mmtisStakeholder);
             }
             
+            mmtisStakeholder.Name = srtiOrg.OrganizationName;
             mmtisStakeholder.IsSRTI = true;
         }
         
@@ -145,9 +150,14 @@ public class StakeholderLoader
                 stakeholders.Add(mmtisStakeholder);
             }
             
+            mmtisStakeholder.Name = sstpOrg.OrganizationName;
             mmtisStakeholder.IsSSTP = true;
         }
         
+        await dataHandler.WriteResultAsync("stakeholders_no_nap_type.xlsx", stakeholders.Where(x => 
+            x is { IsSSTP: false, IsRTTI: false, IsSRTI: false, IsMMTIS: false }).ToList());
+        
+        _stakeholders = stakeholders;
         return stakeholders;
     }
 }

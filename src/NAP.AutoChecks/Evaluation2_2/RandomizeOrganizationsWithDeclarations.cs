@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using NAP.AutoChecks.API;
 using NAP.AutoChecks.Evaluation2_1;
 using NAP.AutoChecks.Evaluation2_2._2022;
+using NAP.AutoChecks.Evaluation2_2._2023;
 
 namespace NAP.AutoChecks.Evaluation2_2;
 
@@ -13,15 +14,17 @@ public class RandomizeOrganizationsWithDeclarations
     private readonly int _maxRTTI = 5;
     private readonly int _maxSSTP = 5;
     private readonly ILogger<RandomizeOrganizationsWithDeclarations> _logger;
-    private readonly PreviouslySelectedDatasets2_2Loader _previouslySelectedLoader;
+    private readonly SelectedIn2022OrganizationLoader _selectedLoader2022;
+    private readonly SelectedIn2023OrganizationLoader _selectedLoader2023;
     private readonly RandomizeOrganizationsWithDeclarationsSettings _settings;
 
-    public RandomizeOrganizationsWithDeclarations(DataHandler dataHandler, ILogger<RandomizeOrganizationsWithDeclarations> logger, PreviouslySelectedDatasets2_2Loader previouslySelectedLoader, RandomizeOrganizationsWithDeclarationsSettings settings)
+    public RandomizeOrganizationsWithDeclarations(DataHandler dataHandler, ILogger<RandomizeOrganizationsWithDeclarations> logger, SelectedIn2022OrganizationLoader selectedLoader2022, RandomizeOrganizationsWithDeclarationsSettings settings, SelectedIn2023OrganizationLoader selectedLoader2023)
     {
         _dataHandler = dataHandler;
         _logger = logger;
-        _previouslySelectedLoader = previouslySelectedLoader;
+        _selectedLoader2022 = selectedLoader2022;
         _settings = settings;
+        _selectedLoader2023 = selectedLoader2023;
     }
 
     public async Task Run()
@@ -61,10 +64,14 @@ public class RandomizeOrganizationsWithDeclarations
         results.Shuffle();
 
         // sort previously selected at the bottom.
-        var previousSelection = (await _previouslySelectedLoader.Get()).ToList();
-        var previouslySelected = previousSelection
+        var previousSelected2022 = (await _selectedLoader2022.Get()).ToList();
+        var previousSelected2023 = (await _selectedLoader2023.Get()).ToList();
+        var previouslySelected = previousSelected2022
             .Where(x => x.SelectedSRTI || x.SelectedMMTIS || x.SelectedRTTI || x.SelectedSSTP)
             .Select(x => x.OrganizationId).ToHashSet();
+        previouslySelected.UnionWith(previousSelected2023
+            .Where(x => x.SelectedSRTI || x.SelectedMMTIS || x.SelectedRTTI || x.SelectedSSTP)
+            .Select(x => x.OrganizationId));
         var newResult =new List<RandomizeOrganizationsWithDeclarationsResults>();
         while (results.Count > 0)
         {
@@ -81,10 +88,12 @@ public class RandomizeOrganizationsWithDeclarations
         results = newResult;
         
         var extraBudget = 0;
-        while (results.Count(x => x is { SelectedSRTI: true, SRTIWasModified: true }) < _maxSRTI)
+        while (results.Count(x => x is { SelectedSRTI: true }) < _maxSRTI)
         {
             // select next.
-            var next = results.FirstOrDefault(x => x.HasSRTIDeclaration && !x.SelectedSRTI);
+            var next = results
+                .FirstOrDefault(x => x is { HasSRTIDeclaration: true, SelectedSRTI: false }
+                                     && (!x.SelectedBefore || x.SRTIWasModified));
             if (next == null)
             {
                 _logger.LogWarning(
@@ -100,10 +109,12 @@ public class RandomizeOrganizationsWithDeclarations
                 next.Name, results.Count(x => x.SelectedSRTI));
         }
 
-        while (results.Count(x => x is { SelectedRTTI: true, RTTIWasModified: true }) < _maxRTTI)
+        while (results.Count(x => x is { SelectedRTTI: true }) < _maxRTTI)
         {
             // select next.
-            var next = results.FirstOrDefault(x => x.HasRTTIDeclaration && !x.SelectedRTTI);
+            var next = results
+                .FirstOrDefault(x => x is { HasRTTIDeclaration: true, SelectedRTTI: false }
+                                     && (!x.SelectedBefore || x.RTTIWasModified));
             if (next == null)
             {
                 _logger.LogWarning(
@@ -119,10 +130,12 @@ public class RandomizeOrganizationsWithDeclarations
                 next.Name, results.Count(x => x.SelectedRTTI));
         }
 
-        while (results.Count(x => x is { SelectedSSTP: true, SSTPWasModified: true }) < _maxSSTP)
+        while (results.Count(x => x is { SelectedSSTP: true }) < _maxSSTP)
         {
             // select next.
-            var next = results.FirstOrDefault(x => x.HasSSTPDeclaration && !x.SelectedSSTP);
+            var next = results
+                .FirstOrDefault(x => x is { HasSSTPDeclaration: true, SelectedSSTP: false} 
+                                     && (!x.SelectedBefore || x.SSTPWasModified));
             if (next == null)
             {
                 _logger.LogWarning(
@@ -138,10 +151,12 @@ public class RandomizeOrganizationsWithDeclarations
                 next.Name, results.Count(x => x.SelectedSSTP));
         }
 
-        while (results.Count(x => x is { SelectedMMTIS: true, MMTISWasModified: true }) < _maxMMTIS + extraBudget)
+        while (results.Count(x => x is { SelectedMMTIS: true }) < _maxMMTIS + extraBudget)
         {
             // select next.
-            var next = results.FirstOrDefault(x => x.HasMMTISDeclaration && !x.SelectedMMTIS);
+            var next = results
+                .FirstOrDefault(x => x is { HasMMTISDeclaration: true, SelectedMMTIS: false } 
+                                     && (!x.SelectedBefore || x.MMTISWasModified));
             if (next == null)
             {
                 _logger.LogWarning(

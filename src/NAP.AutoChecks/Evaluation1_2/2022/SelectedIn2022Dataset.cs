@@ -6,7 +6,7 @@ using NAP.AutoChecks.Domain;
 
 namespace NAP.AutoChecks.Evaluation1_2._2022;
 
-public class PreviouslySelectedDataset
+public class SelectedIn2022Dataset
 {
     [Index(0)]
     public string Organization { get; set; }
@@ -17,7 +17,7 @@ public class PreviouslySelectedDataset
     [Index(2)]
     public string NAPType { get; set; }
 
-    internal static async Task<IEnumerable<PreviouslySelectedDataset>> Load(Stream stream)
+    internal static async Task<IEnumerable<SelectedIn2022Dataset>> Load(Stream stream)
     {
         var config = new CsvConfiguration(CultureInfo.InvariantCulture)
         {
@@ -26,7 +26,7 @@ public class PreviouslySelectedDataset
         };
         using var streamReader = new StreamReader(stream);
         using var csv = new CsvReader(streamReader, config);
-        return await csv.GetRecordsAsync<PreviouslySelectedDataset>().ToListAsync();
+        return await csv.GetRecordsAsync<SelectedIn2022Dataset>().ToListAsync();
     }
 
     public NAPType GetNAPType()

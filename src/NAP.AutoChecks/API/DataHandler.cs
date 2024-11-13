@@ -10,7 +10,7 @@ namespace NAP.AutoChecks.API;
 public class DataHandler
 {
     private readonly Client _client;
-    private readonly string _todayPath;
+    private readonly string _sampleDayPath;
     private readonly string _latestPath;
     private readonly string _dataPath;
     private readonly ILogger<DataHandler> _logger;
@@ -23,9 +23,9 @@ public class DataHandler
         _stakeholderLoader = stakeholderLoader;
 
         _dataPath = dataHandlerSettings.DataPath ?? throw new Exception("Data path not set");
-        _todayPath = Path.Combine(dataHandlerSettings.DataPath,
-            FormattableString.Invariant($"{DateTime.Today:yyyy-MM-dd}"));
-        if (!Directory.Exists(_todayPath)) Directory.CreateDirectory(_todayPath);
+        _sampleDayPath = Path.Combine(dataHandlerSettings.DataPath,
+            FormattableString.Invariant($"{dataHandlerSettings.SampleDay:yyyy-MM-dd}"));
+        if (!Directory.Exists(_sampleDayPath)) Directory.CreateDirectory(_sampleDayPath);
         _latestPath = Path.Combine(dataHandlerSettings.DataPath, "latest");
         if (!Directory.Exists(_latestPath)) Directory.CreateDirectory(_latestPath);
     }
@@ -97,7 +97,10 @@ public class DataHandler
             "http://publications.europa.eu/resource/authority/frequency/ANNUAL",
             "http://publications.europa.eu/resource/authority/frequency/QUARTERLY",
             "http://publications.europa.eu/resource/authority/frequency/MONTHLY",
-            "http://publications.europa.eu/resource/authority/frequency/ANNUAL_2"
+            "http://publications.europa.eu/resource/authority/frequency/ANNUAL_2",
+            "http://publications.europa.eu/resource/authority/frequency/HOURLY",
+            "http://publications.europa.eu/resource/authority/frequency/WEEKLY",
+            "http://publications.europa.eu/resource/authority/frequency/DAILY_2"
         };
     }
 
@@ -121,7 +124,7 @@ public class DataHandler
     {
         if (_stakeholders != null) return _stakeholders;
 
-        _stakeholders = await _stakeholderLoader.GetStakeholders(Path.Combine(_dataPath, "stakeholders", "2024"));
+        _stakeholders = await _stakeholderLoader.GetStakeholders(Path.Combine(_dataPath, "stakeholders", "2024"), this);
         
         return _stakeholders;
     }
@@ -196,7 +199,7 @@ public class DataHandler
     public async Task WriteResultAsync<T>(string file, IEnumerable<T> items)
     {
         var enumerable = items.ToList();
-        var fileAtDataToday = Path.Combine(_todayPath, file);
+        var fileAtDataToday = Path.Combine(_sampleDayPath, file);
         Excel.Write(fileAtDataToday, enumerable);
         var fileAtDataLatest = Path.Combine(_latestPath, file);
         Excel.Write(fileAtDataLatest, enumerable);
@@ -204,7 +207,7 @@ public class DataHandler
 
     public async Task WriteDeclarationDocumentForOrganizationAsync(string file, Organization organization, Stream stream)
     {
-        var organizationFolder = Path.Combine(_todayPath, "organizations");
+        var organizationFolder = Path.Combine(_sampleDayPath, "organizations");
         if (!Directory.Exists(organizationFolder)) Directory.CreateDirectory(organizationFolder);
         var declarations = Path.Combine(organizationFolder, "declarations");
         if (!Directory.Exists(declarations)) Directory.CreateDirectory(declarations);
@@ -228,7 +231,7 @@ public class DataHandler
 
     private async Task<T?> TryReadToday<T>(string file)
     {
-        var fileToday = Path.Combine(_todayPath, file);
+        var fileToday = Path.Combine(_sampleDayPath, file);
         if (!File.Exists(fileToday)) return default;
         await using var stream = File.OpenRead(fileToday);
         return await JsonSerializer.DeserializeAsync<T>(stream);
@@ -236,7 +239,7 @@ public class DataHandler
 
     private async Task WriteTodayAsync<T>(string file, T data)
     {
-        var fileToday = Path.Combine(_todayPath, file);
+        var fileToday = Path.Combine(_sampleDayPath, file);
         this.CreateDirectoryFor(fileToday);
         await using (var stream = File.Open(fileToday, FileMode.Create))
         {
