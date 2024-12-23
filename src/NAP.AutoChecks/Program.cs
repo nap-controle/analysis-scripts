@@ -59,7 +59,7 @@ public static class Program
                 services.AddSingleton<DataHandler>();
                 services.AddSingleton(new MMTISDeadlineSettings());
                 services.AddSingleton<StakeholderWithoutNAPTypeCheck>();
-                services.AddSingleton<OrganizationsNotInStakeholdersCheck>();
+                services.AddSingleton<AllOrganizations>();
                 services.AddSingleton<StakeholderHasPackagesCheck>();
                 services.AddSingleton<RequiredFieldsFilledInCheck>();
                 services.AddSingleton<StakeholdersWithoutDeclarations>();
