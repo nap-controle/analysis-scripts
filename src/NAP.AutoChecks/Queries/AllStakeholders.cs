@@ -10,6 +10,11 @@ public class AllStakeholders
     {
         _dataHandler = dataHandler;
     }
-    
-    
+
+    public async Task Get()
+    {
+        var stakeholders = await _dataHandler.GetStakeholders();
+        
+        await _dataHandler.WriteResultAsync("stakeholders.xlsx", stakeholders);
+    }
 }
