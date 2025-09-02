@@ -95,6 +95,7 @@ public static class Program
                 services.AddSingleton<StakeholderLoader>();
                 services.AddSingleton<AllStakeholders>();
                 services.AddSingleton<StakeholdersAllDeclarations>();
+                services.AddSingleton<OrganizationsGetProxyAgreements>();
 
                 services.AddSingleton<Evaluation0>();
                 services.AddSingleton<Evaluation1_1>();
@@ -110,17 +111,20 @@ public static class Program
 
         var evaluation1_1 = scope.ServiceProvider.GetRequiredService<Evaluation1_1>();
         await evaluation1_1.Run();
-
-        var evaluation1_2 = scope.ServiceProvider.GetRequiredService<Evaluation1_2>();
-        await evaluation1_2.Run();
-        
-        var evaluation2_1 = scope.ServiceProvider.GetRequiredService<Evaluation2_1>();
-        await evaluation2_1.Run();
-        
-        var evaluation2_2 = scope.ServiceProvider.GetRequiredService<Evaluation2_2>();
-        await evaluation2_2.Run();
+        //
+        // var evaluation1_2 = scope.ServiceProvider.GetRequiredService<Evaluation1_2>();
+        // await evaluation1_2.Run();
+        //
+        // var evaluation2_1 = scope.ServiceProvider.GetRequiredService<Evaluation2_1>();
+        // await evaluation2_1.Run();
+        //
+        // var evaluation2_2 = scope.ServiceProvider.GetRequiredService<Evaluation2_2>();
+        // await evaluation2_2.Run();
         
         var allDeclarations = scope.ServiceProvider.GetRequiredService<StakeholdersAllDeclarations>();
         await allDeclarations.Get();
+
+        var proxyAgreements = scope.ServiceProvider.GetRequiredService<OrganizationsGetProxyAgreements>();
+        await proxyAgreements.Get();
     }
 }

@@ -16,6 +16,26 @@ public class RequiredFieldsFilledInResult
     /// <param name="package"></param>
     /// <param name="error"></param>
     /// <param name="message"></param>
+    public RequiredFieldsFilledInResult(Client client, Stakeholder stakeholder, string error, string message)
+    {
+        _client = client;
+        
+        this.Id = stakeholder.Id;
+        this.Name = stakeholder.Name;
+        this.OrganizationId = stakeholder.OrganizationId ?? "";
+        this.Error = error;
+        this.ErrorMessage = message;
+        _client = client;
+    }
+
+    /// <summary>
+    /// Creates a new result.
+    /// </summary>
+    /// <param name="client"></param>
+    /// <param name="stakeholder"></param>
+    /// <param name="package"></param>
+    /// <param name="error"></param>
+    /// <param name="message"></param>
     public RequiredFieldsFilledInResult(Client client, Stakeholder stakeholder, Package package, string error, string message)
     {
         _client = client;
@@ -85,12 +105,7 @@ public class RequiredFieldsFilledInResult
     /// <summary>
     /// The package id.
     /// </summary>
-    public Guid PackageId { get; set; }
-
-    /// <summary>
-    /// The package url.
-    /// </summary>
-    public string PackageUrl => _client.GetPackageUrl(this.PackageName);
+    public Guid? PackageId { get; set; }
     
     /// <summary>
     /// The package name.
