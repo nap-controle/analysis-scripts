@@ -12,12 +12,9 @@ public class Package
     
     public string[]? countries_covered { get; set; }
     
-    public Dictionary<string, string[]>? mobility_theme { get; set; }
+    public string? mobility_theme { get; set; }
     
-    public bool Private {
-        get;
-        set;
-    }
+    public bool Private { get; set; }
 
     public DateTime? Metadata_Created { get; set; }
 
@@ -29,13 +26,13 @@ public class Package
 
     public Guid? Owner_Org { get; set; }
 
-    public string contact_point_name { get; set; }
+    public string? contact_point_name { get; set; }
 
-    public string contact_point_email { get; set; }
+    public string? contact_point_email { get; set; }
 
-    public string publisher_firstname { get; set; }
+    public string? publisher_firstname { get; set; }
 
-    public string publisher_surname { get; set; }
+    public string? publisher_surname { get; set; }
 
     public string? Frequency { get; set; }
 
@@ -43,9 +40,9 @@ public class Package
 
     public PackageOrganization Organization { get; set; }
 
-    public NotesTranslated? Notes_Translated { get; set; }
+    public TranslatedText? Notes_Translated { get; set; }
 
-    public string[]? Fluent_Tags { get; set; }
+    public string? Fluent_Tags { get; set; }
 
     public string? Cont_Res { get; set; }
 

@@ -1,7 +1,7 @@
-using System.Collections.ObjectModel;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using NAP.AutoChecks.API.Stakeholders._2023;
+using NAP.AutoChecks.API.Stakeholders._2025;
 using NAP.AutoChecks.Domain;
 using TransportDataBe.Client;
 using TransportDataBe.Client.Models;
@@ -15,17 +15,17 @@ public class DataHandler
     private readonly string _latestPath;
     private readonly string _dataPath;
     private readonly ILogger<DataHandler> _logger;
-    private readonly StakeholderLoader _stakeholderLoader;
+    private readonly StakeholderLoader2025 _stakeholderLoader2025;
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {    
         PropertyNameCaseInsensitive = true
     };
 
-    public DataHandler(Client client, DataHandlerSettings dataHandlerSettings, ILogger<DataHandler> logger, StakeholderLoader stakeholderLoader)
+    public DataHandler(Client client, DataHandlerSettings dataHandlerSettings, ILogger<DataHandler> logger, StakeholderLoader2025 stakeholderLoader2025)
     {
         _client = client;
         _logger = logger;
-        _stakeholderLoader = stakeholderLoader;
+        _stakeholderLoader2025 = stakeholderLoader2025;
 
         _dataPath = dataHandlerSettings.DataPath ?? throw new Exception("Data path not set");
         _sampleDayPath = Path.Combine(dataHandlerSettings.DataPath,
@@ -227,14 +227,20 @@ public class DataHandler
             ["http://publications.europa.eu/resource/authority/frequency/IRREG"] = new Dictionary<string, string>
                 { ["en"] = "Irregular", ["fr"] = "Irrégulier", ["nl"] = "Onregelmatig", ["de"] = "Unregelmäßig" },
         };
+
+    
+    public async Task<IEnumerable<Stakeholder>> GetStakeholders()
+    {
+        return await this.GetStakeholders2025();
+    }
     
     private IEnumerable<Stakeholder>? _stakeholders;
-
-    public async Task<IEnumerable<Stakeholder>> GetStakeholders()
+    
+    public async Task<IEnumerable<Stakeholder>> GetStakeholders2025()
     {
         if (_stakeholders != null) return _stakeholders;
 
-        _stakeholders = await _stakeholderLoader.GetStakeholders(Path.Combine(_dataPath, "stakeholders", "2024"));
+        _stakeholders = await _stakeholderLoader2025.GetStakeholders(Path.Combine(_dataPath, "stakeholders", "2025"));
         
         return _stakeholders;
     }

@@ -32,7 +32,7 @@ public class StratifiedSampling
         var organizations = await _dataHandler.GetOrganizations();
 
         var packages = (await _dataHandler.GetPackages()).ToList();
-        
+
         var randomizedStakeholders = stakeholders.ToList();
         randomizedStakeholders.Shuffle();
         

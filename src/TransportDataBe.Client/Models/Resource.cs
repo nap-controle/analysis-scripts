@@ -19,7 +19,7 @@ public class Resource
 
     public string? license_type { get; set; }
 
-    public string? license_text_translated { get; set; }
+    public TranslatedText? license_text_translated { get; set; }
     
     public string? Url { get; set; }
 }

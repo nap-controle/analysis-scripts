@@ -6,7 +6,7 @@ using CsvHelper.Configuration.Attributes;
 
 namespace NAP.AutoChecks.Domain;
 
-[DebuggerDisplay("{this.Id} [{this.OrganizationId}] {this.IsMMTIS} {this.IsSSTP} {this.IsRTTI} {this.IsSRTI}")]
+[DebuggerDisplay("{this.Id }[{this.Name}] [{this.OrganizationId}] {this.IsMMTIS} {this.IsSSTP} {this.IsRTTI} {this.IsSRTI}")]
 public class Stakeholder
 {
     /// <summary>

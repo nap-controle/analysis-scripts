@@ -373,18 +373,20 @@ public class RequiredFieldsFilledInCheck
             "Other") return true;
         if (resource.conditions_usage !=
             "https://w3id.org/mobilitydcat-ap/conditions-for-access-and-usage/licence-provided") return true;
-        
-        if (string.IsNullOrWhiteSpace(resource.license_text_translated))
-        {
-            message = "No value";
-            return false;
-        }
 
-        if (!DataHandler.PossibleLicenseTypes.Contains(resource.license_text_translated))
-        {
-            message = $"Invalid value: {resource.license_text_translated}";
-            return false;
-        }
+        throw new NotImplementedException();
+        
+        // if (string.IsNullOrWhiteSpace(resource.license_text_translated))
+        // {
+        //     message = "No value";
+        //     return false;
+        // }
+        //
+        // if (!DataHandler.PossibleLicenseTypes.Contains(resource.license_text_translated))
+        // {
+        //     message = $"Invalid value: {resource.license_text_translated}";
+        //     return false;
+        // }
 
         message = string.Empty;
         return true;
@@ -455,19 +457,21 @@ public class RequiredFieldsFilledInCheck
     {
         var mobilityThemes = _dataHandler.GetMobilityThemes();
 
-        if (package.mobility_theme == null || package.mobility_theme.Count == 0)
+        if (string.IsNullOrEmpty(package.mobility_theme))
         {
             message = "No themes found";
             return false;
         }
 
-        foreach (var theme in package.mobility_theme)
-        {
-            if (mobilityThemes.ContainsKey(theme.Key)) continue;
+        throw new NotImplementedException();
 
-            message = $"Invalid theme {theme.Key}";
-            return false;
-        }
+        // foreach (var theme in package.mobility_theme)
+        // {
+        //     if (mobilityThemes.ContainsKey(theme.Key)) continue;
+        //
+        //     message = $"Invalid theme {theme.Key}";
+        //     return false;
+        // }
         
         message = string.Empty;
         return true;
@@ -483,11 +487,11 @@ public class RequiredFieldsFilledInCheck
             return false;
         }
 
-        foreach (var theme in package.mobility_theme)
+        foreach (var country in package.countries_covered)
         {
-            if (countries.ContainsKey(theme.Key)) continue;
+            if (countries.ContainsKey(country)) continue;
 
-            message = $"Invalid country {theme.Key}";
+            message = $"Invalid country {country}";
             return false;
         }
         
@@ -560,21 +564,23 @@ public class RequiredFieldsFilledInCheck
     {
         var tags = DataHandler.PossibleFluentTags;
 
-        if (package.Fluent_Tags == null || package.Fluent_Tags.Length == 0)
+        if (string.IsNullOrEmpty(package.Fluent_Tags))
         {
             message = "No tags found";
             return false;
         }
         var invalidValues = new HashSet<string>();
+
+        throw new NotImplementedException();
         
-        foreach (var value in package.Fluent_Tags)
-        {
-            // ReSharper disable once PossibleMultipleEnumeration
-            if (!tags.Contains(value))
-            {
-                invalidValues.Add(value);
-            }
-        }
+        // foreach (var value in package.Fluent_Tags)
+        // {
+        //     // ReSharper disable once PossibleMultipleEnumeration
+        //     if (!tags.Contains(value))
+        //     {
+        //         invalidValues.Add(value);
+        //     }
+        // }
 
         if (invalidValues.Count > 0)
         {

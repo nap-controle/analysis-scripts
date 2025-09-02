@@ -1,13 +1,13 @@
 using NAP.AutoChecks.API;
-using TransportDataBe.Client.Models;
+using NAP.AutoChecks.Evaluation1_1;
 
-namespace NAP.AutoChecks.Evaluation1_1;
+namespace NAP.AutoChecks.Task1.B;
 
-public class StakeholderHasPackagesCheck
+public class CheckStakeholderHasPackages
 {
     private readonly DataHandler _dataHandler;
 
-    public StakeholderHasPackagesCheck(DataHandler dataHandler)
+    public CheckStakeholderHasPackages(DataHandler dataHandler)
     {
         _dataHandler = dataHandler;
     }
@@ -18,12 +18,12 @@ public class StakeholderHasPackagesCheck
         var organizations = await _dataHandler.GetOrganizations();
         var packages = await _dataHandler.GetPackages();
 
-        var results = new List<StakeholderHasPackagesResult>();
+        var results = new List<CheckStakeholderHasPackagesResult>();
         foreach (var stakeholder in stakeholders)
         {
             if (stakeholder.ParsedOrganizationId == null)
             {
-                results.Add(new StakeholderHasPackagesResult(stakeholder, "no_organization_id"));
+                results.Add(new CheckStakeholderHasPackagesResult(stakeholder, "no_organization_id"));
                 continue;
             }
             
@@ -31,7 +31,7 @@ public class StakeholderHasPackagesCheck
             var organization = organizations.FirstOrDefault(x => x.Id == stakeholder.ParsedOrganizationId);
             if (organization == null)
             {
-                results.Add(new StakeholderHasPackagesResult(stakeholder, "no_organization_matched"));
+                results.Add(new CheckStakeholderHasPackagesResult(stakeholder, "no_organization_matched"));
                 continue;
             }
 
@@ -39,7 +39,7 @@ public class StakeholderHasPackagesCheck
             var package = packages.FirstOrDefault(x => x.Organization.Id == organization.Id);
             if (package == null)
             {
-                results.Add(new StakeholderHasPackagesResult(stakeholder, "no_package"));
+                results.Add(new CheckStakeholderHasPackagesResult(stakeholder, "no_package"));
                 continue;
             }
         }
