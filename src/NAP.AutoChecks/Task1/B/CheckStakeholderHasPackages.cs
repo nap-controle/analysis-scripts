@@ -12,7 +12,7 @@ public class CheckStakeholderHasPackages
         _dataHandler = dataHandler;
     }
 
-    public async Task Check()
+    public async Task<IEnumerable<CheckStakeholderHasPackagesResult>> Check()
     {
         var stakeholders = await _dataHandler.GetStakeholders();
         var organizations = await _dataHandler.GetOrganizations();
@@ -44,6 +44,6 @@ public class CheckStakeholderHasPackages
             }
         }
 
-        await _dataHandler.WriteResultAsync("evaluation_1.1_stakeholders_without_package.xlsx", results);
+        return results;
     }
 }

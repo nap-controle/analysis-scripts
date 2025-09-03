@@ -33,7 +33,7 @@ public class RandomSelectionPool
 
     public int Free => Quota + _extra - _selected.Count;
 
-    public bool IsFull => this.Free > 0;
+    public bool IsFull => this.Free == 0;
 
     public bool IncreaseQuota(int extra)
     {

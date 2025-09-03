@@ -19,9 +19,11 @@ using NAP.AutoChecks.Queries;
 using NAP.AutoChecks.Task1;
 using NAP.AutoChecks.Task1.A;
 using NAP.AutoChecks.Task1.B;
+using NAP.AutoChecks.Task1.C;
 using NAP.AutoChecks.Task2;
 using NAP.AutoChecks.Task3;
 using NAP.AutoChecks.Task3._2025;
+using NAP.AutoChecks.Task4;
 using Serilog;
 using TransportDataBe.Client;
 
@@ -68,12 +70,18 @@ public static class Program
                 
                 services.AddSingleton<CheckStakeholderHasPackages>();
                 services.AddSingleton<CheckStakeholdersRegistered>();
+                services.AddSingleton<CheckSelfDeclarations>();
                 services.AddSingleton<Task1>();
                 
                 services.AddSingleton<Task2>();
 
                 services.AddSingleton<RandomSelection>();
                 services.AddSingleton<Task3>();
+                
+                services.AddSingleton<Task4>();
+
+                services.AddSingleton<StakeholdersAllDeclarations>();
+                services.AddSingleton<OrganizationsGetProxyAgreements>();
             }).UseConsoleLifetime().Build();
 
         using var scope = host.Services.CreateScope();
@@ -86,6 +94,9 @@ public static class Program
 
         var task3 = scope.ServiceProvider.GetRequiredService<Task3>();
         await task3.Run();
+
+        var task4 = scope.ServiceProvider.GetRequiredService<Task4>();
+        await task4.Run();
         
         var allDeclarations = scope.ServiceProvider.GetRequiredService<StakeholdersAllDeclarations>();
         await allDeclarations.Get();

@@ -16,7 +16,7 @@ public class RandomSelection
         _logger = logger;
     }
 
-    public async Task Run()
+    public async Task<IEnumerable<RandomSelectionResult>> Run()
     {
         var packages = (await _dataHandler.GetPackages()).ToList();
 
@@ -37,26 +37,40 @@ public class RandomSelection
             if (pool.NAPType == biggestPool.NAPType) continue;
             if (pool.IsFull) continue;
 
+            _logger.LogInformation(
+                "There are {Free} out of {Quota} free for {NAPType}, allocating those to {MMTISType}",
+                pool.Free, pool.Quota, pool.NAPType, biggestPool.NAPType);
             biggestPool.IncreaseQuota(pool.Free);
         }
 
         // move duplicate datasets to the biggest pool.
+        var selectedCount = new Dictionary<Guid, int>();
         foreach (var pool in pools)
         {
-            if (pool.NAPType == biggestPool.NAPType) continue;
-
-            var selectedInPool = pool.GetSelected();
-            var selectedInOtherPools = pools
-                .Where(x => x.NAPType != biggestPool.NAPType && x.NAPType != pool.NAPType)
-                .SelectMany(x => x.GetSelected())
-                .ToDictionary(x => x.Id);
-            foreach (var package in selectedInPool)
+            foreach (var selected in pool.GetSelected())
             {
-                if (selectedInOtherPools.ContainsKey(package.Id))
-                {
-                    biggestPool.IncreaseQuota(1);
-                }
+                if (!selectedCount.TryGetValue(selected.Id, out _)) selectedCount[selected.Id] = 0;
+
+                selectedCount[selected.Id] += 1;
             }
         }
+        foreach (var (id, count) in selectedCount)
+        {
+            if (count <= 1) continue;
+
+            var package = packages.First(x => x.Id == id);
+
+            _logger.LogInformation(
+                "Package {PackageName} is selected {Count} times, allocating {Extra} to {MMTISType}",
+                package.Name, count, count - 1, biggestPool.NAPType);
+            biggestPool.IncreaseQuota(count - 1);
+        }
+
+        var selection = new List<RandomSelectionResult>();
+        foreach (var pool in pools)
+        {
+            selection.AddRange(pool.GetSelected().Select(x => new RandomSelectionResult(x, pool.NAPType)));
+        }
+        return selection;
     }
 }

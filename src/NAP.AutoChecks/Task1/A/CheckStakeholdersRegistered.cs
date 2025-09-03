@@ -11,7 +11,7 @@ public class CheckStakeholdersRegistered
         _dataHandler = dataHandler;
     }
 
-    public async Task Check()
+    public async Task<IEnumerable<CheckStakeholdersRegisteredResult>> Check()
     {
         var stakeholders = await _dataHandler.GetStakeholders2025();
         var organizations = await _dataHandler.GetOrganizations();
@@ -33,6 +33,6 @@ public class CheckStakeholdersRegistered
             results.Add(new CheckStakeholdersRegisteredResult(stakeholder, registered));
         }
 
-        await _dataHandler.WriteResultAsync("evaluation_1.1_stakeholders_not_registered.xlsx", results);
+        return results;
     }
 }
