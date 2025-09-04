@@ -577,8 +577,10 @@ public class DataHandler
                 packageJson = await _client.GetPackage(packageId);
                 await WriteTodayAsync(packageTodayFile, packageJson);
             }
+            
             var package = JsonSerializer.Deserialize<Response<Package>>(packageJson, 
                 _jsonSerializerOptions) ?? throw new Exception("Could not read json");
+            if (Constants.OrganizationsBlacklist.Contains(package.Result.Organization.Name)) continue;
 
             packages.Add(package.Result);
         }

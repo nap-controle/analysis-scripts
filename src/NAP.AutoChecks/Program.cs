@@ -16,6 +16,8 @@ using NAP.AutoChecks.Evaluation2_2;
 using NAP.AutoChecks.Evaluation2_2._2022;
 using NAP.AutoChecks.Evaluation2_2._2023;
 using NAP.AutoChecks.Queries;
+using NAP.AutoChecks.Task0;
+using NAP.AutoChecks.Task0.Checks;
 using NAP.AutoChecks.Task1;
 using NAP.AutoChecks.Task1.A;
 using NAP.AutoChecks.Task1.B;
@@ -67,6 +69,9 @@ public static class Program
                 });
                 services.AddSingleton<DataHandler>();
                 services.AddSingleton<StakeholderLoader2025>();
+
+                services.AddSingleton<CheckOrganizationStakeholder>();
+                services.AddSingleton<Task0>();
                 
                 services.AddSingleton<CheckStakeholderHasPackages>();
                 services.AddSingleton<CheckStakeholdersRegistered>();
@@ -85,6 +90,9 @@ public static class Program
             }).UseConsoleLifetime().Build();
 
         using var scope = host.Services.CreateScope();
+        
+        var task0 = scope.ServiceProvider.GetRequiredService<Task0>();
+        await task0.Run();
         
         var task1 = scope.ServiceProvider.GetRequiredService<Task1>();
         await task1.Run();
