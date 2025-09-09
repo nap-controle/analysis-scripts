@@ -26,7 +26,7 @@ public class CheckStakeholderHasPackages
                 results.Add(new CheckStakeholderHasPackagesResult(stakeholder, "no_organization_id"));
                 continue;
             }
-            
+
             // ReSharper disable once PossibleMultipleEnumeration
             var organization = organizations.FirstOrDefault(x => x.Id == stakeholder.ParsedOrganizationId);
             if (organization == null)

@@ -9,11 +9,11 @@ public class Package
     public string Title { get; set; }
 
     public string[]? Language { get; set; }
-    
+
     public string[]? countries_covered { get; set; }
-    
+
     public string? mobility_theme { get; set; }
-    
+
     public bool Private { get; set; }
 
     public DateTime? Metadata_Created { get; set; }

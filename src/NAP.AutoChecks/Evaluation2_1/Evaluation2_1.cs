@@ -14,7 +14,7 @@ public class Evaluation2_1
     public async Task Run()
     {
         await _stakeholdersWithoutDeclarations.Check();
-        
+
         await _stakeholdersWithDeclarations.Run();
     }
 }

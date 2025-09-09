@@ -17,7 +17,7 @@ public class DataHandler
     private readonly ILogger<DataHandler> _logger;
     private readonly StakeholderLoader2025 _stakeholderLoader2025;
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
-    {    
+    {
         PropertyNameCaseInsensitive = true
     };
 
@@ -55,9 +55,9 @@ public class DataHandler
 
     public IEnumerable<(string value, bool hasLicense)> GetPossibleContractLicenses()
     {
-        return new (string value, bool hasLicense)[] { ("conotfree", true),("cofree", true), ("lifree", true), ("linotfree", true), ("nolinoco", false), ("notrelevant", false) };
+        return new (string value, bool hasLicense)[] { ("conotfree", true), ("cofree", true), ("lifree", true), ("linotfree", true), ("nolinoco", false), ("notrelevant", false) };
     }
-    
+
     public static readonly HashSet<string> PossibleFormats = [
         "http://publications.europa.eu/resource/authority/file-type/XML",
         "http://publications.europa.eu/resource/authority/file-type/JSON",
@@ -122,13 +122,13 @@ public class DataHandler
     ];
 
     public static readonly HashSet<string> PossibleUsageConditions =
-    [  
+    [
         "https://w3id.org/mobilitydcat-ap/conditions-for-access-and-usage/contractual-arrangement",
         "https://w3id.org/mobilitydcat-ap/conditions-for-access-and-usage/licence-provided"
     ];
-    
+
     public static readonly HashSet<string> PossibleLicenseTypes =
-    [  
+    [
         "http://publications.europa.eu/resource/authority/licence/CC_BY_4_0",
         "http://publications.europa.eu/resource/authority/licence/CC_BYSA_4_0",
         "http://publications.europa.eu/resource/authority/licence/CC_BYNC_4_0",
@@ -152,7 +152,7 @@ public class DataHandler
 
     public static IEnumerable<string> PossibleRegions =
     [
-        "http://data.europa.eu/nuts/code/BE3", 
+        "http://data.europa.eu/nuts/code/BE3",
         "http://data.europa.eu/nuts/code/BE2",
         "http://data.europa.eu/nuts/code/BE1"
     ];
@@ -162,86 +162,111 @@ public class DataHandler
         {
             ["http://publications.europa.eu/resource/authority/frequency/IRREG"] = new Dictionary<string, string>
             {
-                ["en"] = "On occurence", ["fr"] = "Dès que disponible", ["nl"] = "Zodra beschikbaar", ["de"] = "Sofort"
+                ["en"] = "On occurence",
+                ["fr"] = "Dès que disponible",
+                ["nl"] = "Zodra beschikbaar",
+                ["de"] = "Sofort"
             },
             ["http://publications.europa.eu/resource/authority/frequency/1MIN"] = new Dictionary<string, string>
             {
-                ["en"] = "Every minute", ["fr"] = "Toutes les minutes", ["nl"] = "Elke minuut", ["de"] = "Minütlich"
+                ["en"] = "Every minute",
+                ["fr"] = "Toutes les minutes",
+                ["nl"] = "Elke minuut",
+                ["de"] = "Minütlich"
             },
             ["http://publications.europa.eu/resource/authority/frequency/5MIN"] = new Dictionary<string, string>
             {
-                ["en"] = "Every five minutes", ["fr"] = "Toutes les 5 minutes", ["nl"] = "Om de vijf minuten",
+                ["en"] = "Every five minutes",
+                ["fr"] = "Toutes les 5 minutes",
+                ["nl"] = "Om de vijf minuten",
                 ["de"] = "Alle fünf Minuten"
             },
             ["http://publications.europa.eu/resource/authority/frequency/10MIN"] = new Dictionary<string, string>
             {
-                ["en"] = "Every ten minutes", ["fr"] = "Toutes les 10 minutes", ["nl"] = "Om de tien minuten",
+                ["en"] = "Every ten minutes",
+                ["fr"] = "Toutes les 10 minutes",
+                ["nl"] = "Om de tien minuten",
                 ["de"] = "Alle zehn Minuten"
             },
             ["http://publications.europa.eu/resource/authority/frequency/15MIN"] = new Dictionary<string, string>
             {
-                ["en"] = "Every fifteen minutes", ["fr"] = "Toutes les 15 minutes", ["nl"] = "Om de vijftien minuten",
+                ["en"] = "Every fifteen minutes",
+                ["fr"] = "Toutes les 15 minutes",
+                ["nl"] = "Om de vijftien minuten",
                 ["de"] = "Viertelstündlich"
             },
             ["http://publications.europa.eu/resource/authority/frequency/30MIN"] = new Dictionary<string, string>
             {
-                ["en"] = "Every thirty minutes", ["fr"] = "Toutes les 30 minutes", ["nl"] = "Om de dertig minuten",
+                ["en"] = "Every thirty minutes",
+                ["fr"] = "Toutes les 30 minutes",
+                ["nl"] = "Om de dertig minuten",
                 ["de"] = "Halbstündlich"
             },
             ["http://publications.europa.eu/resource/authority/frequency/HOURLY"] = new Dictionary<string, string>
-                { ["en"] = "Hourly", ["fr"] = "Toutes les heures", ["nl"] = "Om het uur", ["de"] = "Stündlich" },
+            { ["en"] = "Hourly", ["fr"] = "Toutes les heures", ["nl"] = "Om het uur", ["de"] = "Stündlich" },
             ["http://publications.europa.eu/resource/authority/frequency/BIHOURLY"] = new Dictionary<string, string>
             {
-                ["en"] = "Bihourly", ["fr"] = "Toutes les deux heures", ["nl"] = "Om de twee uur",
+                ["en"] = "Bihourly",
+                ["fr"] = "Toutes les deux heures",
+                ["nl"] = "Om de twee uur",
                 ["de"] = "Alle zwei Stunden"
             },
             ["http://publications.europa.eu/resource/authority/frequency/TRIHOURLY"] = new Dictionary<string, string>
             {
-                ["en"] = "Trihourly", ["fr"] = "Toutes les trois heures", ["nl"] = "Om de drie uur",
+                ["en"] = "Trihourly",
+                ["fr"] = "Toutes les trois heures",
+                ["nl"] = "Om de drie uur",
                 ["de"] = "Alle drei Stunden"
             },
             ["http://publications.europa.eu/resource/authority/frequency/12HRS"] = new Dictionary<string, string>
             {
-                ["en"] = "Every twelve hours", ["fr"] = "Toutes les 12 heures", ["nl"] = "Om de twaalf uur",
+                ["en"] = "Every twelve hours",
+                ["fr"] = "Toutes les 12 heures",
+                ["nl"] = "Om de twaalf uur",
                 ["de"] = "Alle zwölf Stunden"
             },
             ["http://publications.europa.eu/resource/authority/frequency/DAILY"] = new Dictionary<string, string>
-                { ["en"] = "Daily", ["fr"] = "Quotidien", ["nl"] = "Dagelijks", ["de"] = "Täglich" },
+            { ["en"] = "Daily", ["fr"] = "Quotidien", ["nl"] = "Dagelijks", ["de"] = "Täglich" },
             ["http://publications.europa.eu/resource/authority/frequency/WEEKLY"] = new Dictionary<string, string>
-                { ["en"] = "Weekly", ["fr"] = "Hebdomadaire", ["nl"] = "Wekelijks", ["de"] = "Wöchentlich" },
+            { ["en"] = "Weekly", ["fr"] = "Hebdomadaire", ["nl"] = "Wekelijks", ["de"] = "Wöchentlich" },
             ["http://publications.europa.eu/resource/authority/frequency/MONTHLY"] = new Dictionary<string, string>
-                { ["en"] = "Monthly", ["fr"] = "Mensuel", ["nl"] = "Maandelijks", ["de"] = "Monatlich" },
+            { ["en"] = "Monthly", ["fr"] = "Mensuel", ["nl"] = "Maandelijks", ["de"] = "Monatlich" },
             ["http://publications.europa.eu/resource/authority/frequency/QUARTERLY"] = new Dictionary<string, string>
             {
-                ["en"] = "Quarterly", ["fr"] = "Trimestriel", ["nl"] = "Driemaandelijks", ["de"] = "Vierteljährlich"
+                ["en"] = "Quarterly",
+                ["fr"] = "Trimestriel",
+                ["nl"] = "Driemaandelijks",
+                ["de"] = "Vierteljährlich"
             },
             ["http://publications.europa.eu/resource/authority/frequency/ANNUAL_2"] = new Dictionary<string, string>
-                { ["en"] = "Semiannual", ["fr"] = "Semestriel", ["nl"] = "Halfjaarlijks", ["de"] = "Halbjährlich" },
+            { ["en"] = "Semiannual", ["fr"] = "Semestriel", ["nl"] = "Halfjaarlijks", ["de"] = "Halbjährlich" },
             ["http://publications.europa.eu/resource/authority/frequency/ANNUAL"] = new Dictionary<string, string>
-                { ["en"] = "Annual", ["fr"] = "Annuel", ["nl"] = "Jaarlijks", ["de"] = "Jährlich" },
+            { ["en"] = "Annual", ["fr"] = "Annuel", ["nl"] = "Jaarlijks", ["de"] = "Jährlich" },
             ["http://publications.europa.eu/resource/authority/frequency/IRREG"] = new Dictionary<string, string>
             {
-                ["en"] = "Less frequent than yearly", ["fr"] = "Moins qu'une fois par an",
-                ["nl"] = "Minder vaak dan één keer per jaar", ["de"] = "Weniger häufig als einmal pro Jahr"
+                ["en"] = "Less frequent than yearly",
+                ["fr"] = "Moins qu'une fois par an",
+                ["nl"] = "Minder vaak dan één keer per jaar",
+                ["de"] = "Weniger häufig als einmal pro Jahr"
             },
             ["http://publications.europa.eu/resource/authority/frequency/IRREG"] = new Dictionary<string, string>
-                { ["en"] = "Irregular", ["fr"] = "Irrégulier", ["nl"] = "Onregelmatig", ["de"] = "Unregelmäßig" },
+            { ["en"] = "Irregular", ["fr"] = "Irrégulier", ["nl"] = "Onregelmatig", ["de"] = "Unregelmäßig" },
         };
 
-    
+
     public async Task<IEnumerable<Stakeholder>> GetStakeholders()
     {
         return await this.GetStakeholders2025();
     }
-    
+
     private IEnumerable<Stakeholder>? _stakeholders;
-    
+
     public async Task<IEnumerable<Stakeholder>> GetStakeholders2025()
     {
         if (_stakeholders != null) return _stakeholders;
 
         _stakeholders = await _stakeholderLoader2025.GetStakeholders(Path.Combine(_dataPath, "stakeholders", "2025"));
-        
+
         return _stakeholders;
     }
 
@@ -437,69 +462,71 @@ public class DataHandler
         "https://w3id.org/mobilitydcat-ap/transport-mode/other"
     ];
 
-        public static readonly IReadOnlyDictionary<string, Dictionary<string, string>> PossibleCountries =
-            new Dictionary<string, Dictionary<string, string>>
+    public static readonly IReadOnlyDictionary<string, Dictionary<string, string>> PossibleCountries =
+        new Dictionary<string, Dictionary<string, string>>
+        {
+            ["http://publications.europa.eu/resource/authority/country/BEL"] = new Dictionary<string, string>
+            { ["en"] = "Belgium", ["fr"] = "Belgique", ["nl"] = "België", ["de"] = "Belgien" },
+            ["http://publications.europa.eu/resource/authority/country/NLD"] = new Dictionary<string, string>
+            { ["en"] = "Netherlands", ["fr"] = "Pays-Bas", ["nl"] = "Nederland", ["de"] = "Niederlande" },
+            ["http://publications.europa.eu/resource/authority/country/FRA"] = new Dictionary<string, string>
+            { ["en"] = "France", ["fr"] = "France", ["nl"] = "Frankrijk", ["de"] = "Frankreich" },
+            ["http://publications.europa.eu/resource/authority/country/DEU"] = new Dictionary<string, string>
+            { ["en"] = "Germany", ["fr"] = "Allemagne", ["nl"] = "Duitsland", ["de"] = "Deutschland" },
+            ["http://publications.europa.eu/resource/authority/country/LUX"] = new Dictionary<string, string>
+            { ["en"] = "Luxembourg", ["fr"] = "Luxembourg", ["nl"] = "Luxemburg", ["de"] = "Luxemburg" },
+            ["http://publications.europa.eu/resource/authority/country/GBR"] = new Dictionary<string, string>
             {
-                ["http://publications.europa.eu/resource/authority/country/BEL"] = new Dictionary<string, string>
-                    { ["en"] = "Belgium", ["fr"] = "Belgique", ["nl"] = "België", ["de"] = "Belgien" },
-                ["http://publications.europa.eu/resource/authority/country/NLD"] = new Dictionary<string, string>
-                    { ["en"] = "Netherlands", ["fr"] = "Pays-Bas", ["nl"] = "Nederland", ["de"] = "Niederlande" },
-                ["http://publications.europa.eu/resource/authority/country/FRA"] = new Dictionary<string, string>
-                    { ["en"] = "France", ["fr"] = "France", ["nl"] = "Frankrijk", ["de"] = "Frankreich" },
-                ["http://publications.europa.eu/resource/authority/country/DEU"] = new Dictionary<string, string>
-                    { ["en"] = "Germany", ["fr"] = "Allemagne", ["nl"] = "Duitsland", ["de"] = "Deutschland" },
-                ["http://publications.europa.eu/resource/authority/country/LUX"] = new Dictionary<string, string>
-                    { ["en"] = "Luxembourg", ["fr"] = "Luxembourg", ["nl"] = "Luxemburg", ["de"] = "Luxemburg" },
-                ["http://publications.europa.eu/resource/authority/country/GBR"] = new Dictionary<string, string>
-                {
-                    ["en"] = "United Kingdom", ["fr"] = "Royaume-Uni", ["nl"] = "Verenigd Koninkrijk",
-                    ["de"] = "Vereinigtes Königreich"
-                },
-                ["http://publications.europa.eu/resource/authority/country/BGR"] = new Dictionary<string, string>
-                    { ["en"] = "Bulgaria", ["fr"] = "Bulgarie", ["nl"] = "Bulgarije", ["de"] = "Bulgarien" },
-                ["http://publications.europa.eu/resource/authority/country/CZE"] = new Dictionary<string, string>
-                    { ["en"] = "Czechia", ["fr"] = "Tchéquie", ["nl"] = "Tsjechië", ["de"] = "Tschechien" },
-                ["http://publications.europa.eu/resource/authority/country/DNK"] = new Dictionary<string, string>
-                    { ["en"] = "Denmark", ["fr"] = "Danemark", ["nl"] = "Denemarken", ["de"] = "Dänemark" },
-                ["http://publications.europa.eu/resource/authority/country/EST"] = new Dictionary<string, string>
-                    { ["en"] = "Estonia", ["fr"] = "Estonie", ["nl"] = "Estland", ["de"] = "Estland" },
-                ["http://publications.europa.eu/resource/authority/country/IRL"] = new Dictionary<string, string>
-                    { ["en"] = "Ireland", ["fr"] = "Irlande", ["nl"] = "Ierland", ["de"] = "Irland" },
-                ["http://publications.europa.eu/resource/authority/country/GRC"] = new Dictionary<string, string>
-                    { ["en"] = "Greece", ["fr"] = "Grèce", ["nl"] = "Griekenland", ["de"] = "Griechenland" },
-                ["http://publications.europa.eu/resource/authority/country/ESP"] = new Dictionary<string, string>
-                    { ["en"] = "Spain", ["fr"] = "Espagne", ["nl"] = "Spanje", ["de"] = "Spanien" },
-                ["http://publications.europa.eu/resource/authority/country/HRV"] = new Dictionary<string, string>
-                    { ["en"] = "Croatia", ["fr"] = "Croatie", ["nl"] = "Kroatië", ["de"] = "Kroatien" },
-                ["http://publications.europa.eu/resource/authority/country/ITA"] = new Dictionary<string, string>
-                    { ["en"] = "Italy", ["fr"] = "Italie", ["nl"] = "Italië", ["de"] = "Italien" },
-                ["http://publications.europa.eu/resource/authority/country/CYP"] = new Dictionary<string, string>
-                    { ["en"] = "Cyprus", ["fr"] = "Chypre", ["nl"] = "Cyprus", ["de"] = "Zypern" },
-                ["http://publications.europa.eu/resource/authority/country/LVA"] = new Dictionary<string, string>
-                    { ["en"] = "Latvia", ["fr"] = "Lettonie", ["nl"] = "Letland", ["de"] = "Lettland" },
-                ["http://publications.europa.eu/resource/authority/country/LTU"] = new Dictionary<string, string>
-                    { ["en"] = "Lithuania", ["fr"] = "Lituanie", ["nl"] = "Litouwen", ["de"] = "Litauen" },
-                ["http://publications.europa.eu/resource/authority/country/HUN"] = new Dictionary<string, string>
-                    { ["en"] = "Hungary", ["fr"] = "Hongrie", ["nl"] = "Hongarije", ["de"] = "Ungarn" },
-                ["http://publications.europa.eu/resource/authority/country/MLT"] = new Dictionary<string, string>
-                    { ["en"] = "Malta", ["fr"] = "Malte", ["nl"] = "Malta", ["de"] = "Malta" },
-                ["http://publications.europa.eu/resource/authority/country/AUT"] = new Dictionary<string, string>
-                    { ["en"] = "Austria", ["fr"] = "Autriche", ["nl"] = "Oostenrijk", ["de"] = "Österreich" },
-                ["http://publications.europa.eu/resource/authority/country/POL"] = new Dictionary<string, string>
-                    { ["en"] = "Poland", ["fr"] = "Pologne", ["nl"] = "Polen", ["de"] = "Polen" },
-                ["http://publications.europa.eu/resource/authority/country/PRT"] = new Dictionary<string, string>
-                    { ["en"] = "Portugal", ["fr"] = "Portugal", ["nl"] = "Portugal", ["de"] = "Portugal" },
-                ["http://publications.europa.eu/resource/authority/country/ROU"] = new Dictionary<string, string>
-                    { ["en"] = "Romania", ["fr"] = "Roumanie", ["nl"] = "Roemenië", ["de"] = "Rumänien" },
-                ["http://publications.europa.eu/resource/authority/country/SVN"] = new Dictionary<string, string>
-                    { ["en"] = "Slovenia", ["fr"] = "Slovénie", ["nl"] = "Slovenië", ["de"] = "Slowenien" },
-                ["http://publications.europa.eu/resource/authority/country/SVK"] = new Dictionary<string, string>
-                    { ["en"] = "Slovakia", ["fr"] = "Slovaquie", ["nl"] = "Slowakije", ["de"] = "Slowakei" },
-                ["http://publications.europa.eu/resource/authority/country/FIN"] = new Dictionary<string, string>
-                    { ["en"] = "Finland", ["fr"] = "Finlande", ["nl"] = "Finland", ["de"] = "Finnland" },
-                ["http://publications.europa.eu/resource/authority/country/SWE"] = new Dictionary<string, string>
-                    { ["en"] = "Sweden", ["fr"] = "Suède", ["nl"] = "Zweden", ["de"] = "Schweden" },
-            };
+                ["en"] = "United Kingdom",
+                ["fr"] = "Royaume-Uni",
+                ["nl"] = "Verenigd Koninkrijk",
+                ["de"] = "Vereinigtes Königreich"
+            },
+            ["http://publications.europa.eu/resource/authority/country/BGR"] = new Dictionary<string, string>
+            { ["en"] = "Bulgaria", ["fr"] = "Bulgarie", ["nl"] = "Bulgarije", ["de"] = "Bulgarien" },
+            ["http://publications.europa.eu/resource/authority/country/CZE"] = new Dictionary<string, string>
+            { ["en"] = "Czechia", ["fr"] = "Tchéquie", ["nl"] = "Tsjechië", ["de"] = "Tschechien" },
+            ["http://publications.europa.eu/resource/authority/country/DNK"] = new Dictionary<string, string>
+            { ["en"] = "Denmark", ["fr"] = "Danemark", ["nl"] = "Denemarken", ["de"] = "Dänemark" },
+            ["http://publications.europa.eu/resource/authority/country/EST"] = new Dictionary<string, string>
+            { ["en"] = "Estonia", ["fr"] = "Estonie", ["nl"] = "Estland", ["de"] = "Estland" },
+            ["http://publications.europa.eu/resource/authority/country/IRL"] = new Dictionary<string, string>
+            { ["en"] = "Ireland", ["fr"] = "Irlande", ["nl"] = "Ierland", ["de"] = "Irland" },
+            ["http://publications.europa.eu/resource/authority/country/GRC"] = new Dictionary<string, string>
+            { ["en"] = "Greece", ["fr"] = "Grèce", ["nl"] = "Griekenland", ["de"] = "Griechenland" },
+            ["http://publications.europa.eu/resource/authority/country/ESP"] = new Dictionary<string, string>
+            { ["en"] = "Spain", ["fr"] = "Espagne", ["nl"] = "Spanje", ["de"] = "Spanien" },
+            ["http://publications.europa.eu/resource/authority/country/HRV"] = new Dictionary<string, string>
+            { ["en"] = "Croatia", ["fr"] = "Croatie", ["nl"] = "Kroatië", ["de"] = "Kroatien" },
+            ["http://publications.europa.eu/resource/authority/country/ITA"] = new Dictionary<string, string>
+            { ["en"] = "Italy", ["fr"] = "Italie", ["nl"] = "Italië", ["de"] = "Italien" },
+            ["http://publications.europa.eu/resource/authority/country/CYP"] = new Dictionary<string, string>
+            { ["en"] = "Cyprus", ["fr"] = "Chypre", ["nl"] = "Cyprus", ["de"] = "Zypern" },
+            ["http://publications.europa.eu/resource/authority/country/LVA"] = new Dictionary<string, string>
+            { ["en"] = "Latvia", ["fr"] = "Lettonie", ["nl"] = "Letland", ["de"] = "Lettland" },
+            ["http://publications.europa.eu/resource/authority/country/LTU"] = new Dictionary<string, string>
+            { ["en"] = "Lithuania", ["fr"] = "Lituanie", ["nl"] = "Litouwen", ["de"] = "Litauen" },
+            ["http://publications.europa.eu/resource/authority/country/HUN"] = new Dictionary<string, string>
+            { ["en"] = "Hungary", ["fr"] = "Hongrie", ["nl"] = "Hongarije", ["de"] = "Ungarn" },
+            ["http://publications.europa.eu/resource/authority/country/MLT"] = new Dictionary<string, string>
+            { ["en"] = "Malta", ["fr"] = "Malte", ["nl"] = "Malta", ["de"] = "Malta" },
+            ["http://publications.europa.eu/resource/authority/country/AUT"] = new Dictionary<string, string>
+            { ["en"] = "Austria", ["fr"] = "Autriche", ["nl"] = "Oostenrijk", ["de"] = "Österreich" },
+            ["http://publications.europa.eu/resource/authority/country/POL"] = new Dictionary<string, string>
+            { ["en"] = "Poland", ["fr"] = "Pologne", ["nl"] = "Polen", ["de"] = "Polen" },
+            ["http://publications.europa.eu/resource/authority/country/PRT"] = new Dictionary<string, string>
+            { ["en"] = "Portugal", ["fr"] = "Portugal", ["nl"] = "Portugal", ["de"] = "Portugal" },
+            ["http://publications.europa.eu/resource/authority/country/ROU"] = new Dictionary<string, string>
+            { ["en"] = "Romania", ["fr"] = "Roumanie", ["nl"] = "Roemenië", ["de"] = "Rumänien" },
+            ["http://publications.europa.eu/resource/authority/country/SVN"] = new Dictionary<string, string>
+            { ["en"] = "Slovenia", ["fr"] = "Slovénie", ["nl"] = "Slovenië", ["de"] = "Slowenien" },
+            ["http://publications.europa.eu/resource/authority/country/SVK"] = new Dictionary<string, string>
+            { ["en"] = "Slovakia", ["fr"] = "Slovaquie", ["nl"] = "Slowakije", ["de"] = "Slowakei" },
+            ["http://publications.europa.eu/resource/authority/country/FIN"] = new Dictionary<string, string>
+            { ["en"] = "Finland", ["fr"] = "Finlande", ["nl"] = "Finland", ["de"] = "Finnland" },
+            ["http://publications.europa.eu/resource/authority/country/SWE"] = new Dictionary<string, string>
+            { ["en"] = "Sweden", ["fr"] = "Suède", ["nl"] = "Zweden", ["de"] = "Schweden" },
+        };
 
     public static readonly IReadOnlyDictionary<string, Dictionary<string, string>> NUTS1_BE =
         new Dictionary<string, Dictionary<string, string>>
@@ -513,11 +540,16 @@ public class DataHandler
             },
             ["http://data.europa.eu/nuts/code/BE2"] = new Dictionary<string, string>
             {
-                ["en"] = "VLAAMS GEWEST", ["fr"] = "VLAAMS GEWEST", ["nl"] = "VLAAMS GEWEST", ["de"] = "VLAAMS GEWEST"
+                ["en"] = "VLAAMS GEWEST",
+                ["fr"] = "VLAAMS GEWEST",
+                ["nl"] = "VLAAMS GEWEST",
+                ["de"] = "VLAAMS GEWEST"
             },
             ["http://data.europa.eu/nuts/code/BE3"] = new Dictionary<string, string>
             {
-                ["en"] = "RÉGION WALLONNE", ["fr"] = "RÉGION WALLONNE", ["nl"] = "RÉGION WALLONNE",
+                ["en"] = "RÉGION WALLONNE",
+                ["fr"] = "RÉGION WALLONNE",
+                ["nl"] = "RÉGION WALLONNE",
                 ["de"] = "RÉGION WALLONNE"
             },
         };
@@ -531,14 +563,14 @@ public class DataHandler
             organizationIdsJson = await _client.GetOrganizationList();
             await WriteTodayAsync(organizationsTodayFile, organizationIdsJson);
         }
-        var organizationIds = JsonSerializer.Deserialize<Response<string[]>>(organizationIdsJson, 
+        var organizationIds = JsonSerializer.Deserialize<Response<string[]>>(organizationIdsJson,
             _jsonSerializerOptions) ?? throw new Exception("Could not read json");
 
         var organizations = new List<Organization>();
         foreach (var organizationId in organizationIds.Result)
         {
             if (Constants.OrganizationsBlacklist.Contains(organizationId)) continue;
-            
+
             var organizationTodayFile = Path.Combine("organizations", $"{organizationId}.json");
             var organizationJson = await TryReadToday(organizationTodayFile);
             if (organizationJson == null)
@@ -546,7 +578,7 @@ public class DataHandler
                 organizationJson = await _client.GetOrganization(organizationId);
                 await WriteTodayAsync(organizationTodayFile, organizationJson);
             }
-            var organization = JsonSerializer.Deserialize<Response<Organization>>(organizationJson, 
+            var organization = JsonSerializer.Deserialize<Response<Organization>>(organizationJson,
                 _jsonSerializerOptions) ?? throw new Exception("Could not read json");
 
             organizations.Add(organization.Result);
@@ -564,7 +596,7 @@ public class DataHandler
             packageIdsJson = await _client.GetPackageList();
             await WriteTodayAsync(packagesTodayFile, packageIdsJson);
         }
-        var packageIds = JsonSerializer.Deserialize<Response<string[]>>(packageIdsJson, 
+        var packageIds = JsonSerializer.Deserialize<Response<string[]>>(packageIdsJson,
             _jsonSerializerOptions) ?? throw new Exception("Could not read json");
 
         var packages = new List<Package>();
@@ -577,8 +609,8 @@ public class DataHandler
                 packageJson = await _client.GetPackage(packageId);
                 await WriteTodayAsync(packageTodayFile, packageJson);
             }
-            
-            var package = JsonSerializer.Deserialize<Response<Package>>(packageJson, 
+
+            var package = JsonSerializer.Deserialize<Response<Package>>(packageJson,
                 _jsonSerializerOptions) ?? throw new Exception("Could not read json");
             if (Constants.OrganizationsBlacklist.Contains(package.Result.Organization.Name)) continue;
 
@@ -657,7 +689,7 @@ public class DataHandler
         var fileToday = Path.Combine(_sampleDayPath, file);
         this.CreateDirectoryFor(fileToday);
         await File.WriteAllTextAsync(fileToday, data);
-        
+
         var latestToday = Path.Combine(_latestPath, file);
         this.CreateDirectoryFor(latestToday);
         await File.WriteAllTextAsync(latestToday, data);

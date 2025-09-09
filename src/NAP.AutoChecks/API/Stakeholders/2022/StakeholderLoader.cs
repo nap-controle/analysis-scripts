@@ -11,7 +11,7 @@ internal static class StakeholderLoader
         await using var stream =
             File.OpenRead(Path.Combine(dataPath, "stakeholders", "organisations.csv"));
         var stakeholders = await Stakeholder.LoadFromCsv(stream);
-        
+
         var stakeholdersMmtis = await Csv.ReadAsync<Stakeholder_MMTIS>(
             Path.Combine(dataPath, "stakeholders", "organisations_MMTIS.csv"));
         foreach (var stakeholderMmtis in stakeholdersMmtis)
@@ -21,7 +21,7 @@ internal static class StakeholderLoader
 
             stakeholder.IsMMTIS = stakeholderMmtis.IsMMTIS == "Yes";
         }
-        
+
         var rttis = await Csv.ReadAsync<Stakeholder_RTTI>(
             Path.Combine(dataPath, "stakeholders", "organisations_RTTI.csv"));
         foreach (var rtti in rttis)
@@ -31,7 +31,7 @@ internal static class StakeholderLoader
 
             stakeholder.IsRTTI = rtti.IsRTTI == "Yes";
         }
-        
+
         var srtis = await Csv.ReadAsync<Stakeholder_SRTI>(
             Path.Combine(dataPath, "stakeholders", "organisations_SRTI.csv"));
         foreach (var srti in srtis)
@@ -41,7 +41,7 @@ internal static class StakeholderLoader
 
             stakeholder.IsSRTI = srti.IsSRTI == "Yes";
         }
-        
+
         var sstps = await Csv.ReadAsync<Stakeholder_SSTP>(
             Path.Combine(dataPath, "stakeholders", "organisations_SSTP.csv"));
         foreach (var sstp in sstps)
@@ -51,7 +51,7 @@ internal static class StakeholderLoader
 
             stakeholder.IsSSTP = sstp.IsSSTP == "Yes";
         }
-        
+
         var mmtisCategories = await Csv.ReadAsync<CategorizedOrganization_MMTIS>(
             Path.Combine(dataPath, "stakeholders", "organizations_mmtis_categories.csv"));
         foreach (var categorizedMmtis in mmtisCategories)
@@ -67,16 +67,16 @@ internal static class StakeholderLoader
             {
                 stakeholder.MMTISType = MMTISType.TransportOperator;
             }
-            else if(!string.IsNullOrWhiteSpace(categorizedMmtis.IsInfrastructureManager))
+            else if (!string.IsNullOrWhiteSpace(categorizedMmtis.IsInfrastructureManager))
             {
                 stakeholder.MMTISType = MMTISType.InfrastructureManager;
             }
-            else if(!string.IsNullOrWhiteSpace(categorizedMmtis.IsTransportondemandserviceprovider))
+            else if (!string.IsNullOrWhiteSpace(categorizedMmtis.IsTransportondemandserviceprovider))
             {
                 stakeholder.MMTISType = MMTISType.TransportOnDemand;
             }
         }
-        
+
         var extraRegistrations = await Csv.ReadAsync<Stakeholder_Registrations>(
             Path.Combine(dataPath, "stakeholders", "organizations_registrations.csv"));
         foreach (var extraRegistration in extraRegistrations)
@@ -84,19 +84,19 @@ internal static class StakeholderLoader
             var stakeholder = stakeholders.FirstOrDefault(x => x.Id == extraRegistration.Id);
             if (stakeholder == null) continue;
 
-            if (!string.IsNullOrWhiteSpace(stakeholder.OrganizationId) && 
+            if (!string.IsNullOrWhiteSpace(stakeholder.OrganizationId) &&
                 Guid.TryParse(stakeholder.OrganizationId, out _))
             {
                 Log.Logger.Warning("Stakeholder {Id} - {Name} from extra registration list already has an organization: {Existing}",
                     stakeholder.Id, stakeholder.Name, stakeholder.OrganizationId);
                 continue;
             }
-            
+
             Log.Logger.Warning("Stakeholder {Id} - {Name} has no registration but does exist as an organization: {Existing}",
                 stakeholder.Id, stakeholder.Name, extraRegistration.OrganizationId);
             stakeholder.OrganizationId = extraRegistration.OrganizationId;
         }
-        
+
         return stakeholders;
     }
 }

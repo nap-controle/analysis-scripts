@@ -19,7 +19,7 @@ public class Client
         _httpClientFactory = httpClientFactory;
         _settings = settings;
     }
-    
+
     /// <summary>
     /// Gets the tags list.
     /// </summary>
@@ -30,17 +30,17 @@ public class Client
         var client = _httpClientFactory.CreateClient(ClientSettings.HttpClientName);
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         var url = $"{_settings.Api}action/tag_list";
-        
-        using var response = await client.GetAsync(url, 
+
+        using var response = await client.GetAsync(url,
             HttpCompletionOption.ResponseHeadersRead);
         if (response.StatusCode == HttpStatusCode.NotFound) throw new Exception("Tags list not found");
-        
+
         return await response.Content.ReadAsStringAsync();
         // return await JsonSerializer.DeserializeAsync<Response<string[]>>(
         //            await response.Content.ReadAsStreamAsync(), _jsonSerializerOptions) ?? 
         //        throw new Exception($"invalid response, cannot parse {nameof(Response<string[]>)}");
     }
-    
+
     /// <summary>
     /// Gets the packages list.
     /// </summary>
@@ -51,8 +51,8 @@ public class Client
         var client = _httpClientFactory.CreateClient(ClientSettings.HttpClientName);
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         var url = $"{_settings.Api}action/package_list";
-        
-        using var response = await client.GetAsync(url, 
+
+        using var response = await client.GetAsync(url,
             HttpCompletionOption.ResponseHeadersRead);
         if (response.StatusCode == HttpStatusCode.NotFound) throw new Exception("Packages list not found");
 
@@ -61,7 +61,7 @@ public class Client
         //            await response.Content.ReadAsStreamAsync(), _jsonSerializerOptions) ?? 
         //        throw new Exception($"invalid response, cannot parse {nameof(Response<string[]>)}");
     }
-    
+
     /// <summary>
     /// Gets the organizations list.
     /// </summary>
@@ -72,8 +72,8 @@ public class Client
         var client = _httpClientFactory.CreateClient(ClientSettings.HttpClientName);
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         var url = $"{_settings.Api}action/organization_list";
-        
-        using var response = await client.GetAsync(url, 
+
+        using var response = await client.GetAsync(url,
             HttpCompletionOption.ResponseHeadersRead);
         if (response.StatusCode == HttpStatusCode.NotFound) throw new Exception("Packages list not found");
 
@@ -82,7 +82,7 @@ public class Client
         //            await response.Content.ReadAsStreamAsync(), _jsonSerializerOptions) ?? 
         //        throw new Exception($"invalid response, cannot parse {nameof(Response<string[]>)}");
     }
-    
+
     public async Task<string> GetOrganization(string organizationName)
     {
         const int maxTries = 100;
@@ -90,7 +90,7 @@ public class Client
         while (tries > 0)
         {
             await Task.Delay(Random.Shared.Next(10000) + 1000);
-            
+
             using var client = _httpClientFactory.CreateClient(ClientSettings.HttpClientName);
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Add("Authorization", $"{_settings.ApiKey}");
@@ -129,13 +129,13 @@ public class Client
         while (tries > 0)
         {
             await Task.Delay(Random.Shared.Next(10000) + 1000);
-            
+
             var client = _httpClientFactory.CreateClient(ClientSettings.HttpClientName);
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Add("Authorization", $"{_settings.ApiKey}");
             var url = $"{_settings.Api}action/package_show?id={packageName}";
-        
-            using var response = await client.GetAsync(url, 
+
+            using var response = await client.GetAsync(url,
                 HttpCompletionOption.ResponseHeadersRead);
             if (response.StatusCode == HttpStatusCode.NotFound) throw new Exception("404 is an invalid response in this api");
             if (response.StatusCode == HttpStatusCode.Forbidden)
@@ -165,8 +165,8 @@ public class Client
         var client = _httpClientFactory.CreateClient(ClientSettings.HttpClientName);
         client.DefaultRequestHeaders.Add("Authorization", $"{_settings.ApiKey}");
         var url = $"{_settings.Website}uploads/organization/{organization.Name}/{file}";
-        
-        using var response = await client.GetAsync(url, 
+
+        using var response = await client.GetAsync(url,
             HttpCompletionOption.ResponseHeadersRead);
         if (response.StatusCode == HttpStatusCode.NotFound) throw new Exception("404 is an invalid response in this api");
 

@@ -13,7 +13,7 @@ public class RandomizeOrganizationsWithDeclarationsResults
     /// <param name="organization"></param>
     /// <param name="packages"></param>
     /// <param name="previousSamplingDate"></param>
-    public RandomizeOrganizationsWithDeclarationsResults(Stakeholder stakeholder, Organization organization, 
+    public RandomizeOrganizationsWithDeclarationsResults(Stakeholder stakeholder, Organization organization,
         IEnumerable<Package> packages, DateTime previousSamplingDate)
     {
         this.Id = stakeholder.Id;
@@ -46,15 +46,15 @@ public class RandomizeOrganizationsWithDeclarationsResults
     /// The name.
     /// </summary>
     public string Name { get; set; }
-    
+
     public bool SelectedMMTIS { get; set; }
-    
+
     public bool SelectedSRTI { get; set; }
-    
+
     public bool SelectedRTTI { get; set; }
-    
+
     public bool SelectedSSTP { get; set; }
-    
+
     /// <summary>
     /// The organization id, if any.
     /// </summary>
@@ -67,30 +67,30 @@ public class RandomizeOrganizationsWithDeclarationsResults
     public bool HasRTTIDeclaration { get; set; }
 
     public bool HasMMTISDeclaration { get; set; }
-    
+
     public bool SelectedBefore { get; set; }
 
     public bool StakeholderSSTP { get; set; }
 
     public bool HasSSTPPackage { get; set; }
-    
+
     public bool SSTPWasModified { get; set; }
     public bool StakeholderSRTI { get; set; }
 
     public bool HasSRTIPackage { get; set; }
-    
+
     public bool SRTIWasModified { get; set; }
 
     public bool StakeholderRTTI { get; set; }
 
     public bool HasRTTIPackage { get; set; }
-    
+
     public bool RTTIWasModified { get; set; }
 
     public bool StakeholderMMTIS { get; set; }
 
     public bool HasMMTISPackage { get; set; }
-    
+
     public bool MMTISWasModified { get; set; }
-    
+
 }

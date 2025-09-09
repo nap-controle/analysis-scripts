@@ -10,7 +10,7 @@ public class Task0
     {
         _checkOrganizationStakeholder = checkOrganizationStakeholder;
     }
-    
+
     public async Task Run()
     {
         await _checkOrganizationStakeholder.Check();

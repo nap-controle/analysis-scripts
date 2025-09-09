@@ -32,7 +32,7 @@ public class RandomizeOrganizationsWithDeclarations
         var stakeholders = await _dataHandler.GetStakeholders();
 
         var organizations = await _dataHandler.GetOrganizations();
-        
+
         var packages = (await _dataHandler.GetPackages()).ToList();
 
         var results = new List<RandomizeOrganizationsWithDeclarationsResults>();
@@ -60,7 +60,7 @@ public class RandomizeOrganizationsWithDeclarations
                 _logger.LogWarning("Organization has no declarations submitted: {OrganizationName}", organization.Name);
             }
         }
-        
+
         results.Shuffle();
 
         // sort previously selected at the bottom.
@@ -72,7 +72,7 @@ public class RandomizeOrganizationsWithDeclarations
         previouslySelected.UnionWith(previousSelected2023
             .Where(x => x.SelectedSRTI || x.SelectedMMTIS || x.SelectedRTTI || x.SelectedSSTP)
             .Select(x => x.OrganizationId));
-        var newResult =new List<RandomizeOrganizationsWithDeclarationsResults>();
+        var newResult = new List<RandomizeOrganizationsWithDeclarationsResults>();
         while (results.Count > 0)
         {
             var last = results[^1];
@@ -86,7 +86,7 @@ public class RandomizeOrganizationsWithDeclarations
             newResult.Insert(0, last);
         }
         results = newResult;
-        
+
         var extraBudget = 0;
         while (results.Count(x => x is { SelectedSRTI: true }) < _maxSRTI)
         {
@@ -103,7 +103,7 @@ public class RandomizeOrganizationsWithDeclarations
                 break;
             }
             next.SelectedSRTI = true;
-            
+
             // report selection.
             _logger.LogInformation("Selected {StakeholderName} as #{Count} for SRTI",
                 next.Name, results.Count(x => x.SelectedSRTI));
@@ -124,7 +124,7 @@ public class RandomizeOrganizationsWithDeclarations
                 break;
             }
             next.SelectedRTTI = true;
-            
+
             // report selection.
             _logger.LogInformation("Selected {StakeholderName} as #{Count} for RTTI",
                 next.Name, results.Count(x => x.SelectedRTTI));
@@ -134,7 +134,7 @@ public class RandomizeOrganizationsWithDeclarations
         {
             // select next.
             var next = results
-                .FirstOrDefault(x => x is { HasSSTPDeclaration: true, SelectedSSTP: false} 
+                .FirstOrDefault(x => x is { HasSSTPDeclaration: true, SelectedSSTP: false }
                                      && (!x.SelectedBefore || x.SSTPWasModified));
             if (next == null)
             {
@@ -145,7 +145,7 @@ public class RandomizeOrganizationsWithDeclarations
                 break;
             }
             next.SelectedSSTP = true;
-            
+
             // report selection.
             _logger.LogInformation("Selected {StakeholderName} as #{Count} for SSTP",
                 next.Name, results.Count(x => x.SelectedSSTP));
@@ -155,7 +155,7 @@ public class RandomizeOrganizationsWithDeclarations
         {
             // select next.
             var next = results
-                .FirstOrDefault(x => x is { HasMMTISDeclaration: true, SelectedMMTIS: false } 
+                .FirstOrDefault(x => x is { HasMMTISDeclaration: true, SelectedMMTIS: false }
                                      && (!x.SelectedBefore || x.MMTISWasModified));
             if (next == null)
             {
@@ -165,7 +165,7 @@ public class RandomizeOrganizationsWithDeclarations
                 break;
             }
             next.SelectedMMTIS = true;
-            
+
             // report selection.
             _logger.LogInformation("Selected {StakeholderName} as #{Count} for MMTIS",
                 next.Name, results.Count(x => x.SelectedMMTIS));

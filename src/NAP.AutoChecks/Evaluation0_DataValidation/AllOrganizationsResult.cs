@@ -11,16 +11,16 @@ public class AllOrganizationsResult
         this.Name = organization.Name;
         this.StakeholderId = stakeholder?.Id;
         this.StakeholderName = stakeholder?.Name;
-        this.StakeholderIsRTTI =stakeholder?.IsRTTI;
+        this.StakeholderIsRTTI = stakeholder?.IsRTTI;
         this.StakeholderIsSRTI = stakeholder?.IsSRTI;
         this.StakeholderIsSSTP = stakeholder?.IsSSTP;
         this.StakeholderIsMMTIS = stakeholder?.IsMMTIS;
     }
-    
+
     public Guid OrganizationId { get; set; }
 
     public string Name { get; set; }
-    
+
     /// <summary>
     /// The id.
     /// </summary>
@@ -30,22 +30,22 @@ public class AllOrganizationsResult
     /// The name.
     /// </summary>
     public string? StakeholderName { get; set; }
-    
+
     /// <summary>
     /// 
     /// </summary>
     public bool? StakeholderIsMMTIS { get; set; }
-    
+
     /// <summary>
     /// 
     /// </summary>
     public bool? StakeholderIsRTTI { get; set; }
-    
+
     /// <summary>
     /// 
     /// </summary>
     public bool? StakeholderIsSRTI { get; set; }
-    
+
     /// <summary>
     /// 
     /// </summary>

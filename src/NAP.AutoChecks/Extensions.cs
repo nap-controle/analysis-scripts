@@ -4,18 +4,19 @@ namespace NAP.AutoChecks;
 
 internal static class Extensions
 {
-    private static readonly Random Rng = new ();  
+    private static readonly Random Rng = new();
 
-    public static void Shuffle<T>(this IList<T> list)  
-    {  
-        var n = list.Count;  
-        while (n > 1) {  
-            n--;  
-            var k = Rng.Next(n + 1);  
+    public static void Shuffle<T>(this IList<T> list)
+    {
+        var n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            var k = Rng.Next(n + 1);
             (list[k], list[n]) = (list[n], list[k]);
-        }  
+        }
     }
-    
+
     public static async Task<List<T>> ToListAsync<T>(this IAsyncEnumerable<T> asyncEnumerable)
     {
         var list = new List<T>();
@@ -25,8 +26,8 @@ internal static class Extensions
         }
 
         return list;
-    } 
-    
+    }
+
     /// <summary>
     /// Returns a string representing the object in a culture invariant way.
     /// </summary>

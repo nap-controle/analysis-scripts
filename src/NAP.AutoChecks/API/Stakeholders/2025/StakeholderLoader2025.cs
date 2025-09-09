@@ -11,13 +11,13 @@ public class StakeholderLoader2025
     {
         _logger = logger;
     }
-    
+
     private IList<Stakeholder>? _stakeholders;
 
     public async Task<IEnumerable<Stakeholder>> GetStakeholders(string stakeholdersPath)
     {
         if (_stakeholders != null) return _stakeholders;
-        
+
         await using var mmtisStream =
             File.OpenRead(Path.Combine(stakeholdersPath, "MMTIS.csv"));
         var mmtisStakeholders = await StakeholderCsv2025.Load(mmtisStream);

@@ -14,11 +14,15 @@ public class CheckSelfDeclarationsResult
         this.OrganizationId = stakeholder.OrganizationId ?? "";
 
         this.MMTIS = organization.HasMMTISDeclaration();
+        this.StakeholderIsMMTIS = stakeholder.IsMMTIS;
         this.RTTI = organization.HasRTTIDeclaration();
+        this.StakeholderIsRTTI = stakeholder.IsRTTI;
         this.SRTI = organization.HasSRTIDeclaration();
+        this.StakeholderIsSRTI = stakeholder.IsSRTI;
         this.SSTP = organization.HasSSTPDeclaration();
+        this.StakeholderIsSSTP = stakeholder.IsSSTP;
     }
-    
+
     public string Id { get; set; }
 
     public string Name { get; set; }
@@ -26,9 +30,14 @@ public class CheckSelfDeclarationsResult
     public string OrganizationId { get; set; }
 
     public bool MMTIS { get; set; }
+    public bool StakeholderIsMMTIS { get; set; }
     public bool RTTI { get; set; }
-    
+    public bool StakeholderIsRTTI { get; set; }
+
     public bool SRTI { get; set; }
-    
+    public bool StakeholderIsSRTI { get; set; }
+
+
     public bool SSTP { get; set; }
+    public bool StakeholderIsSSTP { get; set; }
 }

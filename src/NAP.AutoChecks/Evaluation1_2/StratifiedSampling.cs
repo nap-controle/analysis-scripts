@@ -24,7 +24,7 @@ public class StratifiedSampling
         _setting = setting;
         _selected2023 = selected2023;
     }
-    
+
     public async Task Run()
     {
         var stakeholders = await _dataHandler.GetStakeholders();
@@ -35,7 +35,7 @@ public class StratifiedSampling
 
         var randomizedStakeholders = stakeholders.ToList();
         randomizedStakeholders.Shuffle();
-        
+
         // index previously selected in 2022.
         var previouslySelectedList2022 = await _selected2022.Get();
         var previouslySelected = new PreviouslySelectedDatasets();
@@ -62,7 +62,7 @@ public class StratifiedSampling
                 previouslySelected.AddPackage(napType, package);
             }
         }
-        
+
         // index previously selected in 2023.
         var previouslySelectedList2023 = await _selected2023.Get();
         foreach (var previouslySelectedDataset in previouslySelectedList2023)
@@ -71,7 +71,7 @@ public class StratifiedSampling
                 throw new Exception("Invalid guid");
             if (!Guid.TryParse(previouslySelectedDataset.PackageId, out var packageId))
                 throw new Exception("Invalid guid");
-            
+
             var napTypes = previouslySelectedDataset.GetNAPTypes();
             foreach (var napType in napTypes)
             {
@@ -122,15 +122,15 @@ public class StratifiedSampling
                 results.Add(new StratifiedSamplingResult(stakeholder, organization, package));
             }
         }
-        
+
         // SAMPLING1 - new orgs:
         // - all packages for new organizations.
         // - all packages for organizations not in the 2022 or 2023 list.
-        
+
         // SAMPLING2:
         // - all packages with edits since previous sampling.
         // - all packages not previously checked.
-        
+
         // PROCEDURE: 
         // - first select 5 for SSTP, RTTI and SRTI.
         // - after select remaining for SSTP using stratified sampling.
@@ -139,7 +139,7 @@ public class StratifiedSampling
         (bool select, string reason) Sampling1IncludeSample(StratifiedSamplingResult sample, NAPType type)
         {
             Debug.Assert(previouslySelected != null, nameof(previouslySelected) + " != null");
-            
+
             // organization was not previously selected.
             // this also means new organizations.
             if (!previouslySelected.OrganizationWasSelected(type, sample.OrganizationId)) return (true, "organization never selected in previous sampling");
@@ -150,10 +150,10 @@ public class StratifiedSampling
         (bool select, string reason) Sampling2IncludeSample(StratifiedSamplingResult sample, NAPType type)
         {
             Debug.Assert(previouslySelected != null, nameof(previouslySelected) + " != null");
-            
+
             // sample was modified after previous sampling day.
             if (sample.WasModifiedAfter(_setting.PreviousSamplingDay)) return (true, "modified after previous sampling");
-            
+
             // sample was not checked before.
             if (!previouslySelected.PackageWasSelected(type, sample.PackageId)) return (true, "package was never selected before");
 
@@ -164,13 +164,13 @@ public class StratifiedSampling
         {
             return (true, "check previously checked packages again");
         }
-        
+
         // run for all non-MMTIS.
         this.SelectNonMMTIS("NEW_ORGS", Sampling1IncludeSample, true, results);
         this.SelectNonMMTIS("NEW_MOD_PACK", Sampling2IncludeSample, true, results);
         this.SelectNonMMTIS("REST_MAX_2", Sampling3IncludeSample, true, results);
         this.SelectNonMMTIS("REST", Sampling3IncludeSample, false, results);
-        
+
         // run SAMPLING1 for MMTIS.
         var types = new[] { NAPType.SSTP, NAPType.RTTI, NAPType.SRTI };
         // calculate extra dataset budget.
@@ -187,10 +187,10 @@ public class StratifiedSampling
                 "There are {Extras} extra organizations to be selected, adding them to MMTIS",
                 datasetBudget);
         }
-        
+
         // run for MMTIS.
-        this.SelectMMTIS("NEW_ORGS", Sampling1IncludeSample,true, results, datasetBudget);
-        this.SelectMMTIS("NEW_MOD_PACK", Sampling2IncludeSample,true, results, datasetBudget);
+        this.SelectMMTIS("NEW_ORGS", Sampling1IncludeSample, true, results, datasetBudget);
+        this.SelectMMTIS("NEW_MOD_PACK", Sampling2IncludeSample, true, results, datasetBudget);
         this.SelectMMTIS("REST_MAX_2", Sampling3IncludeSample, true, results, datasetBudget);
         this.SelectMMTIS("REST", Sampling3IncludeSample, false, results, datasetBudget);
 
@@ -212,11 +212,11 @@ public class StratifiedSampling
                     samplingName, napType, target);
                 continue;
             }
-            
+
             _logger.LogInformation(
                 "{SamplingName}-{Type}: Started selecting {Count} dataset/organization pairs for",
                 samplingName, napType, target - selected);
-            
+
             foreach (var orgAndPackage in results)
             {
                 if (selected >= target) break;
@@ -227,7 +227,7 @@ public class StratifiedSampling
                 _logger.LogDebug(
                     "{SamplingName}-{Type}: Considering {PackageName}@{OrganizationName}",
                     samplingName, napType, orgAndPackage.PackageName, orgAndPackage.OrganizationName);
-                
+
                 // check filter.
                 var (select, reason) = includeFilter(orgAndPackage, napType);
                 if (!select)
@@ -237,7 +237,7 @@ public class StratifiedSampling
                         samplingName, napType, orgAndPackage.PackageName, orgAndPackage.OrganizationName, reason);
                     continue;
                 }
-                
+
                 // if already selected, skip.
                 if (orgAndPackage.PackageSelectedFor(napType))
                 {
@@ -246,7 +246,7 @@ public class StratifiedSampling
                         samplingName, napType, orgAndPackage.PackageName, orgAndPackage.OrganizationName);
                     continue;
                 }
-                
+
                 // if already 2 selected, skip.
                 if (checkMax2)
                 {

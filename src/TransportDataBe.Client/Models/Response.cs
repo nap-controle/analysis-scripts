@@ -9,6 +9,6 @@ public class Response<T>
     }
 
     public bool Success { get; }
-    
+
     public T Result { get; }
 }

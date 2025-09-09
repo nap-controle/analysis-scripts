@@ -23,7 +23,7 @@ public class StakeholdersWithDeclarations
                                                                      x.HasMMTISDeclaration());
 
         var results = new List<StakeholdersWithDeclarationsResult>();
-        
+
         foreach (var stakeholder in stakeholders)
         {
             if (stakeholder.ParsedOrganizationId == null)
@@ -38,12 +38,12 @@ public class StakeholdersWithDeclarations
             {
                 continue;
             }
-            
+
             results.Add(new StakeholdersWithDeclarationsResult(stakeholder, organization));
         }
-        
+
         results.Shuffle();
-        
+
         await _dataHandler.WriteResultAsync("evaluation_2.1_stakeholders_with_declarations.xlsx", results);
     }
 }

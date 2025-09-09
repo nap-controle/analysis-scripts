@@ -11,7 +11,7 @@ public class RandomSelectionResult
         this.Name = package.Name ?? "";
         this.Type = type;
     }
-    
+
     public Guid Id { get; set; }
 
     public string Name { get; set; }

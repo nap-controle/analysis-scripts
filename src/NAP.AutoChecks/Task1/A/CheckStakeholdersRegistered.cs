@@ -29,7 +29,7 @@ public class CheckStakeholdersRegistered
                     registered = true;
                 }
             }
-            
+
             results.Add(new CheckStakeholdersRegisteredResult(stakeholder, registered));
         }
 

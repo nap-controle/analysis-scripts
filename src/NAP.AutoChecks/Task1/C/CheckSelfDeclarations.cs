@@ -17,7 +17,7 @@ public class CheckSelfDeclarations
     public async Task<IEnumerable<CheckSelfDeclarationsResult>> Check()
     {
         if (_results != null) return _results;
-        
+
         var stakeholders = await _dataHandler.GetStakeholders();
 
         var organizations = await _dataHandler.GetOrganizations();
@@ -35,7 +35,7 @@ public class CheckSelfDeclarations
             var organization = organizationsWithDeclarations
                 .FirstOrDefault(x => x.Id == stakeholder.ParsedOrganizationId);
             if (organization == null) continue;
-            
+
             _results.Add(new CheckSelfDeclarationsResult(stakeholder, organization));
         }
 

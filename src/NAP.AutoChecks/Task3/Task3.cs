@@ -17,7 +17,7 @@ public class Task3
     public async Task Run()
     {
         var selection = await _randomSelection.Run();
-        
+
         await _dataHandler.WriteResultAsync("task3-sampling.xlsx", selection);
     }
 }

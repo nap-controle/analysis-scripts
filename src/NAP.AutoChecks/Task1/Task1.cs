@@ -19,17 +19,17 @@ public class Task1
         _dataHandler = dataHandler;
         _checkSelfDeclarations = checkSelfDeclarations;
     }
-    
+
     public async Task Run()
     {
         // 1 A - check if all stakeholders have registered and out non-registered organizations.
         var registeredResults = await _checkStakeholdersRegistered.Check();
         await _dataHandler.WriteResultAsync("task1-stakeholders_registration_status.xlsx", registeredResults);
-        
+
         // 1 B - check if the registered stakeholders have packages.
         var hasPackages = await _checkStakeholderHasPackages.Check();
         await _dataHandler.WriteResultAsync("task1-stakeholder_has_packages.xlsx", hasPackages);
-        
+
         // 1 C - have completely submitted a declaration of compliance
         var selfDeclared = await _checkSelfDeclarations.Check();
         await _dataHandler.WriteResultAsync("task1-stakeholders_with_declarations.xlsx", selfDeclared);

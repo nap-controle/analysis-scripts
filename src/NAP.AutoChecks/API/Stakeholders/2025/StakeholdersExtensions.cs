@@ -10,7 +10,7 @@ public static class StakeholdersExtensions
         {
             organizationId = Guid.Empty;
         }
-        
+
         var stakeholder = stakeholders.FirstOrDefault(x => x.Id == stakeholderCsv2025.Id);
         if (stakeholder == null)
         {

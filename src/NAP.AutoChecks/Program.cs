@@ -72,17 +72,17 @@ public static class Program
 
                 services.AddSingleton<CheckOrganizationStakeholder>();
                 services.AddSingleton<Task0>();
-                
+
                 services.AddSingleton<CheckStakeholderHasPackages>();
                 services.AddSingleton<CheckStakeholdersRegistered>();
                 services.AddSingleton<CheckSelfDeclarations>();
                 services.AddSingleton<Task1>();
-                
+
                 services.AddSingleton<Task2>();
 
                 services.AddSingleton<RandomSelection>();
                 services.AddSingleton<Task3>();
-                
+
                 services.AddSingleton<Task4>();
 
                 services.AddSingleton<StakeholdersAllDeclarations>();
@@ -90,10 +90,10 @@ public static class Program
             }).UseConsoleLifetime().Build();
 
         using var scope = host.Services.CreateScope();
-        
+
         var task0 = scope.ServiceProvider.GetRequiredService<Task0>();
         await task0.Run();
-        
+
         var task1 = scope.ServiceProvider.GetRequiredService<Task1>();
         await task1.Run();
 
@@ -105,7 +105,7 @@ public static class Program
 
         var task4 = scope.ServiceProvider.GetRequiredService<Task4>();
         await task4.Run();
-        
+
         var allDeclarations = scope.ServiceProvider.GetRequiredService<StakeholdersAllDeclarations>();
         await allDeclarations.Get();
 

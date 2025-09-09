@@ -19,7 +19,7 @@ public class CheckStakeholdersRegisteredResult
         this.StakeholderRTTI = stakeholder.IsRTTI;
         this.StakeholderSRTI = stakeholder.IsSRTI;
         this.StakeholderSSTP = stakeholder.IsSSTP;
-        
+
     }
 
     /// <summary>
@@ -39,6 +39,6 @@ public class CheckStakeholdersRegisteredResult
     public bool StakeholderRTTI { get; set; }
 
     public bool StakeholderMMTIS { get; set; }
-    
+
     public bool Registered { get; }
 }

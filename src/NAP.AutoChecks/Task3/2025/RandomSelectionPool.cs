@@ -20,15 +20,15 @@ public class RandomSelectionPool
         this.Select();
     }
 
-    public static RandomSelectionPool CreateFrom(IEnumerable<Package> packages, NAPType type, int defaultQuota, 
+    public static RandomSelectionPool CreateFrom(IEnumerable<Package> packages, NAPType type, int defaultQuota,
         HashSet<Guid> selectedBefore)
     {
-        return new RandomSelectionPool(type, packages.Where(x => x.IsNAPType(type)), 
+        return new RandomSelectionPool(type, packages.Where(x => x.IsNAPType(type)),
             defaultQuota, selectedBefore);
     }
-    
+
     public NAPType NAPType { get; }
-    
+
     public int Quota { get; }
 
     public int Free => Quota + _extra - _selected.Count;
@@ -51,7 +51,7 @@ public class RandomSelectionPool
     {
         return _selected.Select(guid => _candidates.First(x => x.Id == guid));
     }
-    
+
     private bool Select()
     {
         var selected = _candidates

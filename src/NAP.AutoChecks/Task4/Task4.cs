@@ -8,7 +8,7 @@ public class Task4
     private readonly DataHandler _dataHandler;
     private readonly CheckSelfDeclarations _checkSelfDeclarations;
 
-    public Task4( DataHandler dataHandler, CheckSelfDeclarations checkSelfDeclarations)
+    public Task4(DataHandler dataHandler, CheckSelfDeclarations checkSelfDeclarations)
     {
         _dataHandler = dataHandler;
         _checkSelfDeclarations = checkSelfDeclarations;
@@ -17,24 +17,22 @@ public class Task4
     public async Task Run()
     {
         var packages = await _dataHandler.GetPackages();
-        
+
         // get stakeholders with declarations and with min 1 package.
-        var withDeclarations = 
-            (await _checkSelfDeclarations.Check())
-            .Where(x => 
-                packages.Any(p => p.Organization.Id.ToString() == x.OrganizationId))
-            .ToList();
+        var withDeclarations = (await _checkSelfDeclarations.Check()).ToList();
         withDeclarations.Shuffle();
 
-        var sstp = withDeclarations.First(x => x.SSTP);
-        withDeclarations.Remove(sstp);
-        var srti = withDeclarations.First(x => x.SRTI);
+        // REMARK: this is force to be TomTom, otherwise selection fails.
+        var srti = withDeclarations.First(x => x is { SRTI: true, StakeholderIsSRTI: true } && x.OrganizationId == "aa8c51bb-4da2-4b24-9d8c-19461f083627");
         withDeclarations.Remove(srti);
-        var rtti = withDeclarations.First(x => x.RTTI);
+
+        var sstp = withDeclarations.First(x => x is { SSTP: true, StakeholderIsSSTP: true });
+        withDeclarations.Remove(sstp);
+        var rtti = withDeclarations.First(x => x is { RTTI: true, StakeholderIsRTTI: true });
         withDeclarations.Remove(rtti);
-        var mmtis = withDeclarations.First(x => x.MMTIS);
+        var mmtis = withDeclarations.First(x => x is { MMTIS: true, StakeholderIsMMTIS: true });
         withDeclarations.Remove(mmtis);
-        
+
         await _dataHandler.WriteResultAsync("task4-sampling.xlsx", [mmtis, rtti, sstp, srti]);
     }
 }

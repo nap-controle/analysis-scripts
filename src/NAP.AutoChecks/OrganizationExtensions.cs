@@ -10,7 +10,7 @@ public static class OrganizationExtensions
             .Any(package => package.IsMMTIS());
     }
 
-    public static bool WasModifiedSince(this Organization organization, IEnumerable<Package> packages, 
+    public static bool WasModifiedSince(this Organization organization, IEnumerable<Package> packages,
         DateTime previousSamplingDate, Func<Package, bool> isType)
     {
         var relevantPackages = packages.Where(package => package.Organization.Id == organization.Id && isType(package))
@@ -23,19 +23,19 @@ public static class OrganizationExtensions
 
         return false;
     }
-    
+
     public static bool HasRTTIPackage(this Organization organization, IEnumerable<Package> packages)
     {
         return packages.Where(package => package.Organization.Id == organization.Id)
             .Any(package => package.IsRTTI());
     }
-    
+
     public static bool HasSSTPPackage(this Organization organization, IEnumerable<Package> packages)
     {
         return packages.Where(package => package.Organization.Id == organization.Id)
             .Any(package => package.IsSSTP());
     }
-    
+
     public static bool HasSRTIPackage(this Organization organization, IEnumerable<Package> packages)
     {
         return packages.Where(package => package.Organization.Id == organization.Id)

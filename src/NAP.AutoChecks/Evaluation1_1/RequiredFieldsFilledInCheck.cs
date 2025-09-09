@@ -17,7 +17,7 @@ public class RequiredFieldsFilledInCheck
         var stakeholders = await _dataHandler.GetStakeholders();
         var organizations = await _dataHandler.GetOrganizations();
         var packages = await _dataHandler.GetPackages();
-        
+
         var results = new List<RequiredFieldsFilledInResult>();
         foreach (var stakeholder in stakeholders)
         {
@@ -66,13 +66,13 @@ public class RequiredFieldsFilledInCheck
                     results.Add(new RequiredFieldsFilledInResult(_dataHandler.GetClient(), stakeholder, package, "name_not_filled_in",
                         "name empty"));
                 }
-                
+
                 if (string.IsNullOrWhiteSpace(package.Title))
                 {
                     results.Add(new RequiredFieldsFilledInResult(_dataHandler.GetClient(), stakeholder, package, "name_not_filled_in",
                         "name empty"));
                 }
-                
+
                 if (!this.CheckLanguage(package, out var message))
                 {
                     results.Add(new RequiredFieldsFilledInResult(_dataHandler.GetClient(), stakeholder, package, "language_not_filled_in",
@@ -103,7 +103,7 @@ public class RequiredFieldsFilledInCheck
                         $"Empty"));
                     continue;
                 }
-                
+
                 if (package.Private)
                 {
                     results.Add(new RequiredFieldsFilledInResult(_dataHandler.GetClient(), stakeholder, package, "package_is_private",
@@ -144,14 +144,14 @@ public class RequiredFieldsFilledInCheck
                     results.Add(new RequiredFieldsFilledInResult(_dataHandler.GetClient(), stakeholder, package, "countries_covered_error",
                         message));
                 }
-                
+
                 if (!this.CheckRegionsCovered(package, out message))
                 {
                     results.Add(new RequiredFieldsFilledInResult(_dataHandler.GetClient(), stakeholder, package, "regions_covered_not_filled_in",
                         message));
                     continue;
                 }
-                
+
                 if (!this.CheckFluentTagsAsync(package, out message))
                 {
                     results.Add(new RequiredFieldsFilledInResult(_dataHandler.GetClient(), stakeholder, package, "fluent_tags_not_filled_in",
@@ -163,7 +163,7 @@ public class RequiredFieldsFilledInCheck
                     results.Add(new RequiredFieldsFilledInResult(_dataHandler.GetClient(), stakeholder, package, "frequency_not_filled_in",
                         message));
                 }
-                
+
                 // THESE FIELDS ARE CHECK BECAUSE THE CB NEEDS THEM:
 
                 if (package.Metadata_Created == null)
@@ -183,7 +183,7 @@ public class RequiredFieldsFilledInCheck
                     results.Add(new RequiredFieldsFilledInResult(_dataHandler.GetClient(), stakeholder, package, "temporal_start_not_filled_in",
                         "temporal_start empty"));
                 }
-                
+
 
                 if (package.Resources == null || package.Resources.Length == 0)
                 {
@@ -200,63 +200,63 @@ public class RequiredFieldsFilledInCheck
                             "resource_url_not_filled_in",
                             message));
                     }
-                    
+
                     if (string.IsNullOrWhiteSpace(resource.Name))
                     {
                         results.Add(new RequiredFieldsFilledInResult(_dataHandler.GetClient(), stakeholder, package, resource,
                             "resource_name_not_filled_in",
                             message));
                     }
-                    
+
                     if (!this.CheckFormat(resource, out message))
                     {
                         results.Add(new RequiredFieldsFilledInResult(_dataHandler.GetClient(), stakeholder, package, resource,
                             "format_not_filled_in",
                             message));
                     }
-                    
+
                     if (!this.CheckAccMod(resource, out message))
                     {
                         results.Add(new RequiredFieldsFilledInResult(_dataHandler.GetClient(), stakeholder, package, resource,
                             "acc_mod_not_filled_in",
                             message));
                     }
-                    
+
                     if (!this.CheckAccInt(resource, out message))
                     {
                         results.Add(new RequiredFieldsFilledInResult(_dataHandler.GetClient(), stakeholder, package, resource,
                             "acc_int_not_filled_in",
                             message));
                     }
-                    
+
                     // if (!this.CheckAccCon(resource, out message))
                     // {
                     //     results.Add(new RequiredFieldsFilledInResult(_dataHandler.GetClient(), stakeholder, package, resource,
                     //         "acc_con_not_filled_in",
                     //         message));
                     // }
-                    
+
                     if (!this.CheckConditionsAccess(resource, out message))
                     {
                         results.Add(new RequiredFieldsFilledInResult(_dataHandler.GetClient(), stakeholder, package, resource,
                             "conditions_access_not_filled_in",
                             message));
                     }
-                    
+
                     if (!this.CheckConditionsUsage(resource, out message))
                     {
                         results.Add(new RequiredFieldsFilledInResult(_dataHandler.GetClient(), stakeholder, package, resource,
                             "conditions_usage_not_filled_in",
                             message));
                     }
-                    
+
                     if (!this.CheckLicenseType(resource, out message))
                     {
                         results.Add(new RequiredFieldsFilledInResult(_dataHandler.GetClient(), stakeholder, package, resource,
                             "license_type_error",
                             message));
                     }
-                    
+
                     if (!this.CheckLicenseTextTranslated(resource, out message))
                     {
                         results.Add(new RequiredFieldsFilledInResult(_dataHandler.GetClient(), stakeholder, package, resource,
@@ -349,7 +349,7 @@ public class RequiredFieldsFilledInCheck
         message = string.Empty;
         if (resource.conditions_usage ==
             "https://w3id.org/mobilitydcat-ap/conditions-for-access-and-usage/licence-provided") return true;
-        
+
         if (string.IsNullOrWhiteSpace(resource.license_type))
         {
             message = "No value";
@@ -375,7 +375,7 @@ public class RequiredFieldsFilledInCheck
             "https://w3id.org/mobilitydcat-ap/conditions-for-access-and-usage/licence-provided") return true;
 
         throw new NotImplementedException();
-        
+
         // if (string.IsNullOrWhiteSpace(resource.license_text_translated))
         // {
         //     message = "No value";
@@ -472,7 +472,7 @@ public class RequiredFieldsFilledInCheck
         //     message = $"Invalid theme {theme.Key}";
         //     return false;
         // }
-        
+
         message = string.Empty;
         return true;
     }
@@ -494,7 +494,7 @@ public class RequiredFieldsFilledInCheck
             message = $"Invalid country {country}";
             return false;
         }
-        
+
         message = string.Empty;
         return true;
     }
@@ -572,7 +572,7 @@ public class RequiredFieldsFilledInCheck
         var invalidValues = new HashSet<string>();
 
         throw new NotImplementedException();
-        
+
         // foreach (var value in package.Fluent_Tags)
         // {
         //     // ReSharper disable once PossibleMultipleEnumeration

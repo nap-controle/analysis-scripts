@@ -12,7 +12,7 @@ public static class Excel
         var ws = wb.Worksheets.Add("data");
         for (var p = 0; p < properties.Length; p++)
         {
-            ws.Cell(1, p+1).Value = properties[p].Name;
+            ws.Cell(1, p + 1).Value = properties[p].Name;
         }
 
         var row = 2;
@@ -20,12 +20,12 @@ public static class Excel
         {
             for (var p = 0; p < properties.Length; p++)
             {
-                ws.Cell(row, p+1).Value = properties[p].GetValue(item)?.ToInvariantString();
+                ws.Cell(row, p + 1).Value = properties[p].GetValue(item)?.ToInvariantString();
             }
 
             row++;
         }
-        
+
         if (File.Exists(file)) File.Delete(file);
         wb.SaveAs(file);
     }

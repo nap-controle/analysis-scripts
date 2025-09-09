@@ -14,7 +14,7 @@ public class OrganizationsGetProxyAgreements
     public async Task Get()
     {
         var organizations = await _dataHandler.GetOrganizations();
-        
+
         foreach (var organization in organizations)
         {
             if (!string.IsNullOrWhiteSpace(organization.proxy_pdf_url))

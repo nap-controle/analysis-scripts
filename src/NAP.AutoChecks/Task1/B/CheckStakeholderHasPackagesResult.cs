@@ -20,7 +20,7 @@ public class CheckStakeholderHasPackagesResult
         this.StakeholderSRTI = stakeholder.IsSRTI;
         this.StakeholderSSTP = stakeholder.IsSSTP;
     }
-    
+
     /// <summary>
     /// The id.
     /// </summary>
@@ -30,7 +30,7 @@ public class CheckStakeholderHasPackagesResult
     /// The name.
     /// </summary>
     public string Name { get; set; }
-    
+
     /// <summary>
     /// The organization id, if any.
     /// </summary>
