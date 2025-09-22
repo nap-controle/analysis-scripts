@@ -22,9 +22,9 @@ public class CheckSelfDeclarations
 
         var organizations = await _dataHandler.GetOrganizations();
 
-        var organizationsWithDeclarations = organizations
-            .Where(x => x.HasRTTIDeclaration() || x.HasSRTIDeclaration() || x.HasSSTPDeclaration() ||
-                                                                     x.HasMMTISDeclaration());
+        // var organizationsWithDeclarations = organizations
+        //     .Where(x => x.HasRTTIDeclaration() || x.HasSRTIDeclaration() || x.HasSSTPDeclaration() ||
+        //                                                              x.HasMMTISDeclaration());
 
         _results = new List<CheckSelfDeclarationsResult>();
         foreach (var stakeholder in stakeholders)
@@ -32,7 +32,7 @@ public class CheckSelfDeclarations
             if (stakeholder.ParsedOrganizationId == null) continue;
 
             // ReSharper disable once PossibleMultipleEnumeration
-            var organization = organizationsWithDeclarations
+            var organization = organizations
                 .FirstOrDefault(x => x.Id == stakeholder.ParsedOrganizationId);
             if (organization == null) continue;
 
