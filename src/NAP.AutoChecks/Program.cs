@@ -96,10 +96,10 @@ public static class Program
 
         var task1 = scope.ServiceProvider.GetRequiredService<Task1>();
         await task1.Run();
-
+        
         var task2 = scope.ServiceProvider.GetRequiredService<Task2>();
         await task2.Run();
-
+        
         var task3 = scope.ServiceProvider.GetRequiredService<Task3>();
         await task3.Run();
 

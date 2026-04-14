@@ -29,4 +29,9 @@ public static class Excel
         if (File.Exists(file)) File.Delete(file);
         wb.SaveAs(file);
     }
+
+    public static XLWorkbook Read(string file)
+    {
+        return new XLWorkbook(file);
+    }
 }
