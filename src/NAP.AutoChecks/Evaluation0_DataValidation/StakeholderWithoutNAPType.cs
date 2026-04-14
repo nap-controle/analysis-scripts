@@ -20,7 +20,7 @@ public class StakeholderWithoutNAPType : Stakeholder
     public bool HasMMTISPackage { get; set; } = false;
 
     public bool HasRTTIPackage { get; set; } = false;
-    
+
     public bool HasSRTIPackage { get; set; } = false;
 
     public bool HasSSTPPackage { get; set; } = false;

@@ -10,7 +10,7 @@ public class SelectedIn2022Dataset
 {
     [Index(0)]
     public string Organization { get; set; }
-    
+
     [Index(1)]
     public string Package { get; set; }
 

@@ -10,7 +10,7 @@ public class SelectedIn2023Dataset
 {
     [Index(1)]
     public string OrganizationId { get; set; }
-    
+
     [Index(2)]
     public string PackageId { get; set; }
 

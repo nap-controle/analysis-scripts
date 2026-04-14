@@ -6,7 +6,7 @@ using CsvHelper.Configuration.Attributes;
 
 namespace NAP.AutoChecks.Domain;
 
-[DebuggerDisplay("{this.Id} [{this.OrganizationId}] {this.IsMMTIS} {this.IsSSTP} {this.IsRTTI} {this.IsSRTI}")]
+[DebuggerDisplay("{this.Id }[{this.Name}] [{this.OrganizationId}] {this.IsMMTIS} {this.IsSSTP} {this.IsRTTI} {this.IsSRTI}")]
 public class Stakeholder
 {
     /// <summary>
@@ -20,37 +20,37 @@ public class Stakeholder
     /// </summary>
     [Index(1)]
     public string Name { get; set; }
-    
+
     /// <summary>
     /// The organization id, if any.
     /// </summary>
     [Index(5)]
     public string? OrganizationId { get; set; }
-    
+
     /// <summary>
     /// 
     /// </summary>
     [Ignore]
     public bool IsMMTIS { get; set; }
-    
+
     /// <summary>
     /// The MMTIS type if any.
     /// </summary>
     [Ignore]
     public MMTISType? MMTISType { get; set; }
-    
+
     /// <summary>
     /// 
     /// </summary>
     [Ignore]
     public bool IsRTTI { get; set; }
-    
+
     /// <summary>
     /// 
     /// </summary>
     [Ignore]
     public bool IsSRTI { get; set; }
-    
+
     /// <summary>
     /// 
     /// </summary>

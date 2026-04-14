@@ -12,12 +12,12 @@ public class AllOrganizations
     {
         _dataHandler = dataHandler;
     }
-    
+
     public async Task Check()
     {
         var stakeholders = await _dataHandler.GetStakeholders();
         var organizations = await _dataHandler.GetOrganizations();
-        
+
         // ReSharper disable once LoopCanBeConvertedToQuery
         var organizationFound = new List<AllOrganizationsResult>();
         foreach (var organization in organizations)

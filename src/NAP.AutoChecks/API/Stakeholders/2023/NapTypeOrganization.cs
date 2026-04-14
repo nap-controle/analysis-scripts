@@ -12,13 +12,13 @@ public class NapTypeOrganization
     /// </summary>
     [Index(0)]
     public string Organization { get; set; }
-    
+
     /// <summary>
     /// The name.
     /// </summary>
     [Index(1)]
     public string OrganizationName { get; set; }
-    
+
     // /// <summary>
     // /// The type, if any.
     // /// </summary>

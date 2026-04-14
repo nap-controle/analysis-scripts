@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using NAP.AutoChecks;
 using NAP.AutoChecks.API;
 using NAP.AutoChecks.API.Stakeholders._2023;
+using NAP.AutoChecks.API.Stakeholders._2025;
 using NAP.AutoChecks.Evaluation0_DataValidation;
 using NAP.AutoChecks.Evaluation1_1;
 using NAP.AutoChecks.Evaluation1_2;
@@ -15,6 +16,16 @@ using NAP.AutoChecks.Evaluation2_2;
 using NAP.AutoChecks.Evaluation2_2._2022;
 using NAP.AutoChecks.Evaluation2_2._2023;
 using NAP.AutoChecks.Queries;
+using NAP.AutoChecks.Task0;
+using NAP.AutoChecks.Task0.Checks;
+using NAP.AutoChecks.Task1;
+using NAP.AutoChecks.Task1.A;
+using NAP.AutoChecks.Task1.B;
+using NAP.AutoChecks.Task1.C;
+using NAP.AutoChecks.Task2;
+using NAP.AutoChecks.Task3;
+using NAP.AutoChecks.Task3._2025;
+using NAP.AutoChecks.Task4;
 using Serilog;
 using TransportDataBe.Client;
 
@@ -57,70 +68,48 @@ public static class Program
                     SampleDay = sampleDate,
                 });
                 services.AddSingleton<DataHandler>();
-                services.AddSingleton(new MMTISDeadlineSettings());
-                services.AddSingleton<StakeholderWithoutNAPTypeCheck>();
-                services.AddSingleton<AllOrganizations>();
-                services.AddSingleton<StakeholderHasPackagesCheck>();
-                services.AddSingleton<RequiredFieldsFilledInCheck>();
-                services.AddSingleton<StakeholdersWithoutDeclarations>();
-                services.AddSingleton<StakeholdersWithDeclarations>();
-                services.AddSingleton<StakeholdersRegisteredCheck>();
-                services.AddSingleton<StakeholdersPackagesAfterDeadline>();
-                services.AddSingleton<RandomizeOrganizationsWithDeclarations>();
-                services.AddSingleton(new RandomizeOrganizationsWithDeclarationsSettings());
+                services.AddSingleton<StakeholderLoader2025>();
 
-                services.AddSingleton(new StratifiedSamplingSetting());
-                services.AddSingleton<StratifiedSampling>();
-                services.AddSingleton<SelectedIn2022DatasetLoader>();
-                services.AddSingleton(new SelectedIn2022DatasetsSettings()
-                {
-                    DataPath = dataPath
-                });
-                services.AddSingleton<SelectedIn2023DatasetLoader>();
-                services.AddSingleton(new SelectedIn2023DatasetsSettings()
-                {
-                    DataPath = dataPath
-                });
-                services.AddSingleton<SelectedIn2022OrganizationLoader>();
-                services.AddSingleton(new SelectedIn2022OrganizationLoaderSettings()
-                {
-                    DataPath = dataPath
-                });
-                services.AddSingleton<SelectedIn2023OrganizationLoader>();
-                services.AddSingleton(new SelectedIn2023OrganizationLoaderSettings()
-                {
-                    DataPath = dataPath
-                });
+                services.AddSingleton<CheckOrganizationStakeholder>();
+                services.AddSingleton<Task0>();
 
-                services.AddSingleton<StakeholderLoader>();
-                services.AddSingleton<AllStakeholders>();
+                services.AddSingleton<CheckStakeholderHasPackages>();
+                services.AddSingleton<CheckStakeholdersRegistered>();
+                services.AddSingleton<CheckSelfDeclarations>();
+                services.AddSingleton<Task1>();
+
+                services.AddSingleton<Task2>();
+
+                services.AddSingleton<RandomSelection>();
+                services.AddSingleton<Task3>();
+
+                services.AddSingleton<Task4>();
+
                 services.AddSingleton<StakeholdersAllDeclarations>();
-
-                services.AddSingleton<Evaluation0>();
-                services.AddSingleton<Evaluation1_1>();
-                services.AddSingleton<Evaluation1_2>();
-                services.AddSingleton<Evaluation2_1>();
-                services.AddSingleton<Evaluation2_2>();
+                services.AddSingleton<OrganizationsGetProxyAgreements>();
             }).UseConsoleLifetime().Build();
 
         using var scope = host.Services.CreateScope();
-        
-        var evaluation0 = scope.ServiceProvider.GetRequiredService<Evaluation0>();
-        await evaluation0.Run();
 
-        var evaluation1_1 = scope.ServiceProvider.GetRequiredService<Evaluation1_1>();
-        await evaluation1_1.Run();
+        var task0 = scope.ServiceProvider.GetRequiredService<Task0>();
+        await task0.Run();
 
-        var evaluation1_2 = scope.ServiceProvider.GetRequiredService<Evaluation1_2>();
-        await evaluation1_2.Run();
+        var task1 = scope.ServiceProvider.GetRequiredService<Task1>();
+        await task1.Run();
         
-        var evaluation2_1 = scope.ServiceProvider.GetRequiredService<Evaluation2_1>();
-        await evaluation2_1.Run();
+        var task2 = scope.ServiceProvider.GetRequiredService<Task2>();
+        await task2.Run();
         
-        var evaluation2_2 = scope.ServiceProvider.GetRequiredService<Evaluation2_2>();
-        await evaluation2_2.Run();
-        
+        var task3 = scope.ServiceProvider.GetRequiredService<Task3>();
+        await task3.Run();
+
+        var task4 = scope.ServiceProvider.GetRequiredService<Task4>();
+        await task4.Run();
+
         var allDeclarations = scope.ServiceProvider.GetRequiredService<StakeholdersAllDeclarations>();
         await allDeclarations.Get();
+
+        var proxyAgreements = scope.ServiceProvider.GetRequiredService<OrganizationsGetProxyAgreements>();
+        await proxyAgreements.Get();
     }
 }

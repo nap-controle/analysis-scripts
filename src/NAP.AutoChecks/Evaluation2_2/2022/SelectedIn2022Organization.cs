@@ -10,16 +10,16 @@ public class SelectedIn2022Organization
 {
     [Index(6)]
     public string OrganizationId { get; set; }
-    
+
     [Index(2)]
     public bool SelectedMMTIS { get; set; }
-    
+
     [Index(3)]
     public bool SelectedSRTI { get; set; }
-    
+
     [Index(4)]
     public bool SelectedRTTI { get; set; }
-    
+
     [Index(5)]
     public bool SelectedSSTP { get; set; }
 

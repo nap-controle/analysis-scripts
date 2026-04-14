@@ -12,7 +12,7 @@ public class CkanId
     /// </summary>
     [Index(0)]
     public string Organization { get; set; }
-    
+
     /// <summary>
     /// The name.
     /// </summary>

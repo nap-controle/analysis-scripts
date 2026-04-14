@@ -14,8 +14,8 @@ public class StakeholdersWithoutDeclarations
 
     public async Task Check()
     {
-        var stakeholders = await _dataHandler.GetStakeholders();        
-        
+        var stakeholders = await _dataHandler.GetStakeholders();
+
         var packages = (await _dataHandler.GetPackages()).ToList();
 
         var organizations = await _dataHandler.GetOrganizations();
@@ -55,7 +55,7 @@ public class StakeholdersWithoutDeclarations
             {
                 error += "No agreement declaration SSTP ";
             }
-            
+
             results.Add(new StakeholdersWithoutDeclarationsResult(stakeholder, organization, packages, error,
                 organization.HasMMTISDeclaration(), organization.HasRTTIDeclaration(), organization.HasSSTPDeclaration(), organization.HasSRTIDeclaration()));
         }

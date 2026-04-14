@@ -10,7 +10,7 @@ public class StakeholderWithoutNAPTypeCheck
     {
         _dataHandler = dataHandler;
     }
-    
+
     public async Task Check()
     {
         var stakeholders = await _dataHandler.GetStakeholders();
@@ -26,10 +26,10 @@ public class StakeholderWithoutNAPTypeCheck
                 results.Add(new StakeholderWithoutNAPType(stakeholder, "No organization matched via API, could not suggest NAP types"));
                 continue;
             }
-            
+
             // ReSharper disable once PossibleMultipleEnumeration
             var organization = organizations.FirstOrDefault(x => x.Id == stakeholder.ParsedOrganizationId);
-            if (organization == null) 
+            if (organization == null)
             {
                 results.Add(new StakeholderWithoutNAPType(stakeholder, "No organization matched via API, could not suggest NAP types"));
                 continue;
@@ -50,7 +50,7 @@ public class StakeholderWithoutNAPTypeCheck
                     result.HasMMTISPackage = result.HasMMTISPackage || orgPackage.IsMMTIS();
                     result.HasRTTIPackage = result.HasRTTIPackage || orgPackage.IsRTTI();
                     result.HasSSTPPackage = result.HasSSTPPackage || orgPackage.IsSSTP();
-                    result.HasSRTIPackage = result.HasSRTIPackage || orgPackage.IsSRTI(); 
+                    result.HasSRTIPackage = result.HasSRTIPackage || orgPackage.IsSRTI();
                 }
                 results.Add(result);
             }

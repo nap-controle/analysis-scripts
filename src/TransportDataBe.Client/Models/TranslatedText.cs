@@ -1,6 +1,6 @@
 namespace TransportDataBe.Client.Models;
 
-public class NotesTranslated
+public class TranslatedText
 {
     public string? Fr { get; set; }
 

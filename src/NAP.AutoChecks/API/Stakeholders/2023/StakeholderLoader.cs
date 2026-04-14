@@ -11,13 +11,13 @@ public class StakeholderLoader
     {
         _logger = logger;
     }
-    
+
     private IList<Stakeholder>? _stakeholders;
 
     public async Task<IEnumerable<Stakeholder>> GetStakeholders(string stakeholdersPath)
     {
         if (_stakeholders != null) return _stakeholders;
-        
+
         await using var stream =
             File.OpenRead(Path.Combine(stakeholdersPath, "CKAN-ID.csv"));
         var ckanIds = await CkanId.Load(stream);
@@ -39,7 +39,7 @@ public class StakeholderLoader
                 Name = ckanId.Name
             });
         }
-        
+
         await using var streamMmtis =
             File.OpenRead(Path.Combine(stakeholdersPath, "MMTIS.csv"));
         var mmtisOrgs = await NapTypeOrganization.Load(streamMmtis);
@@ -68,7 +68,7 @@ public class StakeholderLoader
             //         mmtisType = MMTISType.TransportOperator;
             //     }
             // }
-            
+
             var mmtisStakeholder = stakeholders.FirstOrDefault(x => x.Id == mmtisOrg.Organization);
             if (mmtisStakeholder == null)
             {
@@ -79,7 +79,7 @@ public class StakeholderLoader
                 };
                 stakeholders.Add(mmtisStakeholder);
             }
-            
+
             mmtisStakeholder.MMTISType = mmtisType;
             if (mmtisType == null)
             {
@@ -88,14 +88,14 @@ public class StakeholderLoader
             }
             mmtisStakeholder.IsMMTIS = true;
         }
-        
+
         await using var streamRtti =
             File.OpenRead(Path.Combine(stakeholdersPath, "RTTI.csv"));
         var rttiOrgs = await NapTypeOrganization.Load(streamRtti);
         foreach (var rttiOrg in rttiOrgs)
         {
             if (string.IsNullOrWhiteSpace(rttiOrg.Organization)) continue;
-            
+
             var mmtisStakeholder = stakeholders.FirstOrDefault(x => x.Id == rttiOrg.Organization);
             if (mmtisStakeholder == null)
             {
@@ -109,14 +109,14 @@ public class StakeholderLoader
             mmtisStakeholder.Name = rttiOrg.OrganizationName;
             mmtisStakeholder.IsRTTI = true;
         }
-        
+
         await using var streamSrti =
             File.OpenRead(Path.Combine(stakeholdersPath, "SRTI.csv"));
         var srtiOrgs = await NapTypeOrganization.Load(streamSrti);
         foreach (var srtiOrg in srtiOrgs)
         {
             if (string.IsNullOrWhiteSpace(srtiOrg.Organization)) continue;
-            
+
             var mmtisStakeholder = stakeholders.FirstOrDefault(x => x.Id == srtiOrg.Organization);
             if (mmtisStakeholder == null)
             {
@@ -127,18 +127,18 @@ public class StakeholderLoader
                 };
                 stakeholders.Add(mmtisStakeholder);
             }
-            
+
             mmtisStakeholder.Name = srtiOrg.OrganizationName;
             mmtisStakeholder.IsSRTI = true;
         }
-        
+
         await using var streamSstp =
             File.OpenRead(Path.Combine(stakeholdersPath, "SSTP.csv"));
         var sstpOrgs = await NapTypeOrganization.Load(streamSstp);
         foreach (var sstpOrg in sstpOrgs)
         {
             if (string.IsNullOrWhiteSpace(sstpOrg.Organization)) continue;
-            
+
             var mmtisStakeholder = stakeholders.FirstOrDefault(x => x.Id == sstpOrg.Organization);
             if (mmtisStakeholder == null)
             {
@@ -149,11 +149,11 @@ public class StakeholderLoader
                 };
                 stakeholders.Add(mmtisStakeholder);
             }
-            
+
             mmtisStakeholder.Name = sstpOrg.OrganizationName;
             mmtisStakeholder.IsSSTP = true;
         }
-        
+
         _stakeholders = stakeholders;
         return stakeholders;
     }

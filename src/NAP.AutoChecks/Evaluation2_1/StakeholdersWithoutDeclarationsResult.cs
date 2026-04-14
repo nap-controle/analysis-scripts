@@ -46,7 +46,7 @@ public class StakeholdersWithoutDeclarationsResult
     /// The name.
     /// </summary>
     public string Name { get; set; }
-    
+
     /// <summary>
     /// The organization id, if any.
     /// </summary>

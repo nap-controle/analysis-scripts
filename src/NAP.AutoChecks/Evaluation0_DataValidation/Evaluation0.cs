@@ -10,12 +10,12 @@ public class Evaluation0
         _stakeholderWithoutNapTypeCheck = stakeholderWithoutNapTypeCheck;
         _allOrganizations = allOrganizations;
     }
-    
+
     public async Task Run()
     {
         // check if all organizations have at least an entry in the stakeholders list.
         await _allOrganizations.Check();
-        
+
         // check if all stakeholders have a NAP type.
         await _stakeholderWithoutNapTypeCheck.Check();
     }

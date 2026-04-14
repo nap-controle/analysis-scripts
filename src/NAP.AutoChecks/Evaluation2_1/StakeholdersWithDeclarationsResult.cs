@@ -15,19 +15,19 @@ public class StakeholdersWithDeclarationsResult
         this.OrganizationId = organization.Id;
         this.OrganizationName = organization.Name;
     }
-    
+
 
     public string OrganizationName { get; set; }
-    
+
     public Guid OrganizationId { get; set; }
 
     public bool OrgHasMMTISDeclaration { get; set; }
-    
+
     public MMTISType? StakeholderMMTIStype { get; set; }
-    
+
     public bool OrgHasRTTIDeclaration { get; set; }
-    
+
     public bool OrgHasSSTPDeclaration { get; set; }
-    
+
     public bool OrgHasSRTIDeclaration { get; set; }
 }

@@ -9,13 +9,13 @@ public class Stakeholder_SSTP
     /// </summary>
     [Index(0)]
     public string Id { get; set; }
-    
+
     /// <summary>
     /// The data supplier property.
     /// </summary>
     [Index(1)]
     public string DataSupplier { get; set; }
-    
+
     /// <summary>
     /// The region
     /// </summary>

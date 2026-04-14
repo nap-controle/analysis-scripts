@@ -1,22 +1,22 @@
 using NAP.AutoChecks.API;
 
-namespace NAP.AutoChecks.Evaluation1_1;
+namespace NAP.AutoChecks.Task1.A;
 
-public class StakeholdersRegisteredCheck
+public class CheckStakeholdersRegistered
 {
     private readonly DataHandler _dataHandler;
 
-    public StakeholdersRegisteredCheck(DataHandler dataHandler)
+    public CheckStakeholdersRegistered(DataHandler dataHandler)
     {
         _dataHandler = dataHandler;
     }
 
-    public async Task Check()
+    public async Task<IEnumerable<CheckStakeholdersRegisteredResult>> Check()
     {
-        var stakeholders = await _dataHandler.GetStakeholders();
+        var stakeholders = await _dataHandler.GetStakeholders2025();
         var organizations = await _dataHandler.GetOrganizations();
 
-        var results = new List<StakeholdersRegisteredResult>();
+        var results = new List<CheckStakeholdersRegisteredResult>();
         foreach (var stakeholder in stakeholders)
         {
             var registered = false;
@@ -29,10 +29,10 @@ public class StakeholdersRegisteredCheck
                     registered = true;
                 }
             }
-            
-            results.Add(new StakeholdersRegisteredResult(stakeholder, registered));
+
+            results.Add(new CheckStakeholdersRegisteredResult(stakeholder, registered));
         }
 
-        await _dataHandler.WriteResultAsync("evaluation_1.1_stakeholders_not_registered.xlsx", results);
+        return results;
     }
 }

@@ -1,26 +1,27 @@
 using NAP.AutoChecks.Domain;
 
-namespace NAP.AutoChecks.Evaluation1_1;
+namespace NAP.AutoChecks.Task1.A;
 
-public class StakeholderHasPackagesResult
+public class CheckStakeholdersRegisteredResult
 {
+
     /// <summary>
     /// Creates a new result.
     /// </summary>
     /// <param name="stakeholder"></param>
-    /// <param name="error"></param>
-    public StakeholderHasPackagesResult(Stakeholder stakeholder, string error)
+    /// <param name="registered"></param>
+    public CheckStakeholdersRegisteredResult(Stakeholder stakeholder, bool registered)
     {
+        Registered = registered;
         this.Id = stakeholder.Id;
         this.Name = stakeholder.Name;
-        this.OrganizationId = stakeholder.OrganizationId;
-        this.Error = error;
         this.StakeholderMMTIS = stakeholder.IsMMTIS;
         this.StakeholderRTTI = stakeholder.IsRTTI;
         this.StakeholderSRTI = stakeholder.IsSRTI;
         this.StakeholderSSTP = stakeholder.IsSSTP;
+
     }
-    
+
     /// <summary>
     /// The id.
     /// </summary>
@@ -30,16 +31,6 @@ public class StakeholderHasPackagesResult
     /// The name.
     /// </summary>
     public string Name { get; set; }
-    
-    /// <summary>
-    /// The organization id, if any.
-    /// </summary>
-    public string OrganizationId { get; set; }
-
-    /// <summary>
-    /// The message.
-    /// </summary>
-    public string Error { get; set; }
 
     public bool StakeholderSSTP { get; set; }
 
@@ -48,4 +39,6 @@ public class StakeholderHasPackagesResult
     public bool StakeholderRTTI { get; set; }
 
     public bool StakeholderMMTIS { get; set; }
+
+    public bool Registered { get; }
 }

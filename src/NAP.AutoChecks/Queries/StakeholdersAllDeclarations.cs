@@ -17,7 +17,7 @@ public class StakeholdersAllDeclarations
         var stakeholders = await _dataHandler.GetStakeholders();
 
         var organizations = await _dataHandler.GetOrganizations();
-        
+
         foreach (var stakeholder in stakeholders)
         {
             if (stakeholder.ParsedOrganizationId == null)

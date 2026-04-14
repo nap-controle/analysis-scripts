@@ -1,3 +1,4 @@
+using NAP.AutoChecks.Domain;
 using TransportDataBe.Client.Models;
 
 namespace NAP.AutoChecks.Evaluation2_1;
@@ -28,5 +29,22 @@ public static class OrganizationExtensions
     public static bool HasRTTIDeclaration(this Organization organization)
     {
         return !string.IsNullOrWhiteSpace(organization.rtti_doc_document_upload);
+    }
+
+    public static bool HasSelfDeclaration(this Organization organization, NAPType napType)
+    {
+        switch (napType)
+        {
+            case NAPType.MMTIS:
+                return organization.HasMMTISDeclaration();
+            case NAPType.SSTP:
+                return organization.HasSSTPDeclaration();
+            case NAPType.SRTI:
+                return organization.HasSRTIDeclaration();
+            case NAPType.RTTI:
+                return organization.HasRTTIDeclaration();
+        }
+
+        throw new Exception();
     }
 }

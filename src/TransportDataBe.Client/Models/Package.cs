@@ -6,7 +6,15 @@ public class Package
 
     public string? Name { get; set; }
 
+    public string Title { get; set; }
+
     public string[]? Language { get; set; }
+
+    public string[]? countries_covered { get; set; }
+
+    public string? mobility_theme { get; set; }
+
+    public bool Private { get; set; }
 
     public DateTime? Metadata_Created { get; set; }
 
@@ -16,17 +24,15 @@ public class Package
 
     public string[]? Regions_Covered { get; set; }
 
-    public string? Theme { get; set; }
-
-    public string? Publisher_Name { get; set; }
-
-    public string? Publisher_Email { get; set; }
-
     public Guid? Owner_Org { get; set; }
 
-    public string? Contract_License { get; set; }
+    public string? contact_point_name { get; set; }
 
-    public string? License_Id { get; set; }
+    public string? contact_point_email { get; set; }
+
+    public string? publisher_firstname { get; set; }
+
+    public string? publisher_surname { get; set; }
 
     public string? Frequency { get; set; }
 
@@ -34,7 +40,7 @@ public class Package
 
     public PackageOrganization Organization { get; set; }
 
-    public NotesTranslated? Notes_Translated { get; set; }
+    public TranslatedText? Notes_Translated { get; set; }
 
     public string? Fluent_Tags { get; set; }
 

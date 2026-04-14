@@ -16,10 +16,30 @@ public class RequiredFieldsFilledInResult
     /// <param name="package"></param>
     /// <param name="error"></param>
     /// <param name="message"></param>
+    public RequiredFieldsFilledInResult(Client client, Stakeholder stakeholder, string error, string message)
+    {
+        _client = client;
+
+        this.Id = stakeholder.Id;
+        this.Name = stakeholder.Name;
+        this.OrganizationId = stakeholder.OrganizationId ?? "";
+        this.Error = error;
+        this.ErrorMessage = message;
+        _client = client;
+    }
+
+    /// <summary>
+    /// Creates a new result.
+    /// </summary>
+    /// <param name="client"></param>
+    /// <param name="stakeholder"></param>
+    /// <param name="package"></param>
+    /// <param name="error"></param>
+    /// <param name="message"></param>
     public RequiredFieldsFilledInResult(Client client, Stakeholder stakeholder, Package package, string error, string message)
     {
         _client = client;
-        
+
         this.Id = stakeholder.Id;
         this.Name = stakeholder.Name;
         this.OrganizationId = stakeholder.OrganizationId;
@@ -46,7 +66,7 @@ public class RequiredFieldsFilledInResult
     public RequiredFieldsFilledInResult(Client client, Stakeholder stakeholder, Package package, Resource resource, string error, string message)
     {
         _client = client;
-        
+
         this.Id = stakeholder.Id;
         this.Name = stakeholder.Name;
         this.OrganizationId = stakeholder.OrganizationId;
@@ -66,7 +86,7 @@ public class RequiredFieldsFilledInResult
         this.StakeholderSRTI = stakeholder.IsSRTI;
         this.StakeholderSSTP = stakeholder.IsSSTP;
     }
-    
+
     /// <summary>
     /// The id.
     /// </summary>
@@ -76,32 +96,27 @@ public class RequiredFieldsFilledInResult
     /// The name.
     /// </summary>
     public string Name { get; set; }
-    
+
     /// <summary>
     /// The organization id, if any.
     /// </summary>
     public string OrganizationId { get; set; }
-    
+
     /// <summary>
     /// The package id.
     /// </summary>
-    public Guid PackageId { get; set; }
+    public Guid? PackageId { get; set; }
 
-    /// <summary>
-    /// The package url.
-    /// </summary>
-    public string PackageUrl => _client.GetPackageUrl(this.PackageName);
-    
     /// <summary>
     /// The package name.
     /// </summary>
     public string PackageName { get; set; }
-    
+
     /// <summary>
     /// The resource id.
     /// </summary>
     public Guid? ResourceId { get; set; }
-    
+
     /// <summary>
     /// The resource name.
     /// </summary>

@@ -11,7 +11,7 @@ internal static class StratifiedSamplingResultExtensions
                                   x.OrganizationId ==
                                   organizationId);
     }
-    
+
     public static bool Has2PackagesSelected(this IEnumerable<StratifiedSamplingResult> results, NAPType napType,
         Guid organizationId)
     {
